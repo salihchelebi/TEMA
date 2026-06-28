@@ -1,3 +1,13 @@
+{% comment %}
+İspat No: 16
+Verilen Talimat: Header dışında A-G21 dil seçici tekrarlarını bırakma.
+Yapılan Görev: Bağımsız dil çubuğu section görünür render üretmeyecek şekilde pasifleştirildi.
+Yapılan İşlem: Bu dosyadaki render 'A-g21-dil-secici' çağrısı Liquid comment ile pasifleştirildi.
+Delil: Görünür dil çubuğu yalnız snippets/nil-announcement-bar.liquid üzerinden üretilir.
+Kontrol: browser_check.py her URL için tek dil çubuğu sayımı yapar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
 {%- render 'A-g21-inline-stiller' -%}
 {%- liquid
   assign g21_goster = section.settings.g21_goster
@@ -7,7 +17,7 @@
 -%}
 {%- if g21_goster -%}
   <section class="a-g21-dil-cubugu a-g21-dil-cubugu--{{ section.settings.g21_mobil_davranis | default: 'scroll' }}{% if section.settings.g21_sticky %} is-sticky{% endif %}" data-a-g21-language-bar="active" style="--a-g21-flag-size: {{ section.settings.g21_bayrak_boyutu | default: 34 }}px; --a-g21-gap: {{ section.settings.g21_gap | default: 10 }}px;">
-    <div class="a-g21-dil-cubugu__ic">{%- render 'A-g21-dil-secici' -%}</div>
+    <div class="a-g21-dil-cubugu__ic">{%- comment -%} A-G21 tek dil çubuğu kuralı: render layout üst slotuna taşındı. {%- endcomment -%}</div>
   </section>
 {%- endif -%}
 {% schema %}

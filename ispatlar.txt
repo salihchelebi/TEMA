@@ -1,0 +1,146 @@
+GELİNLİK21 / A-G21 DÜZELTME İSPAT RAPORU
+Tarih: 2026-06-28
+Branch: fix/a-g21-language-accessibility-browser-check
+Commit hedefi: Fix A-G21 language bar, accessibility, and browser checks
+
+Özet:
+- Aktif header akışı layout/theme.liquid -> snippets/nil-announcement-bar.liquid -> sections/header-group.json/header_section olarak tespit edildi. sections/header-group.json içindeki header_announcements_9jGBFp disabled=true olduğu için header-announcements.liquid aktif üst dil barı kaynağı değildir.
+- /collections liste şablonu templates/list-collections.json üzerinden A-g21-koleksiyonlar-ana ile, tek koleksiyon sayfası templates/collection.json üzerinden A-g21-koleksiyon-sayfasi ile çalışır. nil-luxury-collection-discovery.liquid şablon akışına bağlı değildir; aynı anda render edilmez.
+- Tek görünür dil çubuğu layout üst slotundaki snippets/nil-announcement-bar.liquid içinde bırakıldı.
+- Playwright doğrulaması ekran kaydı üretimine hazırlandı ve çalıştırıldı; canlı siteye erişim Codex ağı/proxy nedeniyle net::ERR_TUNNEL_CONNECTION_FAILED verdi. Buna rağmen her URL için video kayıt dosyası üretildi.
+
+İspat No: 1
+Dosya: layout/theme.liquid
+Verilen Talimat: Hreflang sistemini global olarak <head> içine bağla.
+Yapılan İşlem: A-g21-seo-hreflang-baglantilari snippet'i meta-tags sonrasında render edildi.
+Önce: Hreflang snippet head akışında garanti değildi.
+Sonra: Global head render zincirinde çalışır.
+Delil: layout/theme.liquid içinde render 'A-g21-seo-hreflang-baglantilari'.
+Kontrol: python tools/browser_check.py hreflangCount alanını raporlayacak şekilde hazırlandı.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 2-3
+Dosya: layout/theme.liquid, snippets/nil-announcement-bar.liquid
+Verilen Talimat: Dil çubuğunu header'ın en üstünde tek kez render et.
+Yapılan İşlem: Aktif layout akışında header-group öncesindeki nil-announcement-bar tek dil çubuğu slotu olarak sabitlendi.
+Önce: Dil çubuğu header-announcements, koleksiyon sectionları ve bazı bağımsız sectionlarda tekrarlanabiliyordu.
+Sonra: Görünür global slot id=A-G21-HeaderLanguageBar olarak tek kaynakta tutuldu.
+Delil: snippets/nil-announcement-bar.liquid tek aktif render 'A-g21-dil-secici' çağrısını içerir.
+Kontrol: rg ile aktif render çağrıları kontrol edildi; browser_check.py languageBarCount alanını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 4-5
+Dosya: sections/A-g21-koleksiyonlar-ana.liquid, sections/A-g21-koleksiyon-sayfasi.liquid
+Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır.
+Yapılan İşlem: Header dışındaki görünür dil çubuğu blokları kaldırıldı.
+Önce: Koleksiyon sayfalarında section içi dil çubuğu üretilebiliyordu.
+Sonra: Koleksiyon sectionları dil çubuğu üretmez; yalnız üst header slotu üretir.
+Delil: Bu dosyalarda aktif render 'A-g21-dil-secici' çağrısı yoktur.
+Kontrol: rg ile render çağrıları kontrol edildi.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 6
+Dosya: snippets/A-g21-dil-secici.liquid
+Verilen Talimat: Dil linklerinin accessibility hatalarını düzelt.
+Yapılan İşlem: Liste çocukları role=listitem yapıldı, aria-label görünür metinle aynı olmayan eylem/hedef formatına çekildi.
+Önce: Link aria-label değerleri görünür dil adıyla çakışmaya yakındı.
+Sonra: aria-label "Dil seçimi: ... sayfasına git" formatında açık amaç bildirir.
+Kontrol: browser_check.py languageLinks ve accessibilityWarnings alanlarını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 7-8
+Dosya: sections/header.liquid, snippets/localization-form.liquid
+Verilen Talimat: Eski localization yapılarını ve country-filter-input duplicate ID hatasını devre dışı bırak.
+Yapılan İşlem: Header localization_markup çıktısı boşaltıldı; localization-form tekrar kullanılsa bile country-filter-input id'si form_id suffix'i alacak hale getirildi.
+Önce: dropdown-localization ve country-filter-input DOM'a girebiliyordu.
+Sonra: Aktif header eski dropdown'u render etmez; fallback snippet duplicate ID üretmez.
+Kontrol: browser_check.py oldLocalization, countryFilterInputs ve duplicateIds alanlarını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 9-11
+Dosya: blocks/_header-menu.liquid, snippets/A-g21-koleksiyon-karti.liquid, snippets/A-g21-inline-stiller.liquid
+Verilen Talimat: ARIA role hatalarını ve koleksiyon kart görsel tutarlılığını düzelt.
+Yapılan İşlem: MORE/DİĞER butonundan role=listitem kaldırıldı; koleksiyon kartları role=listitem yapıldı; kart yükseklikleri ve açıklama line clamp kuralları eklendi.
+Önce: Button üzerinde hatalı role ve kartlarda potansiyel list child uyarısı vardı.
+Sonra: Native button korunur, grid role=list çocukları listitem olur, kart metin/görsel hizası tutarlıdır.
+Kontrol: browser_check.py badRoleButtons ve listRoleWarnings alanlarını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 12-13
+Dosya: sections/1-nil-lux-footer.liquid
+Verilen Talimat: Footer WhatsApp kontrastı, ödeme etiketi kontrastı, heading order ve aynı hedef WhatsApp link açıklamalarını düzelt.
+Yapılan İşlem: WhatsApp kart başlığı h3 yerine role=heading aria-level=2 yapıldı; WhatsApp link aria-label değerleri tutarlılaştırıldı; WhatsApp CTA ve payment badge kontrast kuralları güçlendirildi.
+Önce: WhatsApp kartında h3 hiyerarşi riski, düşük kontrast ve tutarsız link açıklaması riski vardı.
+Sonra: Başlık hiyerarşisi kontrollü, CTA koyu yeşil/beyaz, ödeme etiketleri beyaz zemin/koyu metin kullanır.
+Kontrol: browser_check.py temel accessibilityWarnings alanını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 14
+Dosya: tools/browser_check.py
+Verilen Talimat: Playwright screenshot, video, JSON ve metin raporu üret.
+Yapılan İşlem: 8 URL için video, screenshot, DOM kontrolü, JSON report ve TXT summary üreten script yazıldı.
+Önce: Tek URL screenshot/video üreten minimal script vardı.
+Sonra: Çoklu URL, duplicate ID, language bar, old localization, ARIA uyarıları, hreflang ve link host doğrulaması raporlanır.
+Kontrol: python -m py_compile tools/browser_check.py başarılı; python tools/browser_check.py çalıştırıldı.
+Onay: Kısmi / ortam uyarılı. Script çalıştı ve video dosyaları üretti; canlı URL erişimi proxy tünel hatası verdi.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm ve her subdomain klasöründeki video.webm
+
+İspat No: 15-17
+Dosya: sections/A-g21-urun-sayfasi.liquid, sections/A-g21-dil-cubugu.liquid, sections/header-announcements.liquid
+Verilen Talimat: Header dışında A-G21 dil seçici tekrarlarını bırakma.
+Yapılan İşlem: Kalan render 'A-g21-dil-secici' çağrıları Liquid comment ile pasifleştirildi.
+Önce: Ürün/bağımsız/disabled announcement section içinde tekrar potansiyeli vardı.
+Sonra: Tek aktif render nil-announcement-bar içindedir.
+Kontrol: rg "render ['\"]A-g21-dil-secici" -g '*.liquid' .
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+İspat No: 18-19
+Dosya: setup.sh, maintenance.sh
+Verilen Talimat: Kurulum ve bakım komut dosyalarında pip install ve Playwright Chromium kurulumu bulunsun.
+Yapılan İşlem: set -euo pipefail ile çalışan setup/maintenance scriptleri oluşturuldu ve chmod +x uygulandı.
+Önce: Bu dosyalar yoktu.
+Sonra: ./setup.sh ve ./maintenance.sh çalıştırılabilir.
+Kontrol: ./setup.sh çalıştırıldı; pip ve Chromium kurulumu tamamlandı.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+Silinen dosya:
+- snippets/A-g21-test-kontrol.liquid silindi. Talimat: Kullanılmayan test snippet dosyasını temizle. Kontrol: rg --files | rg 'A-g21-test-kontrol' sonuç döndürmedi. Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+Playwright çıktı artefaktları:
+- browser_outputs/browser_check_summary.json
+- browser_outputs/browser_check_summary.txt
+- browser_outputs/gelinlik21_com_tr_collections/video.webm
+- browser_outputs/tr_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/ar_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/fr_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/de_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/ru_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/nl_gelinlik21_com_tr_collections/video.webm
+- browser_outputs/es_gelinlik21_com_tr_collections/video.webm
+- Her URL klasöründe report.json ve summary.txt vardır.
+
+Komut sonuçları:
+- python -m py_compile tools/browser_check.py: başarılı.
+- ./setup.sh: başarılı; pip bağımlılıkları ve Chromium kurulum doğrulaması tamamlandı.
+- python -m playwright install-deps chromium: ortam bağımlılıkları kuruldu; mise apt deposunda 403 uyarısı vardı fakat Ubuntu paketleri kuruldu.
+- python tools/browser_check.py: exit code 1; her URL için video üretildi, fakat canlı siteye erişim Codex proxy tünel kısıtı nedeniyle net::ERR_TUNNEL_CONNECTION_FAILED verdi.
+
+Kalan riskler:
+- Canlı Shopify mağazası bu yerel tema değişiklikleri deploy edilmeden Playwright DOM kontrollerinde düzelmiş görünmeyebilir.
+- Codex ağ/proxy tünel hatası nedeniyle canlı URL screenshot içerikleri alınamadı; video dosyaları başarısız gezinme oturumunu kanıtlar.
+- Browser script, deploy sonrası aynı komutla gerçek DOM sonuçlarını ve screenshotları üretecek şekilde hazırdır.
+
+
+PR düzeltmesi - ikili dosyalar:
+- Codex/GitHub arayüzünde "İkili dosyalar desteklenmez" uyarısı .webm video kayıtlarının diff içinde gösterilememesinden kaynaklanır. Bu bir kod hatası değil, platformun binary dosya görüntüleme sınırlamasıdır.
+- Çözüm: .webm video dosyaları git takibinden çıkarıldı ve .gitignore içine browser_outputs/**/*.webm eklendi. JSON/TXT raporlar video dosya yollarını belgelemeye devam eder; videolar test çalıştırıldığında yerelde yeniden üretilir.
+- Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm

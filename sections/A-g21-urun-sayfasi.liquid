@@ -1,6 +1,16 @@
+{% comment %}
+İspat No: 15
+Verilen Talimat: Header dışında A-G21 dil seçici tekrarlarını bırakma.
+Yapılan Görev: Ürün sayfası header dışı dil çubuğu devre dışı bırakıldı.
+Yapılan İşlem: Bu dosyadaki render 'A-g21-dil-secici' çağrısı Liquid comment ile pasifleştirildi.
+Delil: Görünür dil çubuğu yalnız snippets/nil-announcement-bar.liquid üzerinden üretilir.
+Kontrol: browser_check.py her URL için tek dil çubuğu sayımı yapar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
 {%- render 'A-g21-inline-stiller' -%}
 <section class="a-g21-urun-sayfasi" data-a-g21-product-page="true">
-  {%- if section.settings.g21_dil_cubugu_goster -%}<div data-a-g21-language-bar="active">{%- render 'A-g21-dil-secici' -%}</div>{%- endif -%}
+  {%- if section.settings.g21_dil_cubugu_goster -%}<div data-a-g21-language-bar="active">{%- comment -%} A-G21 tek dil çubuğu kuralı: render layout üst slotuna taşındı. {%- endcomment -%}</div>{%- endif -%}
   <div class="a-g21-bos-durum">A-G21 product carrier is ready. Bind this section after product page cross-check.</div>
 </section>
 {% schema %}

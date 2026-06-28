@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-06-28T14:04:15.583318+00:00",
+  "all_ok": false,
+  "results": [
+    {
+      "url": "https://gelinlik21.com.tr/collections",
+      "slug": "gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://tr.gelinlik21.com.tr/collections",
+      "slug": "tr_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://tr.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://tr.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/tr_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://ar.gelinlik21.com.tr/collections",
+      "slug": "ar_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://ar.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://ar.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/ar_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://fr.gelinlik21.com.tr/collections",
+      "slug": "fr_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://fr.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://fr.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/fr_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://de.gelinlik21.com.tr/collections",
+      "slug": "de_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://de.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://de.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/de_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://ru.gelinlik21.com.tr/collections",
+      "slug": "ru_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://ru.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://ru.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/ru_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://nl.gelinlik21.com.tr/collections",
+      "slug": "nl_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://nl.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://nl.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/nl_gelinlik21_com_tr_collections/video.webm"
+    },
+    {
+      "url": "https://es.gelinlik21.com.tr/collections",
+      "slug": "es_gelinlik21_com_tr_collections",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://es.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://es.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/es_gelinlik21_com_tr_collections/video.webm"
+    }
+  ]
+}

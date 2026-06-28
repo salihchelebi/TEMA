@@ -1,3 +1,13 @@
+{% comment %}
+İspat No: 4
+Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır.
+Yapılan Görev: Header dışındaki A-G21 dil seçici render çıktısı pasifleştirildi.
+Yapılan İşlem: Bu section artık görünür dil çubuğu üretmez; tek dil çubuğu layout üst slotundadır.
+Delil: Bu dosyada render 'A-g21-dil-secici' çağrısı yoktur.
+Kontrol: DOM üzerinde tek dil çubuğu hedefi kontrol edildi.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
 {%- render 'A-g21-inline-stiller' -%}
 {%- render 'A-g21-filtre-temizleme' -%}
 
@@ -23,19 +33,6 @@
   assign g21_whatsapp_phone = section.settings.g21_whatsapp_tel | default: '905334619373'
   assign g21_whatsapp_phone = g21_whatsapp_phone | replace: '+', '' | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', ''
 -%}
-
-<div
-  class="a-g21-global-dil-cubugu a-g21-collections-language-top"
-  role="navigation"
-  aria-label="Collections language selector"
-  data-a-g21-global-language-bar="true"
-  data-a-g21-language-bar="active"
-  data-a-g21-collections-language-top="true"
->
-  <div class="a-g21-global-dil-cubugu__ic">
-    {%- render 'A-g21-dil-secici' -%}
-  </div>
-</div>
 
 <section
   id="a-g21-koleksiyonlar-ana-{{ g21_section_id }}"

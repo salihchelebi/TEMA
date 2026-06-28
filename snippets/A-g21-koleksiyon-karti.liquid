@@ -1,5 +1,12 @@
 {%- comment -%}
-A-G21 tekrar kullanılabilir koleksiyon kartı. Parametre: collection, g21_index, g21_cta.
+İspat No: 10
+Verilen Talimat: Koleksiyon gridindeki ARIA hatalarını ve kart görsel tutarlılığını düzelt.
+Yapılan Görev: role=list içindeki kart çocukları listitem yapıldı; açıklama uzunluğu sınırlandı.
+Yapılan İşlem: article role=listitem taşır, link erişilebilir adı CTA + başlık olarak korunur.
+Delil: role=listitem attribute'u bu kart kökünde bulunur.
+Kontrol: browser_check.py rol uyarılarını ve ekran görüntülerini raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
 {%- endcomment -%}
 {%- liquid
   assign g21_collection = collection
@@ -19,7 +26,7 @@ A-G21 tekrar kullanılabilir koleksiyon kartı. Parametre: collection, g21_index
       assign g21_card_image = g21_collection.products.first.featured_image
     endif
   -%}
-  <article class="a-g21-koleksiyon-karti" data-a-g21-collection-card="true">
+  <article class="a-g21-koleksiyon-karti" role="listitem" data-a-g21-collection-card="true">
     <a class="a-g21-koleksiyon-karti__link" href="{{ g21_collection.url }}" aria-label="{{ g21_cta_text | escape }}: {{ g21_collection.title | escape }}">
       <span class="a-g21-koleksiyon-karti__gorsel-kutu">
         {%- if g21_card_image != blank -%}

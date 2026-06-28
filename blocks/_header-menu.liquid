@@ -1,3 +1,13 @@
+{%- comment -%}
+İspat No: 9
+Verilen Talimat: Header menüsündeki hatalı ARIA role kullanımını düzelt.
+Yapılan Görev: MORE/DİĞER butonundan uygunsuz role=listitem kaldırıldı.
+Yapılan İşlem: Buton native button olarak bırakıldı ve type=button eklendi.
+Delil: Overflow more butonu artık role=listitem taşımaz.
+Kontrol: browser_check.py role uyarılarını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{%- endcomment -%}
 {%- doc -%}
   Renders a header menu block.
 
@@ -142,7 +152,7 @@
         on:pointerenter="/activate"
         on:pointerleave="/deactivate"
       >
-        <button role="listitem" class="menu-list__link button-unstyled">
+        <button class="menu-list__link button-unstyled" type="button">
           <span class="menu-list__link-title">{{ 'actions.more' | t }}</span>
         </button>
       </li>

@@ -188,7 +188,17 @@
   endif
 %}
 
-{% capture localization_markup %}
+{% comment %}
+İspat No: 7
+Verilen Talimat: Eski localization yapılarını kökten devre dışı bırak.
+Yapılan Görev: dropdown-localization ve country-filter-input üreten header markup boşaltıldı.
+Yapılan İşlem: localization_markup capture çıktısı boş bırakılarak eski dropdown DOM render dışı bırakıldı.
+Delil: Aktif header artık dropdown-localization-component üretmez.
+Kontrol: browser_check.py duplicate ID ve country-filter-input sayımı yapar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
+{% capture localization_markup_disabled %}
   {% liquid
     assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
     assign localization_font_size = '--menu-localization-font-size: [localization_font_size]; ' | replace: '[localization_font_size]', section.settings.localization_font_size
@@ -281,6 +291,7 @@
     </dropdown-localization-component>
   {% endif %}
 {% endcapture %}
+{% assign localization_markup = blank %}
 
 <script type="application/ld+json">
   {

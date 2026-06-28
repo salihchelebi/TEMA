@@ -1,0 +1,7 @@
+{
+  "url": "https://es.gelinlik21.com.tr/collections",
+  "slug": "es_gelinlik21_com_tr_collections",
+  "ok": false,
+  "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://es.gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://es.gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+  "video": "browser_outputs/es_gelinlik21_com_tr_collections/video.webm"
+}

@@ -1,0 +1,3 @@
+# G21 browser proof videos are generated locally by tools/browser_check.py.
+# GitHub/Codex diff viewer does not support binary .webm files, so keep paths in JSON/TXT reports and do not commit videos.
+browser_outputs/**/*.webm
