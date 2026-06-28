@@ -1,6 +1,7 @@
 GELİNLİK21 / A-G21 DÜZELTME İSPAT RAPORU
 Tarih: 2026-06-28
 Branch: fix/a-g21-language-accessibility-browser-check
+GitHub repo: GANGPT/TEMA
 Commit hedefi: Fix A-G21 language bar, accessibility, and browser checks
 
 Özet:
