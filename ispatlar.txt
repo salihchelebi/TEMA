@@ -1,6 +1,7 @@
 GELİNLİK21 / A-G21 DÜZELTME İSPAT RAPORU
 Tarih: 2026-06-28
 Branch: fix/a-g21-language-accessibility-browser-check
+GitHub repo: GANGPT/TEMA
 Commit hedefi: Fix A-G21 language bar, accessibility, and browser checks
 
 Özet:
@@ -144,3 +145,40 @@ PR düzeltmesi - ikili dosyalar:
 - Codex/GitHub arayüzünde "İkili dosyalar desteklenmez" uyarısı .webm video kayıtlarının diff içinde gösterilememesinden kaynaklanır. Bu bir kod hatası değil, platformun binary dosya görüntüleme sınırlamasıdır.
 - Çözüm: .webm video dosyaları git takibinden çıkarıldı ve .gitignore içine browser_outputs/**/*.webm eklendi. JSON/TXT raporlar video dosya yollarını belgelemeye devam eder; videolar test çalıştırıldığında yerelde yeniden üretilir.
 - Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+## Ek Görsel Analiz Düzeltmeleri - 2026-06-28
+- `templates/list-collections.json`: Dil çubuğu ayarı JSON yorum eklenmeden false yapıldı; gerçek dil çubuğu yalnızca global header slotunda kalır.
+- `templates/collection.json`: Tekil koleksiyon dil çubuğu ayarı false yapıldı; subdomain geçişlerinde ikinci dil barı engellenir.
+- `sections/A-g21-koleksiyonlar-ana.liquid`: WhatsApp danışmanlık kartı role=list grid dışına, koleksiyon kartlarından sonra taşındı; grid kaybolduğunda footer/danışmanlık alanının koleksiyon listesi yerine geçmesi engellendi.
+- `snippets/A-g21-whatsapp-karti.liquid`: Heading hiyerarşisi h2 olarak düzeltildi ve WhatsApp link aria-label değeri bağlamlı/tutarlı yapıldı.
+- `snippets/A-g21-inline-stiller.liquid`: Mavi/siyah ham placeholder yerine lüks altın/siyah fallback eklendi; koleksiyon grid min-height ve kart ritmi güçlendirildi; eski localization/boş wrapper temizliği genişletildi.
+- `selam.txt`: GANGPT/TEMA bağlantı testi için kullanıcı talebiyle eklendi.
+Kalan risk: Canlı Shopify Markets/template atamaları ve GitHub push işlemi, ortamda GitHub kimlik bilgisi olmadığı sürece uzaktan doğrulanamaz.
+
+## 3 saniyelik hızlı video testi - 2026-06-28
+- `tools/browser_check.py`: `--quick-video`, `--url` ve `--duration` seçenekleri eklendi; tek URL için 3 saniyelik Playwright kayıt denemesi ve environment / explicit-proxy / proxy-bypass-target ağ stratejileri raporlanır.
+- Komut: `python tools/browser_check.py --quick-video --duration 3 --url https://gelinlik21.com.tr/collections`
+- Sonuç: Kod video kaydını başlattı ve yerel `.webm` denemeleri oluşturdu; canlı siteye bu Codex ortamından erişim `net::ERR_TUNNEL_CONNECTION_FAILED` ve `net::ERR_ADDRESS_UNREACHABLE` hatalarıyla engellendi.
+- Ulaşılabilir kaynak URL: `https://gelinlik21.com.tr/collections`; dışarıdan erişilebilir video URL'si üretilemedi çünkü ortamda GitHub/storage kimlik bilgisi ve dosya yayınlama servisine izin yok.
+- Yerel rapor: `browser_outputs/quick_3s_gelinlik21_com_tr_collections/quick_report.json`.
+
+## 3 saniyelik video dosyası oluşturma - 2026-06-28
+- `G21_3sn_video_kaydi.py`: Kullanıcı talimatıyla `https://gelinlik21.com.tr` için 3 saniyelik Chromium/Playwright video kaydı denemesi oluşturuldu.
+- Çıktı dosyası: `verification/gelinlik21-3sn-video.webm`.
+- Tam yol: `/workspace/TEMA/verification/gelinlik21-3sn-video.webm`.
+- Dosya boyutu: 6940 bytes.
+- Sonuç: Video dosyası oluştu; canlı site navigasyonu bu ortamda proxy/bypass hatasıyla başarısız olduğu için kayıt başarısız navigasyon kanıtıdır.
+
+## Web Bot Auth ile 3 saniyelik video denemesi - 2026-06-28
+- `G21_3sn_video_kaydi.py`: Web Bot Auth imzalarını repoya yazmadan `G21_SIGNATURE_INPUT`, `G21_SIGNATURE`, `G21_SIGNATURE_AGENT` ortam değişkenlerinden okuyacak şekilde güncellendi.
+- Komut: `G21_SIGNATURE_INPUT=... G21_SIGNATURE=... G21_SIGNATURE_AGENT='"https://shopify.com"' python G21_3sn_video_kaydi.py`.
+- Çıktı dosyası: `/workspace/TEMA/verification/gelinlik21-3sn-video.webm`.
+- Dosya boyutu: 7480 bytes.
+- Sonuç: Video dosyası oluştu; Web Bot Auth headerları Chromium context'e eklendi, fakat Codex ortamının HTTPS CONNECT/proxy katmanı canlı navigasyonu `net::ERR_TUNNEL_CONNECTION_FAILED` ile engelledi.
+
+## forcodex ayrımı ve Web Bot Auth doğrulaması - 2026-06-28
+- Codex test scriptleri, raporları ve doğrulama çıktıları tema klasörlerinden ayrılarak `forcodex/` altında toplandı.
+- Web Bot Auth domain-imza tanımları `forcodex/scripts/g21_web_bot_auth.py` dosyasına yazıldı.
+- HTTP test komutu: `python3 forcodex/scripts/g21_http_access_test.py`.
+- Playwright test komutu: `python3 forcodex/scripts/g21_playwright_video_test.py`.
+- Sonuç: Web Bot Auth headerları her public storefront isteğinde kullanıldı; Codex ortam proxy katmanı HTTPS CONNECT aşamasında 403/ERR_TUNNEL döndürdüğü için canlı site açılmadı. Video ve screenshot hata/engel ekranı kanıtı olarak `forcodex/` altında üretildi.

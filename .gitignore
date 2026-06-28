@@ -1,3 +1,18 @@
 # G21 browser proof videos are generated locally by tools/browser_check.py.
 # GitHub/Codex diff viewer does not support binary .webm files, so keep paths in JSON/TXT reports and do not commit videos.
 browser_outputs/**/*.webm
+# Codex verification binary artifacts live under forcodex and are regenerated locally.
+forcodex/videos/*.webm
+forcodex/screenshots/*.png
+# Local token/bootstrap files: never commit secrets or local auth helpers.
+kurulum.sh
+.codex-auth/
+
+# Root-level generated local verification artifacts.
+screenshots/*.png
+verification/*.png
+verification/*.webm
+reports/*.webm
+reports/*.png
+verification/screenshot_test.py
+screenshots/verification.png

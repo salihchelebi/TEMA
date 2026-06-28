@@ -1,0 +1,27 @@
+# Normalize all text files and keep generated/binary artifacts out of textual diffs.
+* text=auto eol=lf
+
+# Explicit text formats used by theme and Codex verification.
+*.liquid text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.log text eol=lf
+
+# Binary/media artifacts must not be rendered as text diffs.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg text eol=lf
+*.webm binary
+*.mp4 binary
+*.mov binary
+*.zip binary
+*.gz binary
+*.pdf binary
