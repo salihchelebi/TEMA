@@ -1,0 +1,469 @@
+{% liquid
+  assign products_per_page = section.settings.products_per_page | default: 48
+  assign sort = collection.sort_by | default: collection.default_sort_by | default: 'manual'
+  assign columns = section.settings.columns | default: 4
+  assign mobile_columns = section.settings.mobile_columns | default: '2'
+  assign section_id = 'nil-main-collection-' | append: section.id
+  assign full_width = false
+
+  if section.settings.section_width == 'full-width'
+    assign full_width = true
+  endif
+
+  assign heading_text = collection.title
+  if section.settings.use_custom_heading and section.settings.custom_heading != blank
+    assign heading_text = section.settings.custom_heading
+  endif
+
+  assign description_text = collection.description
+  if section.settings.use_custom_description and section.settings.custom_description != blank
+    assign description_text = section.settings.custom_description
+  endif
+
+  assign clean_whatsapp_number = section.settings.whatsapp_number | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')' | remove: '.'
+%}
+
+
+<section
+  id="{{ section_id }}"
+  class="nil-main-modern-collection color-{{ section.settings.color_scheme }}{% if full_width %} nil-main-modern-collection--full{% endif %}"
+  data-nil-main-collection="true"
+  data-section-id="{{ section.id }}"
+  data-hover-zoom="{{ section.settings.enable_image_hover_zoom }}"
+  style="
+    --nil-section-bg: {{ section.settings.page_background }};
+    --nil-section-text: {{ section.settings.section_text_color }};
+    --nil-section-max-width: {{ section.settings.container_width }}px;
+    --nil-section-padding-top: {{ section.settings.padding_top }}px;
+    --nil-section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --nil-section-padding-x: {{ section.settings.padding_x }}px;
+    --nil-active-grid-columns: {{ columns }};
+    --nil-mobile-grid-columns: {{ mobile_columns }};
+    --nil-grid-gap: {{ section.settings.grid_gap }}px;
+    --nil-control-bg: {{ section.settings.sort_bar_background }};
+    --nil-control-text: {{ section.settings.sort_bar_text_color }};
+    --nil-control-border: {{ section.settings.sort_bar_border_color }};
+    --nil-control-radius: {{ section.settings.sort_bar_radius }}px;
+    --nil-card-bg: {{ section.settings.card_background }};
+    --nil-card-text: {{ section.settings.card_text_color }};
+    --nil-card-border: {{ section.settings.card_border_color }};
+    --nil-card-radius: {{ section.settings.card_radius }}px;
+    --nil-card-padding: {{ section.settings.card_padding }}px;
+    --nil-image-bg: {{ section.settings.image_frame_background }};
+    --nil-image-border: {{ section.settings.image_border_color }};
+    --nil-image-radius: {{ section.settings.image_radius }}px;
+    --nil-image-padding: {{ section.settings.image_frame_padding }}px;
+    --nil-image-aspect: {{ section.settings.image_aspect_ratio }};
+    --nil-image-hover-scale: {{ section.settings.image_hover_zoom | divided_by: 100.0 }};
+    --nil-title-size: {{ section.settings.product_title_size }}px;
+    --nil-price-size: {{ section.settings.price_size }}px;
+    --nil-button-radius: {{ section.settings.button_radius }}px;
+    --nil-view-bg: {{ section.settings.view_button_background }};
+    --nil-view-text: {{ section.settings.view_button_text_color }};
+    --nil-whatsapp-bg: {{ section.settings.whatsapp_button_background }};
+    --nil-whatsapp-text: {{ section.settings.whatsapp_button_text_color }};
+  "
+>
+  <div class="nil-main-modern-collection__inner">
+    {% if section.settings.show_breadcrumb %}
+      <nav class="nil-main-modern-breadcrumb" aria-label="{{ section.settings.breadcrumb_aria_label | escape }}">
+        <a href="{{ routes.root_url }}">{{ section.settings.breadcrumb_home_label }}</a>
+        <span aria-hidden="true">{{ section.settings.breadcrumb_separator }}</span>
+        <a href="{{ routes.collections_url }}">{{ section.settings.breadcrumb_collections_label }}</a>
+        <span aria-hidden="true">{{ section.settings.breadcrumb_separator }}</span>
+        <span aria-current="page">{{ heading_text }}</span>
+      </nav>
+    {% endif %}
+
+    {% if section.settings.show_header %}
+      <header class="nil-main-modern-header nil-main-modern-header--{{ section.settings.header_alignment }}">
+        {% if section.settings.show_heading and heading_text != blank %}
+          <h1 class="nil-main-modern-header__title">{{ heading_text }}</h1>
+        {% endif %}
+
+        {% if section.settings.show_description and description_text != blank %}
+          <div class="nil-main-modern-header__description rte">{{ description_text }}</div>
+        {% endif %}
+
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'notice' %}
+              {% if block.settings.show_notice and block.settings.notice_text != blank %}
+                <div
+                  class="nil-main-modern-notice"
+                  style="--nil-notice-bg: {{ block.settings.notice_background }}; --nil-notice-text: {{ block.settings.notice_text_color }}; --nil-notice-border: {{ block.settings.notice_border_color }};"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.notice_text }}
+                </div>
+              {% endif %}
+            {% when 'trust_badge' %}
+              {% if block.settings.show_badge and block.settings.badge_text != blank %}
+                <div
+                  class="nil-main-modern-trust-badge"
+                  style="--nil-badge-bg: {{ block.settings.badge_background }}; --nil-badge-text: {{ block.settings.badge_text_color }}; --nil-badge-border: {{ block.settings.badge_border_color }};"
+                  {{ block.shopify_attributes }}
+                >
+                  {% if block.settings.badge_icon != blank %}
+                    <span class="nil-main-modern-trust-badge__icon" aria-hidden="true">{{ block.settings.badge_icon }}</span>
+                  {% endif %}
+                  <span>{{ block.settings.badge_text }}</span>
+                </div>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </header>
+    {% endif %}
+
+    {% if section.settings.show_sort_bar %}
+      <nav class="nil-premium-controls" aria-label="{{ section.settings.controls_aria_label | escape }}">
+        <div class="nil-premium-controls__heading">
+          {% if section.settings.show_sort_icon %}
+            <span class="nil-premium-controls__icon" aria-hidden="true">{{ section.settings.sort_icon_text }}</span>
+          {% endif %}
+          <strong>{{ section.settings.sort_bar_heading }}</strong>
+        </div>
+
+        <div class="nil-premium-controls__scroll">
+          {% if section.settings.show_sort_links %}
+            <div class="nil-premium-sort" aria-label="{{ section.settings.sort_aria_label | escape }}">
+              <span>{{ section.settings.sort_label }}</span>
+              {% assign sort_options = 'manual|sort_featured_label,best-selling|sort_best_seller_label,title-ascending|sort_az_label,title-descending|sort_za_label,price-ascending|sort_price_low_label,price-descending|sort_price_high_label,created-descending|sort_newest_label,created-ascending|sort_oldest_label' | split: ',' %}
+              {% for item in sort_options %}
+                {% assign parts = item | split: '|' %}
+                {% assign sort_value = parts[0] %}
+                {% assign label_key = parts[1] %}
+                <a
+                  href="{{ collection.url }}?sort_by={{ sort_value }}"
+                  data-nil-sort-link
+                  data-sort-value="{{ sort_value }}"
+                  class="nil-premium-sort__link{% if sort == sort_value %} is-active{% endif %}"
+                  {% if sort == sort_value %}aria-current="true"{% endif %}
+                >
+                  {{ section.settings[label_key] }}
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if section.settings.show_column_selector %}
+            <div class="nil-grid-selector" aria-label="{{ section.settings.columns_aria_label | escape }}" data-nil-grid-selector>
+              <span>{{ section.settings.columns_label }}</span>
+              {% for c in (2..5) %}
+                <button
+                  type="button"
+                  data-nil-grid-btn
+                  data-cols="{{ c }}"
+                  class="nil-grid-selector__button{% if columns == c %} is-active{% endif %}"
+                  aria-label="{{ c }} {{ section.settings.columns_button_suffix | escape }}"
+                  aria-pressed="{% if columns == c %}true{% else %}false{% endif %}"
+                >
+                  {{ c }}
+                </button>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if section.settings.show_product_count %}
+            <div class="nil-main-modern-product-count" aria-label="{{ section.settings.product_count_aria_label | escape }}">
+              <span>{{ collection.products_count }}</span>
+              <span>{{ section.settings.product_count_suffix }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </nav>
+    {% endif %}
+
+    <div class="nil-main-modern-grid-shell" data-nil-product-grid-container>
+      {% paginate collection.products by products_per_page %}
+        {% if collection.products.size > 0 %}
+          <ul class="nil-main-modern-grid" data-nil-product-grid role="list">
+            {% for product in collection.products %}
+              {% liquid
+                assign product_url = product.url
+                assign full_product_url = shop.url | append: product.url
+                assign image_alt = product.featured_media.alt | default: product.title
+                assign price_value = product.price_min | money_without_currency
+                assign price_has_range = false
+                if product.price_varies or product.price_min != product.price_max
+                  assign price_has_range = true
+                endif
+                assign whatsapp_message = section.settings.whatsapp_message_prefix
+                if section.settings.whatsapp_include_product_title
+                  assign whatsapp_message = whatsapp_message | append: ' ' | append: product.title
+                endif
+                if section.settings.whatsapp_include_product_url
+                  assign whatsapp_message = whatsapp_message | append: ' - ' | append: full_product_url
+                endif
+                assign encoded_whatsapp_message = whatsapp_message | strip | url_encode
+                assign whatsapp_href = 'https://wa.me/' | append: clean_whatsapp_number | append: '?text=' | append: encoded_whatsapp_message
+              %}
+
+              <li class="nil-main-modern-grid__item">
+                <article class="nil-main-modern-card">
+                  <a class="nil-main-modern-card__media" href="{{ product_url }}" aria-label="{{ section.settings.product_image_link_aria_prefix | escape }} {{ product.title | escape }}">
+                    {% if section.settings.show_badge and section.settings.badge_text != blank %}
+                      <span class="nil-main-modern-card__badge">{{ section.settings.badge_text }}</span>
+                    {% endif %}
+
+                    {% if section.settings.show_favorite_icon %}
+                      <span class="nil-main-modern-card__favorite" aria-hidden="true">{{ section.settings.favorite_icon_text }}</span>
+                    {% endif %}
+
+                    {% if product.featured_media.preview_image %}
+                      {{ product.featured_media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,540,720,900,1200', sizes: '(min-width: 1400px) 20vw, (min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw', alt: image_alt }}
+                    {% else %}
+                      <span class="nil-main-modern-card__placeholder">{{ section.settings.placeholder_text }}</span>
+                    {% endif %}
+                  </a>
+
+                  <div class="nil-main-modern-card__body">
+                    {% if section.settings.show_product_title %}
+                      <a class="nil-main-modern-card__title" href="{{ product_url }}">{{ product.title }}</a>
+                    {% endif %}
+
+                    {% if section.settings.show_product_price %}
+                      <span class="nil-main-modern-card__price">
+                        {% if section.settings.show_price_prefix and price_has_range %}
+                          <span>{{ section.settings.price_prefix }}</span>
+                        {% elsif section.settings.show_price_prefix_for_all %}
+                          <span>{{ section.settings.price_prefix }}</span>
+                        {% endif %}
+                        <span>{{ section.settings.price_currency_symbol }}{{ price_value }}</span>
+                      </span>
+                    {% endif %}
+
+                    {% if section.settings.show_view_button %}
+                      <a class="nil-main-modern-card__button nil-main-modern-card__button--view" href="{{ product_url }}">
+                        {{ section.settings.view_button_label }}
+                      </a>
+                    {% endif %}
+
+                    {% if section.settings.show_whatsapp_button and clean_whatsapp_number != blank %}
+                      <a
+                        class="nil-main-modern-card__button nil-main-modern-card__button--whatsapp"
+                        href="{{ whatsapp_href }}"
+                        {% if section.settings.whatsapp_open_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+                        aria-label="{{ section.settings.whatsapp_aria_label | escape }} {{ product.title | escape }}"
+                      >
+                        {% if section.settings.show_whatsapp_icon %}
+                          <span class="nil-main-modern-whatsapp-icon" aria-hidden="true">
+                            <svg viewBox="0 0 32 32" focusable="false" role="presentation">
+                              <path d="M16.02 3.2c-6.95 0-12.6 5.46-12.6 12.18 0 2.16.6 4.27 1.73 6.12L3.2 28.8l7.5-1.9a12.9 12.9 0 0 0 5.32 1.14c6.95 0 12.6-5.46 12.6-12.18S22.97 3.2 16.02 3.2Zm0 22.74c-1.74 0-3.45-.43-4.95-1.26l-.36-.2-4.45 1.13 1.16-4.24-.24-.39a10.2 10.2 0 0 1-1.6-5.6c0-5.56 4.69-10.08 10.44-10.08s10.44 4.52 10.44 10.08-4.69 10.56-10.44 10.56Zm5.74-7.55c-.31-.15-1.84-.88-2.13-.98-.29-.1-.5-.15-.71.15-.21.29-.82.98-1 .18-.18.2-.37.22-.68.07-.31-.15-1.3-.47-2.47-1.47-.91-.79-1.53-1.75-1.71-2.05-.18-.29-.02-.45.13-.6.14-.13.31-.34.47-.51.16-.17.21-.29.31-.49.1-.2.05-.37-.03-.52-.08-.15-.71-1.66-.98-2.28-.26-.6-.52-.52-.71-.53h-.6c-.21 0-.55.08-.84.37-.29.29-1.1 1.05-1.1 2.55 0 1.5 1.13 2.95 1.29 3.15.16.2 2.23 3.3 5.4 4.62.75.31 1.34.5 1.8.64.76.23 1.45.2 1.99.12.61-.09 1.84-.73 2.1-1.43.26-.7.26-1.3.18-1.43-.08-.13-.29-.21-.6-.36Z" fill="currentColor"/>
+                            </svg>
+                          </span>
+                        {% endif %}
+                        <span>{{ section.settings.whatsapp_button_label }}</span>
+                      </a>
+                    {% endif %}
+                  </div>
+                </article>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          {% if section.settings.show_empty_state %}
+            <div class="nil-main-modern-empty" data-nil-filter-empty>
+              {% if section.settings.empty_state_icon != blank %}
+                <div class="nil-main-modern-empty__icon" aria-hidden="true">{{ section.settings.empty_state_icon }}</div>
+              {% endif %}
+              <h2>{{ section.settings.empty_state_heading }}</h2>
+              <p>{{ section.settings.empty_state_text }}</p>
+              {% if section.settings.empty_state_button_label != blank %}
+                <a href="{{ section.settings.empty_state_button_link | default: routes.collections_url }}">{{ section.settings.empty_state_button_label }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {% if section.settings.show_pagination and paginate.pages > 1 %}
+          <nav class="nil-main-modern-pagination" aria-label="{{ section.settings.pagination_aria_label | escape }}">
+            {% if paginate.previous %}
+              <a class="nil-main-modern-pagination__link" href="{{ paginate.previous.url }}">
+                {% if section.settings.show_pagination_arrows %}<span aria-hidden="true">{{ section.settings.previous_icon }}</span>{% endif %}
+                <span>{{ section.settings.previous_label }}</span>
+              </a>
+            {% endif %}
+
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a class="nil-main-modern-pagination__number" href="{{ part.url }}">{{ part.title }}</a>
+              {% else %}
+                <span class="nil-main-modern-pagination__number is-active" {% if part.title == paginate.current_page %}aria-current="page"{% endif %}>{{ part.title }}</span>
+              {% endif %}
+            {% endfor %}
+
+            {% if paginate.next %}
+              <a class="nil-main-modern-pagination__link" href="{{ paginate.next.url }}">
+                <span>{{ section.settings.next_label }}</span>
+                {% if section.settings.show_pagination_arrows %}<span aria-hidden="true">{{ section.settings.next_icon }}</span>{% endif %}
+              </a>
+            {% endif %}
+          </nav>
+        {% endif %}
+      {% endpaginate %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "NIL Collection Main",
+  "tag": "section",
+  "class": "section-nil-main-collection",
+  "templates": ["collection"],
+  "settings": [
+    { "type": "header", "content": "Language and content" },
+    { "type": "checkbox", "id": "show_breadcrumb", "label": "Show breadcrumb", "default": true },
+    { "type": "text", "id": "breadcrumb_aria_label", "label": "Breadcrumb aria label", "default": "Breadcrumb" },
+    { "type": "text", "id": "breadcrumb_home_label", "label": "Breadcrumb home label", "default": "Home" },
+    { "type": "text", "id": "breadcrumb_collections_label", "label": "Breadcrumb collections label", "default": "Collections" },
+    { "type": "text", "id": "breadcrumb_separator", "label": "Breadcrumb separator", "default": "›" },
+    { "type": "checkbox", "id": "show_header", "label": "Show collection header", "default": true },
+    { "type": "checkbox", "id": "show_heading", "label": "Show heading", "default": true },
+    { "type": "checkbox", "id": "use_custom_heading", "label": "Use custom heading", "default": false },
+    { "type": "text", "id": "custom_heading", "label": "Custom heading", "default": "Wedding Dresses" },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "checkbox", "id": "use_custom_description", "label": "Use custom description", "default": false },
+    { "type": "richtext", "id": "custom_description", "label": "Custom description", "default": "<p>Discover timeless bridal gowns designed for elegance and unforgettable moments.</p>" },
+    { "type": "select", "id": "header_alignment", "label": "Header alignment", "options": [{ "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" }], "default": "left" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "color", "id": "page_background", "label": "Page background", "default": "#fffaf2" },
+    { "type": "color", "id": "section_text_color", "label": "Section text color", "default": "#1f1812" },
+    { "type": "select", "id": "section_width", "label": "Section width", "options": [{ "value": "page-width", "label": "Page width" }, { "value": "full-width", "label": "Full width" }], "default": "page-width" },
+    { "type": "range", "id": "container_width", "label": "Container width", "min": 960, "max": 1800, "step": 20, "unit": "px", "default": 1640 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "range", "id": "columns", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "select", "id": "mobile_columns", "label": "Mobile columns", "options": [{ "value": "1", "label": "1" }, { "value": "2", "label": "2" }], "default": "2" },
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 48 },
+    { "type": "range", "id": "grid_gap", "label": "Grid gap", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 22 },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_x", "label": "Horizontal padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Sort and view bar" },
+    { "type": "checkbox", "id": "show_sort_bar", "label": "Show Sort & View bar", "default": true },
+    { "type": "text", "id": "controls_aria_label", "label": "Controls aria label", "default": "Collection controls" },
+    { "type": "text", "id": "sort_bar_heading", "label": "Sort bar heading", "default": "Sort & View" },
+    { "type": "checkbox", "id": "show_sort_icon", "label": "Show sort icon", "default": true },
+    { "type": "text", "id": "sort_icon_text", "label": "Sort icon text", "default": "☰" },
+    { "type": "checkbox", "id": "show_sort_links", "label": "Show sort links", "default": true },
+    { "type": "text", "id": "sort_aria_label", "label": "Sort aria label", "default": "Sort products" },
+    { "type": "text", "id": "sort_label", "label": "Sort label", "default": "Sort by:" },
+    { "type": "text", "id": "sort_featured_label", "label": "Featured label", "default": "Featured" },
+    { "type": "text", "id": "sort_best_seller_label", "label": "Best seller label", "default": "Best Seller" },
+    { "type": "text", "id": "sort_az_label", "label": "A-Z label", "default": "A-Z" },
+    { "type": "text", "id": "sort_za_label", "label": "Z-A label", "default": "Z-A" },
+    { "type": "text", "id": "sort_price_low_label", "label": "Price low label", "default": "Price Low" },
+    { "type": "text", "id": "sort_price_high_label", "label": "Price high label", "default": "Price High" },
+    { "type": "text", "id": "sort_newest_label", "label": "Newest label", "default": "Newest" },
+    { "type": "text", "id": "sort_oldest_label", "label": "Oldest label", "default": "Oldest" },
+    { "type": "checkbox", "id": "show_column_selector", "label": "Show column selector", "default": true },
+    { "type": "text", "id": "columns_label", "label": "Columns label", "default": "Columns:" },
+    { "type": "text", "id": "columns_aria_label", "label": "Columns aria label", "default": "Product grid columns" },
+    { "type": "text", "id": "columns_button_suffix", "label": "Column button suffix", "default": "columns" },
+    { "type": "checkbox", "id": "show_product_count", "label": "Show product count", "default": true },
+    { "type": "text", "id": "product_count_suffix", "label": "Product count suffix", "default": "products" },
+    { "type": "text", "id": "product_count_aria_label", "label": "Product count aria label", "default": "Product count" },
+    { "type": "color", "id": "sort_bar_background", "label": "Sort bar background", "default": "#17120d" },
+    { "type": "color", "id": "sort_bar_text_color", "label": "Sort bar text color", "default": "#ffffff" },
+    { "type": "color", "id": "sort_bar_border_color", "label": "Sort bar border color", "default": "#d9b878" },
+    { "type": "range", "id": "sort_bar_radius", "label": "Sort bar border radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 18 },
+
+    { "type": "header", "content": "Product card" },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_text_color", "label": "Card text color", "default": "#1f1812" },
+    { "type": "color", "id": "card_border_color", "label": "Card border color", "default": "#ead6ad" },
+    { "type": "range", "id": "card_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 20 },
+    { "type": "range", "id": "card_padding", "label": "Card body padding", "min": 8, "max": 36, "step": 1, "unit": "px", "default": 14 },
+    { "type": "checkbox", "id": "show_product_title", "label": "Show product title", "default": true },
+    { "type": "range", "id": "product_title_size", "label": "Product title size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "checkbox", "id": "show_product_price", "label": "Show product price", "default": true },
+    { "type": "range", "id": "price_size", "label": "Price size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "text", "id": "price_prefix", "label": "Price prefix", "default": "From" },
+    { "type": "checkbox", "id": "show_price_prefix", "label": "Show prefix only when price varies", "default": true },
+    { "type": "checkbox", "id": "show_price_prefix_for_all", "label": "Show prefix for all products", "default": true },
+    { "type": "text", "id": "price_currency_symbol", "label": "Currency symbol", "default": "$" },
+
+    { "type": "header", "content": "Product image" },
+    { "type": "text", "id": "product_image_link_aria_prefix", "label": "Product image link aria prefix", "default": "View" },
+    { "type": "select", "id": "image_aspect_ratio", "label": "Image aspect ratio", "options": [{ "value": "3 / 4", "label": "3:4" }, { "value": "4 / 5", "label": "4:5" }, { "value": "1 / 1", "label": "1:1" }], "default": "3 / 4" },
+    { "type": "color", "id": "image_frame_background", "label": "Image frame background", "default": "#fff8ee" },
+    { "type": "color", "id": "image_border_color", "label": "Image border color", "default": "#ead6ad" },
+    { "type": "range", "id": "image_radius", "label": "Image border radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "image_frame_padding", "label": "Image frame padding", "min": 0, "max": 18, "step": 1, "unit": "px", "default": 4 },
+    { "type": "checkbox", "id": "enable_image_hover_zoom", "label": "Enable image hover zoom", "default": true },
+    { "type": "range", "id": "image_hover_zoom", "label": "Image hover zoom", "min": 100, "max": 130, "step": 1, "unit": "%", "default": 106 },
+    { "type": "text", "id": "placeholder_text", "label": "Placeholder text", "default": "Image coming soon" },
+    { "type": "checkbox", "id": "show_badge", "label": "Show card badge", "default": false },
+    { "type": "text", "id": "badge_text", "label": "Card badge text", "default": "New" },
+    { "type": "checkbox", "id": "show_favorite_icon", "label": "Show favorite icon", "default": true },
+    { "type": "text", "id": "favorite_icon_text", "label": "Favorite icon", "default": "♡" },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "range", "id": "button_radius", "label": "Button border radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 8 },
+    { "type": "checkbox", "id": "show_view_button", "label": "Show View Dress button", "default": true },
+    { "type": "text", "id": "view_button_label", "label": "View button label", "default": "View Dress" },
+    { "type": "color", "id": "view_button_background", "label": "View button background", "default": "#111111" },
+    { "type": "color", "id": "view_button_text_color", "label": "View button text color", "default": "#ffffff" },
+    { "type": "checkbox", "id": "show_whatsapp_button", "label": "Show WhatsApp button", "default": true },
+    { "type": "text", "id": "whatsapp_button_label", "label": "WhatsApp button label", "default": "Chat Now" },
+    { "type": "text", "id": "whatsapp_aria_label", "label": "WhatsApp aria label", "default": "Chat on WhatsApp about" },
+    { "type": "text", "id": "whatsapp_number", "label": "WhatsApp phone number", "default": "905334619373" },
+    { "type": "text", "id": "whatsapp_message_prefix", "label": "WhatsApp message prefix", "default": "Hello, I would like information about this wedding dress:" },
+    { "type": "checkbox", "id": "whatsapp_include_product_title", "label": "Include product title in WhatsApp message", "default": true },
+    { "type": "checkbox", "id": "whatsapp_include_product_url", "label": "Include product URL in WhatsApp message", "default": true },
+    { "type": "checkbox", "id": "whatsapp_open_new_tab", "label": "Open WhatsApp in new tab", "default": true },
+    { "type": "checkbox", "id": "show_whatsapp_icon", "label": "Show WhatsApp icon", "default": true },
+    { "type": "color", "id": "whatsapp_button_background", "label": "WhatsApp button background", "default": "#249b3d" },
+    { "type": "color", "id": "whatsapp_button_text_color", "label": "WhatsApp button text color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Pagination and empty state" },
+    { "type": "checkbox", "id": "show_pagination", "label": "Show pagination", "default": true },
+    { "type": "text", "id": "pagination_aria_label", "label": "Pagination aria label", "default": "Pagination" },
+    { "type": "text", "id": "previous_label", "label": "Previous label", "default": "Previous" },
+    { "type": "text", "id": "next_label", "label": "Next label", "default": "Next" },
+    { "type": "checkbox", "id": "show_pagination_arrows", "label": "Show pagination arrows", "default": true },
+    { "type": "text", "id": "previous_icon", "label": "Previous icon", "default": "‹" },
+    { "type": "text", "id": "next_icon", "label": "Next icon", "default": "›" },
+    { "type": "checkbox", "id": "show_empty_state", "label": "Show empty state", "default": true },
+    { "type": "text", "id": "empty_state_icon", "label": "Empty state icon", "default": "○" },
+    { "type": "text", "id": "empty_state_heading", "label": "Empty state heading", "default": "No products found" },
+    { "type": "text", "id": "empty_state_text", "label": "Empty state text", "default": "This collection does not contain products yet." },
+    { "type": "text", "id": "empty_state_button_label", "label": "Empty state button label", "default": "View Collections" },
+    { "type": "url", "id": "empty_state_button_link", "label": "Empty state button link" }
+  ],
+  "blocks": [
+    {
+      "type": "notice",
+      "name": "Editable notice",
+      "settings": [
+        { "type": "checkbox", "id": "show_notice", "label": "Show notice", "default": true },
+        { "type": "richtext", "id": "notice_text", "label": "Notice text", "default": "<p>Book a private bridal consultation for personalized support.</p>" },
+        { "type": "color", "id": "notice_background", "label": "Notice background", "default": "#fff8ee" },
+        { "type": "color", "id": "notice_text_color", "label": "Notice text color", "default": "#1f1812" },
+        { "type": "color", "id": "notice_border_color", "label": "Notice border color", "default": "#ead6ad" }
+      ]
+    },
+    {
+      "type": "trust_badge",
+      "name": "Trust badge",
+      "settings": [
+        { "type": "checkbox", "id": "show_badge", "label": "Show badge", "default": true },
+        { "type": "text", "id": "badge_icon", "label": "Badge icon", "default": "✓" },
+        { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Worldwide shipping" },
+        { "type": "color", "id": "badge_background", "label": "Badge background", "default": "#fff8ee" },
+        { "type": "color", "id": "badge_text_color", "label": "Badge text color", "default": "#1f1812" },
+        { "type": "color", "id": "badge_border_color", "label": "Badge border color", "default": "#ead6ad" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NIL Collection Main"
+    }
+  ]
+}
+{% endschema %}

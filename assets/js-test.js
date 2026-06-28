@@ -1,0 +1,1 @@
+(()=>{let s=document.createElement('script');s.src='/test.js';document.head.appendChild(s)})();

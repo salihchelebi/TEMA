@@ -1,0 +1,98 @@
+{% doc %}
+  NIL editor-managed product accordion block.
+{% enddoc %}
+
+{% liquid
+  assign nil_product = closest.product | default: product
+  if request.visual_preview_mode and nil_product == blank
+    assign nil_product = collections.all.products.first
+  endif
+
+  assign icon_description = block.settings.icon_description | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-25-info-icon-bilgi-aciklama-alani-icin.png?v=1781505374'
+  assign icon_delivery = block.settings.icon_delivery | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-32-international-shipping-icon-yurtdisi-kargo-icin.png?v=1781505374'
+  assign icon_returns = block.settings.icon_returns | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-24-check-icon-secim-onay-isareti-icin.png?v=1781505374'
+  assign icon_size = block.settings.icon_size | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-28-size-guide-icon-beden-tablosu-linki-icin.png?v=1781505374'
+  assign icon_care = block.settings.icon_care | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-30-fabric-icon-kumas-detayi-vurgusu-icin.png?v=1781505375'
+
+  assign description_source = block.settings.description_content_source | default: 'product_description'
+  assign custom_description = block.settings.description_content | strip
+  assign custom_description_is_empty = false
+  if custom_description == blank or custom_description == '<p></p>' or custom_description == '<p><br></p>'
+    assign custom_description_is_empty = true
+  endif
+%}
+
+{% if nil_product != blank %}
+  <div class="nil-v77-accordion" aria-label="{{ block.settings.aria_label | escape }}" data-nil-product-accordion {{ block.shopify_attributes }}>
+    <details class="nil-v77-accordion__item" {% if block.settings.open_description %}open{% endif %}>
+      <summary><span class="nil-v77-accordion__icon"><img src="{{ icon_description }}" alt="" loading="lazy" width="28" height="28"></span><span>{{ block.settings.description_title }}</span><b aria-hidden="true">+</b></summary>
+      <div class="nil-v77-accordion__content rte">
+        {% if description_source == 'custom' and custom_description_is_empty == false %}
+          {{ block.settings.description_content }}
+        {% elsif nil_product.description != blank %}
+          {{ nil_product.description }}
+        {% else %}
+          <p>Elegant bridal design crafted with premium fabrics, refined details and a made-to-order finish.</p>
+        {% endif %}
+      </div>
+    </details>
+    <details class="nil-v77-accordion__item" {% if block.settings.open_delivery %}open{% endif %}>
+      <summary><span class="nil-v77-accordion__icon"><img src="{{ icon_delivery }}" alt="" loading="lazy" width="28" height="28"></span><span>{{ block.settings.delivery_title }}</span><b aria-hidden="true">+</b></summary>
+      <div class="nil-v77-accordion__content rte">{{ block.settings.delivery_content }}</div>
+    </details>
+    <details class="nil-v77-accordion__item" {% if block.settings.open_returns %}open{% endif %}>
+      <summary><span class="nil-v77-accordion__icon"><img src="{{ icon_returns }}" alt="" loading="lazy" width="28" height="28"></span><span>{{ block.settings.returns_title }}</span><b aria-hidden="true">+</b></summary>
+      <div class="nil-v77-accordion__content rte">{{ block.settings.returns_content }}</div>
+    </details>
+    <details id="nil-v77-size-help" class="nil-v77-accordion__item" {% if block.settings.open_size %}open{% endif %}>
+      <summary><span class="nil-v77-accordion__icon"><img src="{{ icon_size }}" alt="" loading="lazy" width="28" height="28"></span><span>{{ block.settings.size_title }}</span><b aria-hidden="true">+</b></summary>
+      <div class="nil-v77-accordion__content rte">{{ block.settings.size_content }}</div>
+    </details>
+    <details class="nil-v77-accordion__item" {% if block.settings.open_care %}open{% endif %}>
+      <summary><span class="nil-v77-accordion__icon"><img src="{{ icon_care }}" alt="" loading="lazy" width="28" height="28"></span><span>{{ block.settings.care_title }}</span><b aria-hidden="true">+</b></summary>
+      <div class="nil-v77-accordion__content rte">{{ block.settings.care_content }}</div>
+    </details>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "NIL Product Accordion",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "aria_label", "label": "Aria label", "default": "Product help sections" },
+    { "type": "text", "id": "description_title", "label": "Description title", "default": "Description" },
+    {
+      "type": "select",
+      "id": "description_content_source",
+      "label": "Description content source",
+      "options": [
+        { "value": "product_description", "label": "Product description automatic" },
+        { "value": "custom", "label": "Custom editor text" }
+      ],
+      "default": "product_description"
+    },
+    { "type": "richtext", "id": "description_content", "label": "Custom description content" },
+    { "type": "checkbox", "id": "open_description", "label": "Open description by default", "default": false },
+    { "type": "text", "id": "delivery_title", "label": "Delivery title", "default": "Delivery" },
+    { "type": "richtext", "id": "delivery_content", "label": "Delivery content", "default": "<p>Worldwide delivery is available. Final timing depends on production, customization and destination country.</p>" },
+    { "type": "checkbox", "id": "open_delivery", "label": "Open delivery by default", "default": false },
+    { "type": "text", "id": "returns_title", "label": "Returns title", "default": "Returns" },
+    { "type": "richtext", "id": "returns_content", "label": "Returns content", "default": "<p>Please contact our bridal stylist before ordering for size and customization confirmation.</p>" },
+    { "type": "checkbox", "id": "open_returns", "label": "Open returns by default", "default": false },
+    { "type": "text", "id": "size_title", "label": "Size title", "default": "Size Help" },
+    { "type": "richtext", "id": "size_content", "label": "Size content", "default": "<p>For the best fit, choose your regular bridal size or use Custom Size to share exact measurements.</p>" },
+    { "type": "checkbox", "id": "open_size", "label": "Open size help by default", "default": false },
+    { "type": "text", "id": "care_title", "label": "Care title", "default": "Care Instructions" },
+    { "type": "richtext", "id": "care_content", "label": "Care content", "default": "<p>Professional bridal dry cleaning is recommended. Store in a breathable garment bag away from moisture and direct sunlight.</p>" },
+    { "type": "checkbox", "id": "open_care", "label": "Open care by default", "default": false },
+    { "type": "header", "content": "Icon CDN URLs" },
+    { "type": "url", "id": "icon_description", "label": "Description icon URL" },
+    { "type": "url", "id": "icon_delivery", "label": "Delivery icon URL" },
+    { "type": "url", "id": "icon_returns", "label": "Returns icon URL" },
+    { "type": "url", "id": "icon_size", "label": "Size icon URL" },
+    { "type": "url", "id": "icon_care", "label": "Care icon URL" }
+  ],
+  "presets": [{ "name": "NIL Product Accordion", "category": "t:categories.product" }]
+}
+{% endschema %}

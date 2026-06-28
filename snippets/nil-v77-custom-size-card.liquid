@@ -1,0 +1,42 @@
+{% comment %} NIL V77 — Premium custom size card, lightweight CSS + CDN icon only. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+  assign nil_title = 'Custom Size'
+  assign nil_subtitle = 'Personalized measurements. Tailored to perfection.'
+  assign nil_phone = section.settings.nil_v30_whatsapp_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign nil_message = 'Hello, I want to enter my own measurements for:'
+  if nil_product != blank
+    assign nil_url = shop.url | append: nil_product.url
+    assign nil_wa_text = nil_message | append: ' ' | append: nil_product.title | append: ' ' | append: nil_url
+  else
+    assign nil_wa_text = nil_message
+  endif
+%}
+{% if nil_product != blank %}
+  <a
+    class="nil-v77-custom-size-card"
+    href="https://wa.me/{{ nil_phone }}?text={{ nil_wa_text | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Custom size measurements"
+  >
+    <span class="nil-v77-custom-size-card__icon" aria-hidden="true">
+      <img
+        src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-16-custom-size-ikon-kendi-olcum-girme-icin.png?v=1781505373"
+        alt=""
+        width="72"
+        height="72"
+        loading="lazy"
+      >
+    </span>
+    <span class="nil-v77-custom-size-card__copy">
+      <small>MADE FOR YOU, PERFECT IN EVERY WAY</small>
+      <strong>{{ nil_title }}</strong>
+      <em>{{ nil_subtitle }}</em>
+    </span>
+    <span class="nil-v77-custom-size-card__button" aria-hidden="true">
+      <b>GET STARTED</b>
+      <small>It's free & easy</small>
+    </span>
+  </a>
+{% endif %}

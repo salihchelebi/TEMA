@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="nil-i-length" viewBox="0 0 24 24"><path d="M8 3h8M12 3v18M9 21h6M10 7h4M10 12h4M10 17h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="nil-i-silhouette" viewBox="0 0 24 24"><path d="M12 3c2 2 3 4 2 7 2 4 4 7 3 11H7c-1-4 1-7 3-11-1-3 0-5 2-7z" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="nil-i-neckline" viewBox="0 0 24 24"><path d="M6 4c2 2 4 3 6 3s4-1 6-3l1 6-3 11H8L5 10z" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="nil-i-sleeves" viewBox="0 0 24 24"><path d="M7 4l5 3 5-3 4 6-3 2-2-3v12H8V9l-2 3-3-2z" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="nil-i-price" viewBox="0 0 24 24"><path d="M4 11V4h7l9 9-7 7z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="nil-i-fabric" viewBox="0 0 24 24"><path d="M4 6c5-3 11 3 16 0v12c-5 3-11-3-16 0z" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="nil-i-heart" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="nil-i-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+</svg>

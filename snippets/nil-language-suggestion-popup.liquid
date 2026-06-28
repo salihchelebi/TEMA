@@ -1,0 +1,50 @@
+{% if settings.nil_language_suggestion_enabled %}
+<div class="nil-language-suggestion" data-nil-language-suggestion data-country="{{ localization.country.iso_code }}" data-current-language="{{ localization.language.iso_code }}">
+  <strong data-nil-lang-title>Language suggestion</strong>
+  <p data-nil-lang-copy>We can show this store in a better language for your region.</p>
+  <div class="nil-language-suggestion__actions">
+    {% form 'localization', id: 'NilLanguageSuggestionForm' %}
+      <input type="hidden" name="language_code" data-nil-language-code value="{{ localization.language.iso_code }}">
+      <button type="submit" data-nil-lang-accept>Switch language</button>
+    {% endform %}
+    <button type="button" data-nil-lang-dismiss>Keep current</button>
+  </div>
+</div>
+{% endif %}
+
+{{ 'nil-top-language-v8.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'nil-language-selector-v8.js' | asset_url }}" defer></script>
+
+{% if product %}
+  {% assign nil_nav_collection = collection %}
+  {% if nil_nav_collection == blank and product.collections.size > 0 %}
+    {% assign nil_nav_collection = product.collections.first %}
+  {% endif %}
+  <script>
+    window.NIL_PRODUCT_NAV_CONTEXT = {
+      productHandle: {{ product.handle | json }},
+      collectionTitle: {% if nil_nav_collection %}{{ nil_nav_collection.title | json }}{% else %}null{% endif %},
+      collectionUrl: {% if nil_nav_collection %}{{ nil_nav_collection.url | json }}{% else %}"/collections/lace-wedding-dresses"{% endif %}
+    };
+  </script>
+  {{ 'nil-product-nav-fix-v1.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'nil-product-nav-fix-v1.js' | asset_url }}" defer></script>
+{% endif %}
+
+<style>
+@media(max-width:749px){
+  html,body{max-width:100%!important;overflow-x:hidden!important}
+  body{padding-bottom:76px!important}
+  #header-group,.header-section,#header-component,#header-component .header__row,#header-component .header__columns{max-width:100vw!important;overflow:visible!important}
+  #header-component .header__columns{position:relative!important}
+  #header-component a[href*="wa.me"]{width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;border-radius:50%!important;overflow:hidden!important;font-size:0!important;letter-spacing:0!important;white-space:nowrap!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+  #header-component a[href*="wa.me"] *{display:none!important}
+  #header-component a[href*="wa.me"]:before{content:'☎'!important;font-size:17px!important;line-height:1!important}
+  .nil-floating-wa{left:12px!important;right:12px!important;bottom:max(10px,calc(env(safe-area-inset-bottom) + 10px))!important;width:auto!important;min-width:0!important;min-height:56px!important;border-radius:18px!important;padding:11px 16px!important;gap:8px!important}
+  .header__navigation-bar-row,.header__navigation-bar-row *{scrollbar-width:none!important}
+  .header__navigation-bar-row::-webkit-scrollbar,.header__navigation-bar-row *::-webkit-scrollbar{display:none!important}
+  .header__navigation-bar-row{max-width:100vw!important;overflow-x:auto!important;overflow-y:hidden!important}
+  .header__navigation-bar-row a,.header__navigation-bar-row button{font-size:12px!important;letter-spacing:.14em!important;white-space:nowrap!important}
+}
+@media(max-width:390px){.nil-wa-sub{display:none!important}}
+</style>

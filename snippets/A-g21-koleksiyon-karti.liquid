@@ -1,0 +1,40 @@
+{%- comment -%}
+A-G21 tekrar kullanılabilir koleksiyon kartı. Parametre: collection, g21_index, g21_cta.
+{%- endcomment -%}
+{%- liquid
+  assign g21_collection = collection
+  assign g21_cta_text = g21_cta | default: 'View Collection'
+  assign g21_index_value = g21_index | default: 1
+  assign g21_loading = 'lazy'
+  if g21_index_value == 1
+    assign g21_loading = 'eager'
+  endif
+-%}
+{%- if g21_collection != blank -%}
+  {%- liquid
+    assign g21_card_image = blank
+    if g21_collection.image != blank
+      assign g21_card_image = g21_collection.image
+    elsif g21_collection.products.first.featured_image != blank
+      assign g21_card_image = g21_collection.products.first.featured_image
+    endif
+  -%}
+  <article class="a-g21-koleksiyon-karti" data-a-g21-collection-card="true">
+    <a class="a-g21-koleksiyon-karti__link" href="{{ g21_collection.url }}" aria-label="{{ g21_cta_text | escape }}: {{ g21_collection.title | escape }}">
+      <span class="a-g21-koleksiyon-karti__gorsel-kutu">
+        {%- if g21_card_image != blank -%}
+          {{ g21_card_image | image_url: width: 900 | image_tag: loading: g21_loading, widths: '320, 480, 640, 900', sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw', alt: g21_collection.title, class: 'a-g21-koleksiyon-karti__gorsel' }}
+        {%- else -%}
+          <span class="a-g21-koleksiyon-karti__placeholder" aria-hidden="true">G21</span>
+        {%- endif -%}
+      </span>
+      <span class="a-g21-koleksiyon-karti__icerik">
+        <span class="a-g21-koleksiyon-karti__baslik">{{ g21_collection.title }}</span>
+        {%- if g21_collection.description != blank -%}
+          <span class="a-g21-koleksiyon-karti__aciklama">{{ g21_collection.description | strip_html | truncate: 110 }}</span>
+        {%- endif -%}
+        <span class="a-g21-koleksiyon-karti__cta">{{ g21_cta_text }}</span>
+      </span>
+    </a>
+  </article>
+{%- endif -%}

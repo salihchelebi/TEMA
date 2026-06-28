@@ -1,0 +1,36 @@
+{% layout none %}
+{%- assign g21_has_video = false -%}
+{%- assign g21_poster = product.featured_image | image_url: width: 1200 -%}
+{%- for media in product.media -%}
+  {%- if media.media_type == 'video' -%}
+    {%- assign g21_has_video = true -%}
+    {%- if media.preview_image -%}
+      {%- assign g21_poster = media.preview_image | image_url: width: 1200 -%}
+    {%- endif -%}
+  {%- elsif media.media_type == 'external_video' -%}
+    {%- assign g21_has_video = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{
+  "handle": {{ product.handle | json }},
+  "title": {{ product.title | json }},
+  "url": {{ product.url | json }},
+  "featured_image": {{ product.featured_image | image_url: width: 1200 | json }},
+  "poster": {{ g21_poster | json }},
+  "has_video": {{ g21_has_video | json }},
+  "video_sources": [
+    {%- assign g21_first_source = true -%}
+    {%- for media in product.media -%}
+      {%- if media.media_type == 'video' -%}
+        {%- for source in media.sources -%}
+          {%- if source.mime_type contains 'mp4' -%}
+            {%- unless g21_first_source -%},{%- endunless -%}
+            {{ source.url | json }}
+            {%- assign g21_first_source = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ],
+  "media_count": {{ product.media.size | json }}
+}

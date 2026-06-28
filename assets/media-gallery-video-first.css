@@ -1,0 +1,240 @@
+.nil-vfg {
+  display: block;
+  width: 100%;
+}
+
+.nil-vfg__layout {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.nil-vfg__thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 760px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.nil-vfg__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid rgba(198, 154, 83, 0.35);
+  border-radius: 14px;
+  background: transparent;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.nil-vfg__thumb:hover,
+.nil-vfg__thumb.is-active {
+  border-color: rgba(198, 154, 83, 0.95);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+.nil-vfg__thumb:hover {
+  transform: translateY(-1px);
+}
+
+.nil-vfg__thumb-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  background: #f7f2eb;
+}
+
+.nil-vfg__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nil-vfg__play-badge {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.nil-vfg__stage {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.nil-vfg__slide {
+  display: none;
+  width: 100%;
+}
+
+.nil-vfg__slide.is-active {
+  display: block;
+}
+
+.nil-vfg__image,
+.nil-vfg__video,
+.nil-vfg__external-video iframe,
+.nil-vfg__model model-viewer,
+.nil-vfg__fallback-media > * {
+  display: block;
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.nil-vfg__image {
+  height: auto;
+  object-fit: cover;
+}
+
+.nil-vfg__video-shell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f7f2eb;
+}
+
+.nil-vfg__video-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--nil-poster);
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px);
+  transform: scale(1.08);
+  opacity: 0.35;
+}
+
+.nil-vfg__poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    opacity 280ms ease,
+    visibility 280ms ease;
+}
+
+.nil-vfg__video {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+}
+
+.nil-vfg__video-shell.is-playing .nil-vfg__poster {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.nil-vfg__manual-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border: 0;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.nil-vfg__video-shell.is-blocked .nil-vfg__manual-play,
+.nil-vfg__video-shell:not(.is-playing) .nil-vfg__manual-play {
+  display: inline-flex;
+}
+
+.nil-vfg__external-video,
+.nil-vfg__model,
+.nil-vfg__fallback-media {
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f7f2eb;
+}
+
+.nil-vfg__external-video iframe {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+
+.nil-vfg__model model-viewer {
+  min-height: 520px;
+}
+
+@media screen and (max-width: 749px) {
+  .nil-vfg__layout {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .nil-vfg__thumbs {
+    flex-direction: row;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+  }
+
+  .nil-vfg__thumb {
+    flex: 0 0 72px;
+    border-radius: 12px;
+  }
+
+  .nil-vfg__video-shell,
+  .nil-vfg__image,
+  .nil-vfg__external-video,
+  .nil-vfg__model,
+  .nil-vfg__fallback-media {
+    border-radius: 18px;
+  }
+
+  .nil-vfg__manual-play {
+    width: 54px;
+    height: 54px;
+    font-size: 19px;
+  }
+
+  .nil-vfg__play-badge {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+}

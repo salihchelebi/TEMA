@@ -1,0 +1,27 @@
+{% comment %} NIL V30 — compact benefit row under price. {% endcomment %}
+{% if section.settings.nil_v30_enable_mini_benefits != false %}
+  <div
+    class="nil-v30-mini-benefits nil-v30-animate nil-v30-animate--{{ section.settings.nil_v30_mini_animation }}"
+    style="
+      --nil-v30-mini-bg: {{ section.settings.nil_v30_mini_bg }};
+      --nil-v30-mini-text: {{ section.settings.nil_v30_mini_text_color }};
+      --nil-v30-mini-border: {{ section.settings.nil_v30_mini_border_color }};
+      --nil-v30-mini-separator: {{ section.settings.nil_v30_mini_separator_color }};
+      --nil-v30-mini-radius: {{ section.settings.nil_v30_mini_radius }}px;
+      --nil-v30-mini-font-size: {{ section.settings.nil_v30_mini_font_size }}px;
+      --nil-v30-mini-padding-y: {{ section.settings.nil_v30_mini_padding_y }}px;
+      --nil-v30-mini-padding-x: {{ section.settings.nil_v30_mini_padding_x }}px;
+      --nil-v30-mini-gap: {{ section.settings.nil_v30_mini_gap }}px;
+      --nil-v30-mini-align: {{ section.settings.nil_v30_mini_alignment }};
+    "
+    aria-label="Product benefit highlights"
+  >
+    {% assign mini_items = 'nil_v30_mini_1_text|nil_v30_mini_2_text|nil_v30_mini_3_text' | split: '|' %}
+    {% for item_key in mini_items %}
+      {% assign item_text = section.settings[item_key] %}
+      {% if item_text != blank %}
+        <span class="nil-v30-mini-benefits__item">{{ item_text }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

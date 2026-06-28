@@ -1,0 +1,587 @@
+{%- doc -%}
+
+  Renders a swatches variant picker, used within the product-swatches block.
+
+  A swatch will be rendered in a pre-selected state if the context allows it.
+
+  Allowed contexts are search and filtered collections.
+
+\themes\189169008928\v32-worker\snippets\variant-swatches.liquid
+
+  @param {object} product_resource - The product object, which contains variants and options.
+
+  @param {boolean} [has_option_selected] - Whether to render the swatches in a pre-selected state.
+
+
+
+  @example
+
+  {% render 'variant-swatches', product_resource: product %}
+
+{%- enddoc -%}
+
+
+
+{% stylesheet %}
+
+  swatches-variant-picker-component {
+
+    display: flex;
+
+    width: 100%;
+
+    flex-direction: row;
+
+    justify-content: var(--product-swatches-alignment-mobile);
+
+
+
+    @media screen and (min-width: 750px) {
+
+      justify-content: var(--product-swatches-alignment);
+
+    }
+
+
+
+    --overflow-list-padding-block: calc(
+
+        var(--product-swatches-padding-block-start) + var(--focus-outline-offset) + var(--focus-outline-width)
+
+      )
+
+      calc(var(--product-swatches-padding-block-end) + var(--focus-outline-offset) + var(--focus-outline-width));
+
+
+
+    --overflow-list-padding-inline: calc(
+
+        var(--product-swatches-padding-inline-start) + var(--focus-outline-offset) + (1.5 * var(--focus-outline-width))
+
+      )
+
+      calc(var(--product-swatches-padding-inline-end) + var(--focus-outline-offset) + var(--focus-outline-width));
+
+
+
+    overflow-list::part(list) {
+
+      gap: var(--gap-sm);
+
+    }
+
+  }
+
+
+
+  swatches-variant-picker-component overflow-list[disabled='true'] {
+
+    --overflow-list-padding-block: 0px;
+
+    margin-block-start: calc(
+
+      var(--product-swatches-padding-block-start) + var(--focus-outline-offset) + var(--focus-outline-width)
+
+    );
+
+    margin-block-end: calc(
+
+      var(--product-swatches-padding-block-end) + var(--focus-outline-offset) + var(--focus-outline-width)
+
+    );
+
+  }
+
+
+
+  .hidden-swatches__count {
+
+    display: flex;
+
+    align-self: center;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-40-60));
+
+    background-color: transparent;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 0;
+
+
+
+    &::before {
+
+      counter-reset: overflow-count var(--overflow-count);
+
+      content: '+' counter(overflow-count);
+
+      line-height: 1;
+
+      cursor: pointer;
+
+    }
+
+  }
+
+
+
+  .hidden-swatches__count:hover {
+
+    color: var(--color-foreground-rgb);
+
+  }
+
+
+
+  .variant-option__button-label--has-swatch {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+  }
+
+  .variant-option__button-label--has-swatch input {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+  }
+
+  .swatch--custom {
+
+    display: block;
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 50%;
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    box-shadow:
+      0 4px 10px rgb(0 0 0 / 0.10),
+      inset 0 0 0 1px rgb(255 255 255 / 0.72);
+
+    transition: transform 180ms ease, box-shadow 180ms ease;
+
+  }
+
+  .variant-option__button-label--has-swatch:hover .swatch--custom {
+
+    transform: translateY(-1px) scale(1.04);
+
+    box-shadow:
+      0 7px 14px rgb(0 0 0 / 0.14),
+      inset 0 0 0 1px rgb(255 255 255 / 0.84);
+
+  }
+
+  .variant-option__button-label--has-swatch:has(input:checked)::after {
+
+    content: '';
+
+    position: absolute;
+
+    inset: -3px;
+
+    z-index: 2;
+
+    border-radius: 50%;
+
+    background: url('https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-12-secili-renk-altin-halka-renk-vurgusu-icin.png?v=1781505372') center / contain no-repeat;
+
+    pointer-events: none;
+
+    filter: drop-shadow(0 3px 8px rgb(197 157 95 / 0.28));
+
+  }
+
+  @supports not selector(:has(*)) {
+
+    .variant-option__button-label--has-swatch input:checked + .swatch--custom {
+
+      outline: 2px solid rgb(197 157 95 / 0.88);
+
+      outline-offset: 3px;
+
+    }
+
+  }
+
+  @media screen and (max-width: 749px) {
+
+    .variant-option__button-label--has-swatch {
+
+      width: 38px;
+
+      height: 38px;
+
+    }
+
+    .swatch--custom {
+
+      width: 31px;
+
+      height: 31px;
+
+    }
+
+  }
+
+{% endstylesheet %}
+
+
+
+{% liquid
+
+  assign allow_preselection = false
+
+
+
+  if product_resource.selected_variant or has_option_selected
+
+    assign allow_preselection = true
+
+  endif
+
+%}
+
+
+
+<swatches-variant-picker-component
+
+  data-product-id="{{ product_resource.id }}"
+
+  data-product-url="{{ product_resource.url }}"
+
+  ref="swatchesVariantPicker"
+
+>
+
+  <form>
+
+    {%- for product_option in product_resource.options_with_values -%}
+
+      {%- liquid
+
+        assign swatch_count = product_option.values | map: 'swatch' | compact | size
+
+      -%}
+
+
+
+      {% if swatch_count == 0 %}
+
+        {% continue %}
+
+      {% endif %}
+
+
+
+      {%- liquid
+
+        assign swatch_option_position = product_option.position
+
+        assign swatch_option_key = 'option' | append: swatch_option_position
+
+      -%}
+
+
+
+      <fieldset class="variant-option variant-option--buttons variant-option--swatches">
+
+        {% capture children %}
+
+          {%- for product_option_value in product_option.values -%}
+
+            {%- liquid
+
+              assign featured_media = product_option_value.variant.featured_media
+
+              assign first_available_variant = nil
+
+              assign child_product = nil
+
+
+
+              if featured_media == blank
+
+                if product_option_value.product_url and product_option_value.variant
+
+                  assign child_product = product_option_value.variant.product
+
+                endif
+
+
+
+                if child_product and child_product.featured_media
+
+                  assign featured_media = child_product.featured_media
+
+                endif
+
+              endif
+
+
+
+              if featured_media == blank or product_option_value.variant == blank
+
+                for variant in product_resource.variants
+
+                  if variant.available and variant[swatch_option_key] == product_option_value.name
+
+                    assign first_available_variant = variant
+
+
+
+                    if variant.featured_media and featured_media == blank
+
+                      assign featured_media = variant.featured_media
+
+                    endif
+
+
+
+                    break
+
+                  endif
+
+                endfor
+
+              endif
+
+
+
+              assign variant_id = first_available_variant.id
+
+              if variant_id == blank and product_option_value.variant
+
+                assign variant_id = product_option_value.variant.id
+
+              endif
+
+              if variant_id == blank
+
+                assign variant_id = product_resource.selected_or_first_available_variant.id
+
+              endif
+
+
+
+              assign media_id = featured_media.id
+
+              assign swatch_value = product_option_value.name | downcase | strip
+
+              assign custom_swatch_url = ''
+
+
+
+              case swatch_value
+
+                when 'ivory'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-01-renk-swatch-ivory-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'white', 'soft ivory', 'off white', 'beyaz', 'beyaz / kırık beyaz', 'kırık beyaz'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-02-renk-swatch-white-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'champagne', 'soft champagne', 'soft-champagne', 'şampanya'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-03-renk-swatch-champagne-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'blush', 'soft nude', 'pudra pembe', 'nude', 'nude / bej', 'bej'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-04-renk-swatch-blush-urun-renk-secimi-icin.png?v=1781505374'
+
+                when 'emerald green', 'emerald', 'zümrüt yeşili', 'zümrüt'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-05-renk-swatch-emerald-green-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'navy blue', 'navy', 'saks mavisi', 'saks', 'bebe mavisi'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-06-renk-swatch-navy-blue-urun-renk-secimi-icin.png?v=1781505374'
+
+                when 'crimson red', 'crimson', 'red', 'bordo', 'kırmızı'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-07-renk-swatch-crimson-red-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'teal turquoise', 'teal', 'turquoise', 'turkuaz', 'mint yeşili', 'mint'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-08-renk-swatch-teal-turquoise-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'dusty rose', 'somon', 'somon / şeftali', 'şeftali'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-09-renk-swatch-dusty-rose-urun-renk-secimi-icin.png?v=1781505374'
+
+                when 'deep purple', 'purple', 'mürdüm', 'mürdüm / mor', 'mor', 'lila', 'lila / lavanta', 'lavanta'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-10-renk-swatch-deep-purple-urun-renk-secimi-icin.png?v=1781505373'
+
+                when 'gold champagne', 'gold', 'gold / altın', 'altın', 'gümüş', 'silver'
+
+                  assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-11-renk-swatch-gold-champagne-urun-renk-secimi-icin.png?v=1781505374'
+
+              endcase
+
+            -%}
+
+
+
+            <li class="variant-option__swatch">
+
+              <label
+
+                {% if media_id != blank %}
+
+                  data-media-id="{{ media_id }}"
+
+                  on:pointerenter="product-card/previewVariant/{{ media_id }}"
+
+                {% endif %}
+
+                class="variant-option__button-label variant-option__button-label--has-swatch"
+
+                on:pointerleave="product-card/resetVariant"
+
+              >
+
+                <input
+
+                  type="radio"
+
+                  name="{{ product_option.name | escape }}-{{ product_resource.id }}-swatch"
+
+                  value="{{ product_option_value.name | escape }}"
+
+                  aria-label="{{ product_option_value.name | escape }}"
+
+                  data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+
+                  {% if media_id != blank %}
+
+                    data-option-media-id="{{ media_id }}"
+
+                  {% endif %}
+
+                  data-option-value-id="{{ product_option_value.id }}"
+
+                  data-option-available="{{ product_option_value.available }}"
+
+                  data-connected-product-url="{{ product_option_value.product_url }}"
+
+                  data-variant-id="{{ variant_id }}"
+
+                  data-first-available-or-first-variant-id="{{ variant_id }}"
+
+                  {% if allow_preselection and product_option_value.selected %}
+
+                    checked
+
+                  {% endif %}
+
+                >
+
+
+
+                {% if custom_swatch_url != blank %}
+
+                  <span
+
+                    class="swatch swatch--custom"
+
+                    style="background-image: url('{{ custom_swatch_url }}');"
+
+                  ></span>
+
+                {% else %}
+
+                  {% render 'swatch',
+
+                    swatch: product_option_value.swatch,
+
+                    variant_image: featured_media
+
+                  %}
+
+                {% endif %}
+
+
+
+                {% render 'strikethrough-variant', product_option: product_option_value %}
+
+              </label>
+
+            </li>
+
+          {%- endfor -%}
+
+
+
+          <li slot="more">
+
+            <button
+
+              class="hidden-swatches__count"
+
+              aria-label="{{ 'actions.show_all_options' | t }}"
+
+              on:click="/showAllSwatches"
+
+            ></button>
+
+          </li>
+
+        {% endcapture %}
+
+
+
+        {% render 'overflow-list', children: children, ref: 'overflowList' %}
+
+      </fieldset>
+
+    {%- endfor -%}
+
+
+
+    <script type="application/json">
+
+      {{ product_resource.selected_or_first_available_variant | json }}
+
+    </script>
+
+  </form>
+
+</swatches-variant-picker-component> 

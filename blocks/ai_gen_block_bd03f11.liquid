@@ -1,0 +1,222 @@
+{% doc %}
+  @prompt
+    ince uzun logoları ekleyeceğim bir alan yarat genişliğini ve yüksekliğini ayarlayabileyim genişlik ve yükseklik biri değişince diğeride tutarlı bir şekilde değişsin alanında genişlik ve yüksekliğini ayarlayabileyim arkaplan renklerini de ayarlayabileyim 
+    1 resim alanı olacak onun arkasında da tüm genel alan olacak her ikisininde boyutlarını yönetebileyim . gönderdiğim resim eklenecek %25 daha büyük 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-logo-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    position: relative;
+  }
+
+  .ai-logo-wrapper-{{ ai_gen_id }} {
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.container_padding }}px;
+    border-radius: {{ block.settings.container_border_radius }}px;
+  }
+
+  .ai-logo-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: {{ block.settings.logo_width }}px;
+    height: {{ block.settings.logo_height }}px;
+    background-color: {{ block.settings.logo_background_color }};
+    border-radius: {{ block.settings.logo_border_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.logo_padding }}px;
+  }
+
+  .ai-logo-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-logo-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.logo_background_color }};
+    border-radius: {{ block.settings.logo_border_radius }}px;
+    position: relative;
+  }
+
+  .ai-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.3;
+  }
+
+  .ai-logo-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-logo-wrapper-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-logo-image-wrapper-{{ ai_gen_id }} {
+      width: calc({{ block.settings.logo_width }}px * 0.8);
+      height: calc({{ block.settings.logo_height }}px * 0.8);
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-logo-container-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-logo-wrapper-{{ ai_gen_id }}">
+    <div class="ai-logo-image-wrapper-{{ ai_gen_id }}">
+      {% if block.settings.logo_image %}
+        <img
+          src="{{ block.settings.logo_image | image_url: width: 2000 }}"
+          alt="{{ block.settings.logo_image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.logo_image.width }}"
+          height="{{ block.settings.logo_image.height }}"
+          class="ai-logo-image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-logo-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+          <div class="ai-logo-empty-state-{{ ai_gen_id }}">
+            Add your logo
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Logo display",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 50,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 30,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "logo_padding",
+      "label": "Logo padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "logo_border_radius",
+      "label": "Logo border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "logo_background_color",
+      "label": "Logo background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Container"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "container_padding",
+      "label": "Container padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "container_border_radius",
+      "label": "Container border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Container background",
+      "default": "#f5f5f5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logo display"
+    }
+  ]
+}
+{% endschema %}

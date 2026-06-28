@@ -1,0 +1,96 @@
+<script type="application/ld+json">
+  {{ closest.product | structured_data }}
+</script>
+
+{% capture media_gallery %}
+  {%- content_for 'block', type: '_product-media-gallery', id: 'media-gallery', closest.product: closest.product -%}
+{% endcapture %}
+
+{% capture product_details %}
+  {% content_for 'block', type: '_product-details', id: 'product-details', closest.product: closest.product %}
+{% endcapture %}
+
+{% capture additional_blocks %}
+  {% content_for 'blocks' %}
+{% endcapture %}
+
+{% liquid
+  assign nil_product_code = product.handle | split: '-' | slice: 0, 2 | join: '-' | upcase
+  assign nil_product_number_text = product.handle | split: '-' | slice: 1, 1 | first
+  assign nil_product_number = nil_product_number_text | plus: 0
+  assign nil_prev_number = nil_product_number | minus: 1
+  assign nil_next_number = nil_product_number | plus: 1
+  assign nil_prev_code = nil_prev_number | prepend: '000' | slice: -3, 3 | prepend: 'G21-'
+  assign nil_next_code = nil_next_number | prepend: '000' | slice: -3, 3 | prepend: 'G21-'
+%}
+
+{% if section.settings.nil_top_band_enable %}
+  <section class="nil-product-editable-top" data-nil-editable-product-band data-current-code="{{ nil_product_code }}" data-prev-code="{{ nil_prev_code }}" data-next-code="{{ nil_next_code }}" style="--nil-top-bg: {{ section.settings.nil_top_band_bg }}; --nil-top-border: {{ section.settings.nil_top_band_border_color }}; --nil-top-text: {{ section.settings.nil_top_band_text_color }}; --nil-top-accent: {{ section.settings.nil_top_band_accent_color }}; --nil-top-radius: {{ section.settings.nil_top_band_radius }}px; --nil-top-padding-y: {{ section.settings.nil_top_band_padding_y }}px; --nil-top-padding-x: {{ section.settings.nil_top_band_padding_x }}px;">
+    <div class="nil-product-editable-top__card">
+      {% if section.settings.nil_top_band_icon != blank %}<span class="nil-product-editable-top__icon" aria-hidden="true">{{ section.settings.nil_top_band_icon }}</span>{% endif %}
+      <div class="nil-product-editable-top__copy">
+        <h2>{{ section.settings.nil_top_band_title | escape }}</h2>
+        <p>{{ section.settings.nil_top_band_text | replace: '[product_title]', product.title | escape }}</p>
+      </div>
+      {% if section.settings.nil_top_band_show_edit_hint %}<span class="nil-product-editable-top__hint">{{ section.settings.nil_top_band_hint | escape }}</span>{% endif %}
+    </div>
+    {% if section.settings.nil_product_nav_enable %}
+      <nav class="nil-product-editable-top__nav" aria-label="Product navigation">
+        <a class="nil-product-editable-top__nav-btn nil-product-editable-top__nav-btn--prev" data-nil-prev-product href="/search?q={{ nil_prev_code | url_encode }}&type=product"><span class="nil-product-editable-top__arrow">←</span><strong>{{ section.settings.nil_prev_label | escape }}</strong></a>
+        <span class="nil-product-editable-top__divider" aria-hidden="true"></span>
+        <a class="nil-product-editable-top__nav-btn nil-product-editable-top__nav-btn--next" data-nil-next-product href="/search?q={{ nil_next_code | url_encode }}&type=product"><strong>{{ section.settings.nil_next_label | escape }}</strong><span class="nil-product-editable-top__arrow">→</span></a>
+      </nav>
+    {% endif %}
+  </section>
+{% endif %}
+
+{% if section.settings.enable_sticky_add_to_cart %}
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign initial_quantity = current_variant.quantity_rule.min | default: 1
+    assign image_to_show = current_variant.featured_image | default: product.featured_image
+  %}
+  <sticky-add-to-cart class="sticky-add-to-cart" data-variant-available="{{ current_variant.available }}" data-product-id="{{ product.id }}" data-current-variant-id="{{ current_variant.id }}" data-initial-quantity="{{ initial_quantity }}" data-default-variant-title="{{ 'products.product.default_title' | t }}">
+    <div class="sticky-add-to-cart__bar color-{{ settings.popover_color_scheme }}" data-stuck="false" ref="stickyBar" role="region" aria-label="{{ 'products.product.sticky_add_to_cart' | t }}">
+      {% if image_to_show %}<div class="sticky-add-to-cart__image"><img class="sticky-add-to-cart__image-img" src="{{ image_to_show | image_url: width: 120 }}" alt="{{ image_to_show.alt | default: product.title | escape }}" loading="lazy" ref="productImage"></div>{% endif %}
+      {% liquid
+        assign has_single_option = false
+        if product.has_only_default_variant != true and product.options.size == 1
+          assign has_single_option = true
+        endif
+        if image_to_show == blank
+          assign has_image = false
+        else
+          assign has_image = true
+        endif
+      %}
+      <div class="sticky-add-to-cart__info" data-has-image="{{ has_image }}" data-singleton="{{ product.has_only_default_variant }}" data-single-option="{{ has_single_option }}">
+        <p class="sticky-add-to-cart__title" data-testid="sticky-product-title">{{ product.title | escape }}</p>
+        <div class="sticky-add-to-cart__variant" data-testid="sticky-variant-title" {% if product.has_only_default_variant %}style="display:none;"{% endif %}>{% unless product.has_only_default_variant %}{{ current_variant.title | escape }}{% endunless %}</div>
+      </div>
+      <div class="sticky-add-to-cart__price" data-testid="sticky-price-display">{% render 'price', product_resource: product, show_sale_price_first: true %}</div>
+      <button type="button" class="sticky-add-to-cart__button add-to-cart-button button" ref="addToCartButton" on:click="/handleAddToCartClick" {% unless current_variant.available %}disabled{% endunless %}>
+        <span class="add-to-cart-text"><span class="add-to-cart-text__content"><span>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% elsif current_variant == blank %}{{ 'products.product.unavailable' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span></span></span>
+        <span class="add-to-cart__added"><span class="svg-wrapper add-to-cart__added-icon">{{- 'icon-checkmark-burst.svg' | inline_asset_content -}}</span></span>
+      </button>
+    </div>
+  </sticky-add-to-cart>
+{% endif %}
+
+{% render 'product-information-content', product_media_size: closest.product.media.size, section_id: section.id, settings: section.settings, media_gallery: media_gallery, product_details: product_details, additional_blocks: additional_blocks, product: closest.product %}
+
+<script>
+(function(){function resolveButton(btn,code){if(!btn||!code||code==='G21-000')return;fetch('/search/suggest.json?q='+encodeURIComponent(code)+'&resources[type]=product&resources[limit]=1').then(function(r){return r.ok?r.json():null}).then(function(data){var p=data&&data.resources&&data.resources.results&&data.resources.results.products&&data.resources.results.products[0];if(p&&p.url)btn.href=p.url}).catch(function(){})}function run(){document.querySelectorAll('[data-nil-editable-product-band]').forEach(function(b){resolveButton(b.querySelector('[data-nil-prev-product]'),b.dataset.prevCode);resolveButton(b.querySelector('[data-nil-next-product]'),b.dataset.nextCode)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();})();
+</script>
+
+{% stylesheet %}
+body.nil-template-product .nil-v6-product-command{display:none!important;visibility:hidden!important;opacity:0!important;height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important;}
+.nil-product-editable-top{width:100%;max-width:calc(var(--page-width,1200px) + 96px);margin:0 auto clamp(18px,2.4vw,34px);padding:clamp(12px,1.4vw,18px) clamp(16px,3vw,48px) 0;color:var(--nil-top-text);}
+.nil-product-editable-top__card{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:var(--nil-top-padding-y) var(--nil-top-padding-x);border:1px solid var(--nil-top-border);border-radius:var(--nil-top-radius);background:var(--nil-top-bg);box-shadow:0 16px 42px rgba(89,60,24,.08),inset 0 1px 0 rgba(255,255,255,.82);overflow:hidden;}
+.nil-product-editable-top__card:before{content:'';position:absolute;inset:8px;border:1px solid rgba(184,132,57,.12);border-radius:calc(var(--nil-top-radius) - 6px);pointer-events:none;}.nil-product-editable-top__icon{display:grid;place-items:center;width:54px;height:54px;border:1px solid rgba(184,132,57,.30);border-radius:999px;color:var(--nil-top-accent);font-size:30px;background:rgba(255,255,255,.50);}.nil-product-editable-top__copy{min-width:0;}.nil-product-editable-top__copy h2{margin:0 0 6px;color:var(--nil-top-accent);font-family:var(--font-heading--family,Georgia,serif);font-size:clamp(20px,2.1vw,31px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;line-height:1.08;}.nil-product-editable-top__copy p{margin:0;color:var(--nil-top-text);font-size:clamp(13px,1.05vw,16px);line-height:1.45;}.nil-product-editable-top__hint{position:relative;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid rgba(184,132,57,.35);border-radius:10px;color:var(--nil-top-accent);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.48);white-space:nowrap;}.nil-product-editable-top__nav{display:grid;grid-template-columns:minmax(180px,290px) minmax(0,1fr) minmax(180px,290px);gap:18px;align-items:center;margin-top:16px;}.nil-product-editable-top__divider{height:1px;background:linear-gradient(90deg,transparent,rgba(184,132,57,.55),transparent);}.nil-product-editable-top__nav-btn{min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 22px;border:1px solid rgba(224,191,130,.75);border-radius:10px;background:linear-gradient(180deg,#191919,#070707);color:#fff!important;text-decoration:none!important;box-shadow:0 9px 20px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,255,255,.05);}.nil-product-editable-top__nav-btn strong{font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;}.nil-product-editable-top__arrow{font-size:34px;line-height:1;color:#fff;}.nil-product-editable-top__nav-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(0,0,0,.22),0 0 0 1px rgba(224,191,130,.28);}.sticky-add-to-cart__bar{position:fixed;bottom:20px;left:50%;opacity:0;transform:translateX(-50%) translateY(calc(100% + 40px));z-index:calc(var(--layer-sticky) - 1);display:flex;width:600px;border-radius:12px;box-shadow:var(--shadow-popover);padding:var(--padding-sm);align-items:center;gap:var(--gap-md);}.sticky-add-to-cart__bar[data-stuck='true']{transform:translateX(-50%) translateY(0);opacity:1;}.sticky-add-to-cart__image{flex-shrink:0;aspect-ratio:1;height:var(--height-buy-buttons);overflow:hidden;border-radius:var(--style-border-radius-buttons-primary);background:var(--color-background-secondary);}.sticky-add-to-cart__image-img{width:100%;height:100%;object-fit:cover;}.sticky-add-to-cart__info{flex:1;min-width:0;}.sticky-add-to-cart__title{font-size:var(--font-paragraph-medium--size);font-weight:var(--font-weight-semibold);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.sticky-add-to-cart__variant{color:rgb(var(--color-foreground-rgb)/var(--opacity-subdued-text));font-size:var(--font-paragraph-small--size);margin-top:var(--margin-3xs);}.sticky-add-to-cart__button{height:var(--height-buy-buttons);position:relative;}
+@media screen and (max-width:749px){.nil-product-editable-top{padding-inline:14px;margin-bottom:18px;}.nil-product-editable-top__card{grid-template-columns:1fr;gap:10px;text-align:left;}.nil-product-editable-top__icon{width:48px;height:48px;font-size:25px;}.nil-product-editable-top__hint{display:none;}.nil-product-editable-top__nav{grid-template-columns:1fr 1fr;gap:10px;}.nil-product-editable-top__divider{display:none;}.nil-product-editable-top__nav-btn{min-height:50px;padding:0 14px;}.nil-product-editable-top__nav-btn strong{font-size:10.5px;letter-spacing:.08em;}.nil-product-editable-top__arrow{font-size:26px;}.sticky-add-to-cart__bar{bottom:0;width:100%;max-width:none;border-radius:0;}.sticky-add-to-cart__title{font-size:var(--font-paragraph--size);}.sticky-add-to-cart__button{width:var(--height-buy-buttons);}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"t:names.product_information","blocks":[{"type":"@app"}],"disabled_on":{"groups":["header","footer"]},"settings":[{"type":"header","content":"Editable product consultation band"},{"type":"checkbox","id":"nil_top_band_enable","label":"Show editable consultation band","default":true},{"type":"text","id":"nil_top_band_icon","label":"Icon","default":"☏"},{"type":"text","id":"nil_top_band_title","label":"Title","default":"Private Bridal Consultation"},{"type":"textarea","id":"nil_top_band_text","label":"Text","default":"Our team is here to help you confirm custom size, fabric, color, and delivery support via WhatsApp."},{"type":"checkbox","id":"nil_top_band_show_edit_hint","label":"Show edit hint badge","default":false},{"type":"text","id":"nil_top_band_hint","label":"Edit hint badge text","default":"Edit Content"},{"type":"color_background","id":"nil_top_band_bg","label":"Background","default":"linear-gradient(135deg, #fffaf1, #fffdf8)"},{"type":"color","id":"nil_top_band_text_color","label":"Text color","default":"#2a241c"},{"type":"color","id":"nil_top_band_accent_color","label":"Accent color","default":"#9b6a2d"},{"type":"color","id":"nil_top_band_border_color","label":"Border color","default":"#e1bd7a"},{"type":"range","id":"nil_top_band_radius","label":"Corner radius","min":0,"max":40,"step":1,"unit":"px","default":16},{"type":"range","id":"nil_top_band_padding_y","label":"Vertical padding","min":8,"max":48,"step":1,"unit":"px","default":22},{"type":"range","id":"nil_top_band_padding_x","label":"Horizontal padding","min":12,"max":64,"step":1,"unit":"px","default":34},{"type":"header","content":"Previous / next product navigation"},{"type":"checkbox","id":"nil_product_nav_enable","label":"Show previous / next product buttons","default":true},{"type":"text","id":"nil_prev_label","label":"Previous product label","default":"Previous Product"},{"type":"text","id":"nil_next_label","label":"Next product label","default":"Next Product"},{"type":"header","content":"t:content.layout"},{"type":"select","id":"content_width","label":"t:settings.width","options":[{"value":"content-center-aligned","label":"t:options.page"},{"value":"content-full-width","label":"t:options.full"}],"default":"content-center-aligned"},{"type":"select","id":"desktop_media_position","label":"t:settings.media_position","options":[{"value":"left","label":"t:options.left"},{"value":"right","label":"t:options.right"}],"default":"left"},{"type":"checkbox","id":"equal_columns","label":"t:settings.equal_columns","default":false},{"type":"checkbox","id":"limit_details_width","label":"t:settings.limit_product_details_width","default":false,"visible_if":"{{ section.settings.equal_columns }}"},{"type":"range","id":"gap","label":"t:settings.gap","min":0,"max":48,"step":4,"unit":"px","default":16},{"type":"checkbox","id":"enable_sticky_add_to_cart","label":"t:settings.enable_sticky_add_to_cart","default":true},{"type":"color_scheme","id":"color_scheme","label":"t:settings.color_scheme","default":"scheme-1"},{"type":"header","content":"t:content.padding"},{"type":"range","id":"padding-block-start","label":"t:settings.top","min":0,"max":100,"step":1,"unit":"px","default":0},{"type":"range","id":"padding-block-end","label":"t:settings.bottom","min":0,"max":100,"step":1,"unit":"px","default":0}],"presets":[]}
+{% endschema %}

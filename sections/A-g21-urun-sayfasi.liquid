@@ -1,0 +1,8 @@
+{%- render 'A-g21-inline-stiller' -%}
+<section class="a-g21-urun-sayfasi" data-a-g21-product-page="true">
+  {%- if section.settings.g21_dil_cubugu_goster -%}<div data-a-g21-language-bar="active">{%- render 'A-g21-dil-secici' -%}</div>{%- endif -%}
+  <div class="a-g21-bos-durum">A-G21 product carrier is ready. Bind this section after product page cross-check.</div>
+</section>
+{% schema %}
+{"name":"A-G21 Urun","settings":[{"type":"checkbox","id":"g21_dil_cubugu_goster","label":"Dil cubugunu goster","default":true}],"presets":[{"name":"A-G21 Urun"}]}
+{% endschema %}

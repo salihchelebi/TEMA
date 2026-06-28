@@ -1,0 +1,61 @@
+{% comment %} NIL V9 — product custom measurement + cart properties + custom order form handoff {% endcomment %}
+{% assign nil_product_title = product.title | default: 'this wedding dress' %}
+{% assign nil_product_url = shop.url | append: product.url %}
+{% assign nil_product_img = product.featured_image | image_url: width: 900 %}
+{% assign nil_current_variant = product.selected_or_first_available_variant %}
+{% assign nil_custom_order_url = settings.nil_custom_order_page_url | default: '/pages/custom-order' %}
+{% assign nil_panel_section_id = section_id | default: section.id %}
+{% assign nil_form_id = 'BuyButtons-ProductForm-' | append: nil_panel_section_id %}
+<div class="nil-v4-product-panel nil-istanbul-product-panel" aria-label="NIL custom wedding dress order panel" data-nil-measure-panel>
+  <div class="nil-v5-product-summary" aria-label="Product summary and price"><span>Luxury Custom Made Wedding Dress</span><h1>{{ nil_product_title }}</h1><p><span data-nil-panel-price>{{ nil_current_variant.price | money }}</span> · Made to order · Istanbul atelier support.</p></div>
+  <a class="nil-v4-product-wa" href="https://wa.me/905334619373?text={{ 'Hello, I am interested in ' | append: nil_product_title | append: '. Can you help me with size, customization and delivery? ' | append: nil_product_url | url_encode }}" target="_blank" rel="noopener noreferrer"><img src="{{ 'nil-icon-product-whatsapp-inquiry.svg' | asset_url }}" alt="" loading="lazy"> WhatsApp Consultation</a>
+  <details class="nil-v4-measure" open>
+    <summary><strong>Custom Measurement</strong><span>How to measure?</span></summary>
+    <div class="nil-v5-unit-toggle" role="group" aria-label="Measurement unit"><label><input form="{{ nil_form_id }}" type="radio" name="properties[Measurement Unit]" value="cm" checked> CM</label><label><input form="{{ nil_form_id }}" type="radio" name="properties[Measurement Unit]" value="inch"> INCH</label></div>
+    <details class="nil-v5-measure-guide"><summary><img src="{{ 'nil-icon-measurement-size-guide-ruler.svg' | asset_url }}" alt="" loading="lazy"> Open practical measuring guide</summary><ol><li>Measure over fitted clothing, not over thick garments.</li><li>Keep the tape straight and close to the body, not tight.</li><li>Send front, side and back photos on WhatsApp if you need help.</li><li>Our consultant confirms every measurement before production.</li></ol></details>
+    <p class="nil-v4-measure__note">Choose <b>Custom Made</b> and enter your measurements. Our bridal consultant confirms all details after order.</p>
+    <div class="nil-v4-measure__grid">
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-bust.svg' | asset_url }}')">Bust (cm)<small>Around fullest bust.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Bust cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 86" aria-label="Bust cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-waist.svg' | asset_url }}')">Waist (cm)<small>Natural waistline.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Waist cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 66" aria-label="Waist cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-hips.svg' | asset_url }}')">Hips (cm)<small>Fullest hip area.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Hips cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 92" aria-label="Hips cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-shoulder.svg' | asset_url }}')">Shoulder (cm)<small>Edge to edge.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Shoulder cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 40" aria-label="Shoulder cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-arm-length.svg' | asset_url }}')">Arm Length (cm)<small>Shoulder to wrist.</small><input form="{{ nil_form_id }}" name="properties[Arm Length cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 58" aria-label="Arm Length cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-dress-length.svg' | asset_url }}')">Dress Length (cm)<small>Shoulder to hem.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Dress Length cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 150" aria-label="Dress Length cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-height.svg' | asset_url }}')">Height (cm)<small>Without shoes.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Height cm]" inputmode="decimal" type="number" min="1" max="260" step="0.5" placeholder="e.g. 165" aria-label="Height cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-heel-height.svg' | asset_url }}')">Heel Height (cm)<small>Wedding shoe heel.</small><input form="{{ nil_form_id }}" name="properties[Heel Height cm]" inputmode="decimal" type="number" min="0" max="30" step="0.5" placeholder="e.g. 8" aria-label="Heel Height cm"></label>
+      <label style="--nil-measure-icon:url('{{ 'nil-icon-measurement-wedding-date.svg' | asset_url }}')">Wedding Date<small>Production timing.</small><input form="{{ nil_form_id }}" data-nil-required-measurement name="properties[Wedding Date]" type="date" aria-label="Wedding Date"></label>
+    </div>
+    <input form="{{ nil_form_id }}" type="hidden" name="properties[Order Type]" value="Custom Made Bridal Dress"><input form="{{ nil_form_id }}" type="hidden" name="properties[Product Title]" value="{{ nil_product_title | escape }}">
+    <a class="nil-v4-measure__whatsapp" href="https://wa.me/905334619373?text={{ 'Hello, I need help with measurements for ' | append: nil_product_title | append: '. ' | append: nil_product_url | url_encode }}" target="_blank" rel="noopener noreferrer">Need help? Send measurements on WhatsApp</a>
+  </details>
+  <details class="nil-v4-delivery" open><summary><strong><img src="{{ 'nil-icon-product-production-time.svg' | asset_url }}" alt="Production time icon" loading="lazy"> Production & Delivery</strong><span>6–8 weeks</span></summary><div><b>Production Time:</b> 6–8 weeks custom made bridal production.</div><div><b>Delivery Time:</b> 3–5 business days worldwide via express courier.</div></details>
+  <div class="nil-v4-product-trust"><div><img src="{{ 'nil-icon-product-secure-payment.svg' | asset_url }}" alt="Secure payment icon" loading="lazy"><strong>Secure Payment</strong><span>SSL encrypted</span></div><div><img src="{{ 'nil-icon-product-handcrafted-artisans.svg' | asset_url }}" alt="Handcrafted artisans icon" loading="lazy"><strong>Handcrafted</strong><span>By expert artisans</span></div><div><img src="{{ 'nil-icon-product-worldwide-shipping.svg' | asset_url }}" alt="Worldwide shipping icon" loading="lazy"><strong>Worldwide Shipping</strong><span>Express courier</span></div><div><img src="{{ 'nil-icon-product-size-support.svg' | asset_url }}" alt="Size support icon" loading="lazy"><strong>Size Support</strong><span>WhatsApp help</span></div></div>
+  <div class="nil-v4-product-actions"><span class="nil-v4-measure-lock" data-nil-measure-lock>Complete required measurements to add to cart.</span><a class="nil-v4-add" data-nil-measure-add hidden href="#" onclick="document.querySelector('[name=add]')?.click(); return false;">Add to Cart</a><a class="nil-v4-custom" href="{{ nil_custom_order_url }}?product={{ nil_product_title | url_encode }}&title={{ nil_product_title | url_encode }}&dress={{ nil_product_title | url_encode }}&handle={{ product.handle | url_encode }}&url={{ nil_product_url | url_encode }}&img={{ nil_product_img | url_encode }}" rel="noopener noreferrer">Request Custom Order</a></div>
+</div>
+<script>
+(() => {
+  const panel=document.currentScript.previousElementSibling;
+  if(!panel) return;
+  const required=[...panel.querySelectorAll('[data-nil-required-measurement]')];
+  const add=panel.querySelector('[data-nil-measure-add]');
+  const lock=panel.querySelector('[data-nil-measure-lock]');
+  const panelPrice=panel.querySelector('[data-nil-panel-price]');
+  function ready(){return required.every(i=>String(i.value||'').trim().length>0)}
+  function sync(){const ok=ready(); if(add) add.hidden=!ok; if(lock) lock.hidden=ok; panel.classList.toggle('is-measure-ready',ok)}
+  required.forEach(i=>{i.addEventListener('input',sync);i.addEventListener('change',sync);});
+  document.addEventListener('variant:update',event=>{
+    const variant=event.detail&&event.detail.resource;
+    if(!variant) return;
+    if(panelPrice&&typeof variant.price==='number'){
+      try{panelPrice.textContent=(variant.price/100).toLocaleString(undefined,{style:'currency',currency:'USD'});}catch(e){panelPrice.textContent='$'+(variant.price/100).toFixed(2);}
+    }
+  });
+  if(add){
+    add.addEventListener('click',event=>{
+      if(!ready()){event.preventDefault();sync();required.find(i=>!String(i.value||'').trim())?.focus();return;}
+    });
+  }
+  sync();
+})();
+</script>
+{% comment %} NIL V9 END {% endcomment %}

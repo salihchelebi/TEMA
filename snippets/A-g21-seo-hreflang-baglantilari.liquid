@@ -1,0 +1,14 @@
+{%- comment -%}
+A-G21 hreflang snippet. Head içinde tek kez render edilmelidir. Şu an güvenli kök URL fallback üretir.
+{%- endcomment -%}
+{%- capture g21_dil_raw -%}{%- render 'A-g21-dil-verisi', g21_mod: 'liste' -%}{%- endcapture -%}
+{%- assign g21_dil_satirlari = g21_dil_raw | strip | split: '||' -%}
+<link rel="alternate" hreflang="x-default" href="https://gelinlik21.com.tr">
+{%- for g21_satir in g21_dil_satirlari -%}
+  {%- assign g21_parca = g21_satir | strip | split: '|' -%}
+  {%- assign g21_iso = g21_parca[0] | strip -%}
+  {%- assign g21_kok = g21_parca[1] | strip -%}
+  {%- if g21_iso != blank and g21_kok != blank -%}
+    <link rel="alternate" hreflang="{{ g21_iso }}" href="{{ g21_kok }}">
+  {%- endif -%}
+{%- endfor -%}

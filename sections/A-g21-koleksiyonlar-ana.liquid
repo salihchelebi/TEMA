@@ -1,0 +1,413 @@
+{%- render 'A-g21-inline-stiller' -%}
+{%- render 'A-g21-filtre-temizleme' -%}
+
+{%- liquid
+  assign g21_section_id = section.id | handleize
+
+  assign g21_title = section.settings.g21_baslik | default: 'Wedding Dress Collections'
+  assign g21_description = section.settings.g21_aciklama
+  assign g21_cta = section.settings.g21_cta | default: 'View Collection'
+
+  assign g21_desktop_cols = section.settings.g21_desktop_kolon | default: 4 | plus: 0
+  assign g21_tablet_cols = section.settings.g21_tablet_kolon | default: 3 | plus: 0
+  assign g21_mobile_cols = section.settings.g21_mobil_kolon | default: '2' | plus: 0
+  assign g21_gap = section.settings.g21_gap | default: 18 | plus: 0
+
+  assign g21_max_width = section.settings.g21_max_width | default: 1440 | plus: 0
+  assign g21_padding_top = section.settings.g21_padding_top | default: 36 | plus: 0
+  assign g21_padding_bottom = section.settings.g21_padding_bottom | default: 48 | plus: 0
+  assign g21_padding_x = section.settings.g21_padding_x | default: 20 | plus: 0
+
+  assign g21_collection_count = 0
+
+  assign g21_whatsapp_phone = section.settings.g21_whatsapp_tel | default: '905334619373'
+  assign g21_whatsapp_phone = g21_whatsapp_phone | replace: '+', '' | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', ''
+-%}
+
+<div
+  class="a-g21-global-dil-cubugu a-g21-collections-language-top"
+  role="navigation"
+  aria-label="Collections language selector"
+  data-a-g21-global-language-bar="true"
+  data-a-g21-language-bar="active"
+  data-a-g21-collections-language-top="true"
+>
+  <div class="a-g21-global-dil-cubugu__ic">
+    {%- render 'A-g21-dil-secici' -%}
+  </div>
+</div>
+
+<section
+  id="a-g21-koleksiyonlar-ana-{{ g21_section_id }}"
+  class="a-g21-koleksiyonlar-ana"
+  data-a-g21-collections-main="true"
+  style="
+    --a-g21-cols-desktop: {{ g21_desktop_cols }};
+    --a-g21-cols-tablet: {{ g21_tablet_cols }};
+    --a-g21-cols-mobile: {{ g21_mobile_cols }};
+    --a-g21-grid-gap: {{ g21_gap }}px;
+    --a-g21-section-max-width: {{ g21_max_width }}px;
+    --a-g21-section-padding-top: {{ g21_padding_top }}px;
+    --a-g21-section-padding-bottom: {{ g21_padding_bottom }}px;
+    --a-g21-section-padding-x: {{ g21_padding_x }}px;
+  "
+>
+  <div class="a-g21-koleksiyonlar-ana__ic">
+    <div class="a-g21-koleksiyonlar-ana__baslik-kutu">
+      {%- if g21_title != blank -%}
+        <h1 class="a-g21-koleksiyonlar-ana__baslik">
+          {{- g21_title | escape -}}
+        </h1>
+      {%- endif -%}
+
+      {%- if g21_description != blank -%}
+        <p class="a-g21-koleksiyonlar-ana__aciklama">
+          {{- g21_description | escape -}}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <div
+      class="a-g21-koleksiyonlar-ana__grid"
+      data-a-g21-collections-grid="true"
+      role="list"
+      aria-label="{{ g21_title | escape }}"
+    >
+      {%- if section.settings.g21_koleksiyon_listesi != blank -%}
+        {%- for g21_collection in section.settings.g21_koleksiyon_listesi -%}
+          {%- if g21_collection != blank -%}
+            {%- assign g21_collection_count = g21_collection_count | plus: 1 -%}
+
+            {%- render 'A-g21-koleksiyon-karti',
+              collection: g21_collection,
+              g21_index: forloop.index,
+              g21_cta: g21_cta
+            -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+      {%- elsif section.settings.g21_otomatik_koleksiyonlari_goster -%}
+        {%- for g21_collection in collections -%}
+          {%- unless g21_collection.handle == 'frontpage' or g21_collection.handle == blank -%}
+            {%- assign g21_collection_count = g21_collection_count | plus: 1 -%}
+
+            {%- render 'A-g21-koleksiyon-karti',
+              collection: g21_collection,
+              g21_index: forloop.index,
+              g21_cta: g21_cta
+            -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- if section.settings.g21_whatsapp_goster -%}
+        {%- render 'A-g21-whatsapp-karti',
+          g21_phone: g21_whatsapp_phone,
+          g21_title: section.settings.g21_whatsapp_baslik,
+          g21_text: section.settings.g21_whatsapp_metin,
+          g21_button: section.settings.g21_whatsapp_buton,
+          g21_message: section.settings.g21_whatsapp_mesaj
+        -%}
+      {%- endif -%}
+    </div>
+
+    {%- if g21_collection_count == 0 -%}
+      <div class="a-g21-bos-durum" data-a-g21-empty-state="true">
+        {{- section.settings.g21_bos_durum_metni | default: 'No visible collections were found. Add collections in Shopify or select a collection list from the theme editor.' | escape -}}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a-g21-collections-language-top {
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(202, 164, 90, 0.55);
+    position: relative;
+    z-index: 80;
+    background: linear-gradient(180deg, #fffaf2, #fbf6ec);
+    box-shadow: 0 3px 18px rgba(143, 100, 28, 0.08);
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    direction: ltr;
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__liste {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__oge {
+    flex: 0 0 auto;
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 3px 8px;
+    border: 1px solid rgba(202, 164, 90, 0.38);
+    border-radius: 999px;
+    text-decoration: none;
+    color: #2c2112;
+    background: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__link.is-active {
+    border-color: #8f641c;
+    background: #fffaf2;
+    box-shadow: 0 0 0 2px rgba(202, 164, 90, 0.28);
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__bayrak {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    flex: 0 0 auto;
+  }
+
+  .a-g21-collections-language-top .a-g21-dil-secici__metin {
+    font-size: 12px;
+    line-height: 1;
+    color: #24170a;
+  }
+
+  @media screen and (max-width: 749px) {
+    .a-g21-collections-language-top {
+      min-height: 44px;
+      padding: 6px 8px;
+    }
+
+    .a-g21-collections-language-top .a-g21-dil-secici__liste {
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .a-g21-collections-language-top .a-g21-dil-secici__link {
+      padding: 2px;
+      min-height: 34px;
+    }
+
+    .a-g21-collections-language-top .a-g21-dil-secici__bayrak {
+      width: 30px;
+      height: 30px;
+    }
+
+    .a-g21-collections-language-top .a-g21-dil-secici__metin {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A-G21 Koleksiyonlar",
+  "tag": "section",
+  "class": "a-g21-koleksiyonlar-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Genel görünüm"
+    },
+    {
+      "type": "checkbox",
+      "id": "g21_dil_cubugu_goster",
+      "label": "Dil çubuğunu göster",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "g21_baslik",
+      "label": "Başlık",
+      "default": "Wedding Dress Collections"
+    },
+    {
+      "type": "textarea",
+      "id": "g21_aciklama",
+      "label": "Açıklama",
+      "default": "Explore bridal collections by silhouette, lace, modesty and luxury details."
+    },
+    {
+      "type": "text",
+      "id": "g21_cta",
+      "label": "Kart butonu",
+      "default": "View Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "g21_bos_durum_metni",
+      "label": "Boş durum metni",
+      "default": "No visible collections were found. Add collections in Shopify or select a collection list from the theme editor."
+    },
+    {
+      "type": "header",
+      "content": "Koleksiyon seçimi"
+    },
+    {
+      "type": "collection_list",
+      "id": "g21_koleksiyon_listesi",
+      "label": "Gösterilecek koleksiyonlar",
+      "limit": 50
+    },
+    {
+      "type": "checkbox",
+      "id": "g21_otomatik_koleksiyonlari_goster",
+      "label": "Seçim yapılmazsa tüm koleksiyonları otomatik göster",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid kolon ayarları"
+    },
+    {
+      "type": "range",
+      "id": "g21_desktop_kolon",
+      "label": "Masaüstü kolon",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "g21_tablet_kolon",
+      "label": "Tablet kolon",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "g21_mobil_kolon",
+      "label": "Mobil kolon",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 kolon"
+        },
+        {
+          "value": "2",
+          "label": "2 kolon"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "g21_gap",
+      "label": "Kart aralığı",
+      "min": 8,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Bölüm boşlukları"
+    },
+    {
+      "type": "range",
+      "id": "g21_max_width",
+      "label": "Maksimum genişlik",
+      "min": 960,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "g21_padding_top",
+      "label": "Üst boşluk",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "g21_padding_bottom",
+      "label": "Alt boşluk",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "g21_padding_x",
+      "label": "Sağ / sol iç boşluk",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp destek kartı"
+    },
+    {
+      "type": "checkbox",
+      "id": "g21_whatsapp_goster",
+      "label": "WhatsApp destek kartını göster",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "g21_whatsapp_tel",
+      "label": "WhatsApp telefonu",
+      "default": "905334619373"
+    },
+    {
+      "type": "text",
+      "id": "g21_whatsapp_baslik",
+      "label": "WhatsApp başlığı",
+      "default": "Private Bridal Consultation"
+    },
+    {
+      "type": "textarea",
+      "id": "g21_whatsapp_metin",
+      "label": "WhatsApp açıklaması",
+      "default": "Send your dream dress details and get personal support."
+    },
+    {
+      "type": "text",
+      "id": "g21_whatsapp_buton",
+      "label": "WhatsApp butonu",
+      "default": "Chat on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "g21_whatsapp_mesaj",
+      "label": "WhatsApp mesajı",
+      "default": "Hello, I would like bridal consultation from Gelinlik21."
+    }
+  ],
+  "presets": [
+    {
+      "name": "A-G21 Koleksiyonlar"
+    }
+  ]
+}
+{% endschema %}

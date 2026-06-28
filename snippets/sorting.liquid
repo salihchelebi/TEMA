@@ -1,0 +1,183 @@
+{%- doc -%}
+  NIL 100 REVISION — sticky visible sort chips.
+  Replaces dropdown/select sorting UI with always-visible horizontal chips.
+  Keeps Shopify facet form integration by using radio inputs named `sort_by`.
+  Parameters:
+  @param {object} results
+  @param {string} sort_by
+  @param {string} filter_style
+  @param {string} [suffix]
+  @param {string} [sort_position]
+  @param {boolean} should_use_select_on_mobile
+  @param {string} section_id
+{%- enddoc -%}
+
+<sorting-filter-component
+  class="sorting-filter nil-sort-chipbar-wrapper{% if filter_style == 'horizontal' %} sorting-filter__horizontal{% endif %}"
+  on:change="/updateFilterAndSorting"
+  on:keydown="/handleKeyDown"
+  {% if sort_position != blank %}
+    data-testid="sorting-filter-component-{{ sort_position }}"
+  {% endif %}
+  data-should-use-select-on-mobile="false"
+>
+  {% liquid
+    assign active_sort_by = sort_by | default: results.default_sort_by
+  %}
+
+  <nav
+    class="nil-sort-chipbar"
+    aria-label="Sort wedding dresses"
+    data-nil-sort-chipbar
+  >
+    <span class="nil-sort-chipbar__title">Sort</span>
+
+    <div class="nil-sort-chipbar__track" role="radiogroup" aria-label="Sort products">
+      {% for option in results.sort_options %}
+        {% liquid
+          assign short_label = option.name
+          case option.value
+            when 'manual'
+              assign short_label = 'Featured'
+            when 'relevance'
+              assign short_label = 'Relevant'
+            when 'best-selling'
+              assign short_label = 'Best Seller'
+            when 'title-ascending'
+              assign short_label = 'A–Z'
+            when 'title-descending'
+              assign short_label = 'Z–A'
+            when 'price-ascending'
+              assign short_label = 'Price ↑'
+            when 'price-descending'
+              assign short_label = 'Price ↓'
+            when 'created-ascending'
+              assign short_label = 'Oldest'
+            when 'created-descending'
+              assign short_label = 'Newest'
+          endcase
+        %}
+        <input
+          type="radio"
+          name="sort_by"
+          id="sort-chip-{{ option.value | handleize }}-{{ section_id }}-{{ suffix | default: 'default' }}"
+          value="{{ option.value }}"
+          class="nil-sort-chipbar__input visually-hidden"
+          data-option-name="{{ short_label | escape }}"
+          {% if suffix != blank %}
+            form="FacetFiltersForm--{{ section_id }}-{{ suffix }}"
+          {% endif %}
+          {% if option.value == active_sort_by %}
+            checked
+          {% endif %}
+        >
+        <label
+          class="nil-sort-chipbar__chip"
+          for="sort-chip-{{ option.value | handleize }}-{{ section_id }}-{{ suffix | default: 'default' }}"
+          title="{{ option.name | escape }}"
+        >
+          {{ short_label }}
+        </label>
+      {% endfor %}
+    </div>
+  </nav>
+</sorting-filter-component>
+
+{% stylesheet %}
+  .nil-sort-chipbar-wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  .nil-sort-chipbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    padding: 10px 12px;
+    background: linear-gradient(180deg, #fffdf8 0%, #fff7ec 100%);
+    border: 1px solid rgba(189, 141, 74, 0.36);
+    box-shadow: 0 12px 34px rgba(43, 28, 15, 0.08);
+    position: sticky;
+    top: calc(var(--header-height, 88px) + 6px);
+    z-index: 35;
+  }
+
+  .nil-sort-chipbar__title {
+    font: 900 11px/1 var(--font-body--family, Inter, system-ui, sans-serif);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #8a5d28;
+    white-space: nowrap;
+  }
+
+  .nil-sort-chipbar__track {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 2px 2px 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #bd8d4a #fff7ec;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nil-sort-chipbar__chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 13px;
+    border: 1px solid rgba(189, 141, 74, .42);
+    background: #fff;
+    color: #17110d;
+    border-radius: 999px;
+    box-shadow: 0 7px 18px rgba(43, 28, 15, .05);
+    cursor: pointer;
+    user-select: none;
+    font: 900 10.5px/1 var(--font-body--family, Inter, system-ui, sans-serif);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+
+  .nil-sort-chipbar__chip:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(17, 17, 17, .16);
+  }
+
+  .nil-sort-chipbar__input:checked + .nil-sort-chipbar__chip {
+    background: linear-gradient(135deg, #bd8d4a, #8a5d28);
+    color: #fff;
+    border-color: #8a5d28;
+    box-shadow: 0 12px 30px rgba(189, 141, 74, .22);
+  }
+
+  .nil-sort-chipbar__input:focus-visible + .nil-sort-chipbar__chip {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 749px) {
+    .nil-sort-chipbar {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 9px;
+      top: 0;
+    }
+    .nil-sort-chipbar__title {
+      padding-inline: 4px;
+    }
+    .nil-sort-chipbar__chip {
+      min-height: 36px;
+      padding-inline: 12px;
+      font-size: 10px;
+    }
+  }
+{% endstylesheet %}

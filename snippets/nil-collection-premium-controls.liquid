@@ -1,0 +1,72 @@
+{% liquid
+  assign nil_count = results_size | default: 0
+  assign nil_sort_by = results.sort_by | default: results.default_sort_by | default: 'manual'
+  assign nil_default_cols = default_grid_columns | default: 3
+  assign nil_enable_grid = enable_grid_selector | default: true
+
+  assign show_quick_chips = true
+  assign clear_text = 'Clear All'
+  assign sort_label = 'SORT BY:'
+  assign columns_label = 'COLUMNS:'
+
+  if section and section.settings
+    if section.settings.show_quick_filter_chips == false
+      assign show_quick_chips = false
+    endif
+    if section.settings.clear_all_text != blank
+      assign clear_text = section.settings.clear_all_text
+    endif
+    if section.settings.sort_by_label != blank
+      assign sort_label = section.settings.sort_by_label
+    endif
+    if section.settings.columns_label != blank
+      assign columns_label = section.settings.columns_label
+    endif
+  endif
+%}
+<section class="nil-premium-controls nil-premium-controls--google-luxury" data-nil-premium-controls data-source-type="{{ source_type | default: 'collection' }}">
+  {% if show_quick_chips %}
+    <div class="nil-quick-filter-strip" data-nil-quick-filter-strip aria-label="Quick filters">
+      {% assign quick_rendered = 0 %}
+      {% for block in blocks %}
+        {% if block.type == 'quick_filter_chip' and block.settings.enabled %}
+          {% assign quick_rendered = quick_rendered | plus: 1 %}
+          <button type="button" class="nil-quick-filter-chip" data-nil-filter-chip data-filter-key="{{ block.settings.key | escape }}" data-filter-category="{{ block.settings.category | escape }}" style="--nil-chip-accent: {{ block.settings.chip_color }};" aria-pressed="false" {{ block.shopify_attributes }}>
+            {% render 'nil-local-svg-icon', icon: block.settings.icon, size: 16 %}<span>{{ block.settings.label }}</span>
+          </button>
+        {% endif %}
+      {% endfor %}
+      {% if quick_rendered == 0 %}
+        {% assign default_quick = 'All Dresses|all|tag,New Arrivals|new-arrivals|tag,Best Sellers|best-seller|tag,Lace|lace|fabrics,Ball Gown|ball-gown|silhouette,Mermaid|mermaid|silhouette,A-Line|a-line|silhouette,Off Shoulder|off-shoulder|sleeve-length,Long Sleeve|long-sleeve|sleeve-length,Minimal|minimal|tag' | split: ',' %}
+        {% for item in default_quick %}{% assign p = item | split: '|' %}
+          <button type="button" class="nil-quick-filter-chip" data-nil-filter-chip data-filter-key="{{ p[1] }}" data-filter-category="{{ p[2] }}" aria-pressed="false"><span>{{ p[0] }}</span></button>
+        {% endfor %}
+      {% endif %}
+      <button type="button" class="nil-quick-filter-chip nil-quick-filter-chip--clear" data-nil-clear-all>{{ clear_text }}</button>
+    </div>
+  {% endif %}
+
+  <div class="nil-premium-results-sort nil-premium-results-sort--top">
+    <strong><span data-nil-results-count>{{ nil_count }}</span> RESULTS</strong>
+    <div class="nil-premium-controls__scroll">
+      <nav class="nil-premium-sort" aria-label="Sort by">
+        <span>{{ sort_label }}</span>
+        <a data-nil-sort-link data-sort-value="manual" class="{% if nil_sort_by == 'manual' %}is-active{% endif %}" href="?sort_by=manual">Featured</a>
+        <a data-nil-sort-link data-sort-value="relevance" class="{% if nil_sort_by == 'relevance' %}is-active{% endif %}" href="?sort_by=relevance">Relevant</a>
+        <a data-nil-sort-link data-sort-value="best-selling" class="{% if nil_sort_by == 'best-selling' %}is-active{% endif %}" href="?sort_by=best-selling">Best Seller</a>
+        <a data-nil-sort-link data-sort-value="title-ascending" class="{% if nil_sort_by == 'title-ascending' %}is-active{% endif %}" href="?sort_by=title-ascending">A–Z</a>
+        <a data-nil-sort-link data-sort-value="title-descending" class="{% if nil_sort_by == 'title-descending' %}is-active{% endif %}" href="?sort_by=title-descending">Z–A</a>
+        <a data-nil-sort-link data-sort-value="price-ascending" class="{% if nil_sort_by == 'price-ascending' %}is-active{% endif %}" href="?sort_by=price-ascending">Price ↑</a>
+        <a data-nil-sort-link data-sort-value="price-descending" class="{% if nil_sort_by == 'price-descending' %}is-active{% endif %}" href="?sort_by=price-descending">Price ↓</a>
+        <a data-nil-sort-link data-sort-value="created-ascending" class="{% if nil_sort_by == 'created-ascending' %}is-active{% endif %}" href="?sort_by=created-ascending">Oldest</a>
+        <a data-nil-sort-link data-sort-value="created-descending" class="{% if nil_sort_by == 'created-descending' %}is-active{% endif %}" href="?sort_by=created-descending">Newest</a>
+      </nav>
+      {% if nil_enable_grid %}
+      <div class="nil-grid-selector" aria-label="Product grid columns" data-nil-grid-selector>
+        <span>{{ columns_label }}</span>
+        {% for i in (2..5) %}<button type="button" data-nil-grid-btn data-cols="{{ i }}" class="{% if i == nil_default_cols %}is-active{% endif %}" aria-label="{{ i }} columns">{{ i }}</button>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

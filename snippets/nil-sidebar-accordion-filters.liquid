@@ -1,0 +1,114 @@
+{% liquid
+  assign nil_count = results_size | default: 0
+  assign filter_title = 'Refine Your Search'
+  assign clear_text = 'Clear All'
+  assign view_text = 'View Results'
+  assign result_label = 'results'
+  assign filter_layout_style = 'google_luxury'
+  assign sticky_sidebar = true
+  assign sidebar_top_offset = 90
+
+  if section and section.settings
+    if section.settings.filter_title != blank
+      assign filter_title = section.settings.filter_title
+    endif
+    if section.settings.clear_all_text != blank
+      assign clear_text = section.settings.clear_all_text
+    endif
+    if section.settings.view_results_button_text != blank
+      assign view_text = section.settings.view_results_button_text
+    endif
+    if section.settings.result_count_label != blank
+      assign result_label = section.settings.result_count_label
+    endif
+    if section.settings.filter_layout_style != blank
+      assign filter_layout_style = section.settings.filter_layout_style
+    endif
+    if section.settings.sticky_sidebar == false
+      assign sticky_sidebar = false
+    endif
+    if section.settings.sidebar_top_offset != blank
+      assign sidebar_top_offset = section.settings.sidebar_top_offset
+    endif
+  endif
+%}
+<aside class="nil-google-filter-sidebar nil-sidebar-accordion nil-sidebar-accordion--{{ filter_layout_style }}{% if sticky_sidebar %} is-sticky{% endif %}" data-nil-sidebar-filters aria-label="{{ filter_title | escape }}" style="--nil-sidebar-top-offset: {{ sidebar_top_offset }}px;">
+  <div class="nil-sidebar-accordion__top nil-google-filter-sidebar__top">
+    <div>
+      <h2>{{ filter_title }}</h2>
+      <p><span data-nil-results-count>{{ nil_count }}</span> {{ result_label }}</p>
+    </div>
+    <button type="button" class="nil-sidebar-clear" data-nil-clear-all>{{ clear_text }}</button>
+  </div>
+
+  {% assign rendered_blocks = 0 %}
+  {% for block in blocks %}
+    {% if block.type == 'filter_group' and block.settings.enabled %}
+      {% assign group_label_down = block.settings.label | downcase %}
+      {% unless group_label_down contains 'care' %}
+        {% assign group_key = block.settings.key | default: block.settings.label | handleize %}
+        {% assign group_type = block.settings.group_type | default: 'checkbox' %}
+        {% assign options = block.settings.options_list | newline_to_br | split: '<br />' %}
+        <details class="nil-filter-group nil-filter-accordion nil-filter-group--{{ group_type }}" data-nil-filter-group data-filter-category="{{ group_key | escape }}" {% if block.settings.open_by_default %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="nil-filter-group__summary">
+            <span class="nil-filter-group__title">{% render 'nil-local-svg-icon', icon: block.settings.icon, size: 18 %} {{ block.settings.label }}</span>
+            <span class="nil-filter-group__plus">+</span>
+          </summary>
+          <div class="nil-filter-group__body nil-filter-accordion__body{% if group_type == 'price_range' %} nil-price-range-list{% endif %}">
+            {% for line in options limit: block.settings.max_visible_options %}
+              {% assign item = line | strip %}
+              {% if item != blank %}
+                {% assign parts = item | split: '|' %}
+                {% assign option_label = parts[0] | strip %}
+                {% assign option_key = parts[1] | default: option_label | strip | handleize %}
+                {% assign option_color = parts[2] | default: '' | strip %}
+                {% assign option_min = parts[3] | default: '' | strip %}
+                {% assign option_max = parts[4] | default: '' | strip %}
+                {% if group_type == 'price_range' %}
+                  <button type="button" class="nil-price-range-button" data-nil-price-range data-min="{{ option_min | default: 0 }}" data-max="{{ option_max | default: 999999 }}" aria-pressed="false">{{ option_label }}</button>
+                {% elsif group_type == 'color_swatch' %}
+                  <button type="button" class="nil-color-swatch-button" data-nil-filter-chip data-filter-category="{{ group_key | escape }}" data-filter-key="{{ option_key | escape }}" data-filter-label="{{ option_label | escape }}" style="--nil-swatch-color: {{ option_color | default: '#e8d1a5' }};" aria-pressed="false"><span></span><em>{{ option_label }}</em></button>
+                {% elsif group_type == 'size_boxes' %}
+                  <button type="button" class="nil-size-filter-button" data-nil-filter-chip data-filter-category="{{ group_key | escape }}" data-filter-key="{{ option_key | escape }}" data-filter-label="{{ option_label | escape }}" aria-pressed="false">{{ option_label }}</button>
+                {% else %}
+                  <button type="button" class="nil-filter-option" data-nil-filter-chip data-filter-category="{{ group_key | escape }}" data-filter-key="{{ option_key | escape }}" data-filter-label="{{ option_label | escape }}" aria-pressed="false"><span class="nil-filter-checkbox"></span><span>{{ option_label }}</span></button>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </details>
+        {% assign rendered_blocks = rendered_blocks | plus: 1 %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+
+  {% if rendered_blocks == 0 %}
+    <details class="nil-filter-group nil-filter-accordion nil-filter-group--price_range" open>
+      <summary class="nil-filter-group__summary"><span class="nil-filter-group__title">Price</span><span class="nil-filter-group__plus">+</span></summary>
+      <div class="nil-filter-group__body nil-filter-accordion__body nil-price-range-list">
+        <button type="button" class="nil-price-range-button" data-nil-price-range data-min="0" data-max="1000" aria-pressed="false">Under $1,000</button>
+        <button type="button" class="nil-price-range-button" data-nil-price-range data-min="1000" data-max="1250" aria-pressed="false">$1,000 – $1,250</button>
+        <button type="button" class="nil-price-range-button" data-nil-price-range data-min="1250" data-max="1500" aria-pressed="false">$1,250 – $1,500</button>
+        <button type="button" class="nil-price-range-button" data-nil-price-range data-min="1500" data-max="2000" aria-pressed="false">$1,500 – $2,000</button>
+        <button type="button" class="nil-price-range-button" data-nil-price-range data-min="2000" data-max="999999" aria-pressed="false">$2,000+</button>
+      </div>
+    </details>
+    {% assign fallback_groups = 'colors:Colors:color_swatch:Ivory|ivory|#f8f0df,White|white|#ffffff,Champagne|champagne|#e8d1a5,Emerald Green|emerald-green|#046846,Navy Blue|navy-blue|#0b1f4d,Crimson Red|crimson-red|#9b111e,Teal Turquoise|teal-turquoise|#008c95,Dusty Rose|dusty-rose|#c08081,Deep Purple|deep-purple|#4b216d,Gold Champagne|gold-champagne|#d6b35a__silhouette:Silhouette:checkbox:A-Line|a-line,Mermaid|mermaid,Ball Gown|ball-gown,Princess|princess,Sheath|sheath,Fit and Flare|fit-and-flare__length:Length:checkbox:Cathedral Train|cathedral-train,Chapel Train|chapel-train,Floor Length|floor-length,Midi|midi,Ankle|ankle__fabrics:Fabrics:checkbox:Lace|lace,Tulle|tulle,Satin|satin,Mikado|mikado,Chiffon|chiffon,Organza|organza__neckline:Neckline:checkbox:Sweetheart|sweetheart,V-Neck|v-neck,Strapless|strapless,High Neck|high-neck,Square Neck|square-neck,Halter Neck|halter-neck,Collar|collar__sleeve-length:Sleeve Length:checkbox:Sleeveless|sleeveless,Short Sleeve|short-sleeve,Long Sleeve|long-sleeve,Off Shoulder|off-shoulder,Cap Sleeves|cap-sleeves__size:Size:size_boxes:40|40,42|42,44|44,46|46,48|48,50|50,52|52,54|54,56|56,58|58__body-type:Body Type:checkbox:Standard|standard,Plus Size|plus-size__embellishment:Embellishment:checkbox:Lace|lace,Applique|applique,Beaded|beaded,Sequins|sequins,Pearl|pearl,Crystal|crystal,Bow|bow,3D Floral|3d-floral__back-style:Back Style:checkbox:Open Back|open-back,Closed Back|closed-back,V Back|v-back,Corset Back|corset-back,Illusion Back|illusion-back' | split: '__' %}
+    {% for group in fallback_groups %}
+      {% assign group_parts = group | split: ':' %}
+      {% assign gkey = group_parts[0] %}{% assign glabel = group_parts[1] %}{% assign gtype = group_parts[2] %}{% assign opts = group_parts[3] | split: ',' %}
+      <details class="nil-filter-group nil-filter-accordion nil-filter-group--{{ gtype }}" data-nil-filter-group data-filter-category="{{ gkey }}" {% if forloop.index < 4 %}open{% endif %}>
+        <summary class="nil-filter-group__summary"><span class="nil-filter-group__title">{{ glabel }}</span><span class="nil-filter-group__plus">+</span></summary>
+        <div class="nil-filter-group__body nil-filter-accordion__body">
+          {% for opt in opts %}{% assign p = opt | split: '|' %}{% assign ol = p[0] | strip %}{% assign ok = p[1] | default: ol | strip | handleize %}{% assign oc = p[2] | default: '' | strip %}
+            {% if gtype == 'color_swatch' %}<button type="button" class="nil-color-swatch-button" data-nil-filter-chip data-filter-category="{{ gkey }}" data-filter-key="{{ ok }}" data-filter-label="{{ ol }}" style="--nil-swatch-color: {{ oc | default: '#e8d1a5' }};" aria-pressed="false"><span></span><em>{{ ol }}</em></button>
+            {% elsif gtype == 'size_boxes' %}<button type="button" class="nil-size-filter-button" data-nil-filter-chip data-filter-category="{{ gkey }}" data-filter-key="{{ ok }}" data-filter-label="{{ ol }}" aria-pressed="false">{{ ol }}</button>
+            {% else %}<button type="button" class="nil-filter-option" data-nil-filter-chip data-filter-category="{{ gkey }}" data-filter-key="{{ ok }}" data-filter-label="{{ ol }}" aria-pressed="false"><span class="nil-filter-checkbox"></span><span>{{ ol }}</span></button>{% endif %}
+          {% endfor %}
+        </div>
+      </details>
+    {% endfor %}
+  {% endif %}
+
+  <button type="button" class="nil-sidebar-view-results" data-nil-view-results>{{ view_text }}</button>
+</aside>

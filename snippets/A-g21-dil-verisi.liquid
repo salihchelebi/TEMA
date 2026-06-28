@@ -1,0 +1,35 @@
+{%- comment -%}
+A-G21 merkezi dil verisi. Bu snippet HTML üretmez; çağıran dosyalar liste veya aktif dil çıktısını capture ile alır.
+Kapsam: gelinlik21.com.tr tek tema, subdomain tabanlı çok dil fallback zinciri.
+{%- endcomment -%}
+{%- liquid
+  assign g21_mod = g21_mod | default: 'liste'
+  assign g21_host = request.host | downcase
+  assign g21_shopify_locale = localization.language.iso_code | default: request.locale.iso_code | default: 'en' | downcase
+  assign g21_aktif_dil = g21_shopify_locale
+
+  if g21_host contains 'tr.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'tr'
+  elsif g21_host contains 'ar.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'ar'
+  elsif g21_host contains 'fr.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'fr'
+  elsif g21_host contains 'de.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'de'
+  elsif g21_host contains 'nl.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'nl'
+  elsif g21_host contains 'es.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'es'
+  elsif g21_host contains 'ru.gelinlik21.com.tr'
+    assign g21_aktif_dil = 'ru'
+  elsif g21_host contains 'gelinlik21.com.tr'
+    assign g21_aktif_dil = 'en'
+  endif
+
+  unless 'en,tr,ar,fr,nl,de,es,ru,fi,it,pl,sv' contains g21_aktif_dil
+    assign g21_aktif_dil = 'en'
+  endunless
+-%}
+{%- if g21_mod == 'aktif' -%}{{- g21_aktif_dil -}}{%- else -%}
+en|https://gelinlik21.com.tr|gb|English|English|oncelikli|ltr||tr|https://tr.gelinlik21.com.tr|tr|Turkish|Türkçe|oncelikli|ltr||ar|https://ar.gelinlik21.com.tr|sa|Arabic|العربية|oncelikli|rtl||fr|https://fr.gelinlik21.com.tr|fr|French|Français|oncelikli|ltr||nl|https://nl.gelinlik21.com.tr|nl|Dutch|Nederlands|oncelikli|ltr||de|https://de.gelinlik21.com.tr|de|German|Deutsch|oncelikli|ltr||es|https://es.gelinlik21.com.tr|es|Spanish|Español|oncelikli|ltr||ru|https://ru.gelinlik21.com.tr|ru|Russian|Русский|oncelikli|ltr||fi|https://gelinlik21.com.tr|fi|Finnish|Suomi|ek|ltr||it|https://gelinlik21.com.tr|it|Italian|Italiano|ek|ltr||pl|https://gelinlik21.com.tr|pl|Polish|Polski|ek|ltr||sv|https://gelinlik21.com.tr|se|Swedish|Svenska|ek|ltr
+{%- endif -%}

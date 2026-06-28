@@ -1,0 +1,45 @@
+{% comment %} NIL V30 — WhatsApp consultation row. Product links and product form remain untouched. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+  assign nil_product_title = nil_product.title | default: 'NIL Wedding Dress'
+  assign nil_product_url = shop.url | append: nil_product.url
+  assign nil_phone = section.settings.nil_v30_whatsapp_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign nil_message = section.settings.nil_v30_whatsapp_message | default: 'Hello, I need help with sizing and customization for this wedding dress:'
+  assign nil_wa_text = nil_message | append: ' ' | append: nil_product_title | append: ' ' | append: nil_product_url
+  assign nil_custom_icon = section.settings.nil_v30_whatsapp_icon_custom
+%}
+{% if nil_product != blank and section.settings.nil_v30_enable_whatsapp %}
+  <a
+    class="nil-v30-whatsapp nil-v30-animate nil-v30-animate--{{ section.settings.nil_v30_whatsapp_animation | default: 'slide-up' }}"
+    href="https://wa.me/{{ nil_phone }}?text={{ nil_wa_text | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ section.settings.nil_v30_whatsapp_title | escape }}"
+    style="
+      --nil-v30-wa-bg: {{ section.settings.nil_v30_whatsapp_bg }};
+      --nil-v30-wa-text: {{ section.settings.nil_v30_whatsapp_text_color }};
+      --nil-v30-wa-subtext: {{ section.settings.nil_v30_whatsapp_subtext_color }};
+      --nil-v30-wa-border: {{ section.settings.nil_v30_whatsapp_border_color }};
+      --nil-v30-wa-radius: {{ section.settings.nil_v30_whatsapp_radius }}px;
+      --nil-v30-wa-border-width: {{ section.settings.nil_v30_whatsapp_border_width }}px;
+      --nil-v30-wa-padding-y: {{ section.settings.nil_v30_whatsapp_padding_y }}px;
+      --nil-v30-wa-padding-x: {{ section.settings.nil_v30_whatsapp_padding_x }}px;
+      --nil-v30-wa-icon-size: {{ section.settings.nil_v30_whatsapp_icon_size }}px;
+      --nil-v30-wa-title-size: {{ section.settings.nil_v30_whatsapp_title_size }}px;
+      --nil-v30-wa-subtitle-size: {{ section.settings.nil_v30_whatsapp_subtitle_size }}px;
+    "
+  >
+    <span class="nil-v30-whatsapp__icon" aria-hidden="true">
+      {% if nil_custom_icon != blank %}
+        {{ nil_custom_icon | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', widths: '40, 80, 120' }}
+      {% else %}
+        <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-15-whatsapp-ikon-danismanlik-iletisim-icin.png?v=1781505374" alt="" loading="lazy" width="72" height="72">
+      {% endif %}
+    </span>
+    <span class="nil-v30-whatsapp__copy">
+      <strong>{{ section.settings.nil_v30_whatsapp_title | default: 'WHATSAPP CONSULTATION' }}</strong>
+      <small>{{ section.settings.nil_v30_whatsapp_subtitle | default: 'Chat with our bridal stylist for personalized advice' }}</small>
+    </span>
+    <span class="nil-v30-whatsapp__arrow" aria-hidden="true">›</span>
+  </a>
+{% endif %}

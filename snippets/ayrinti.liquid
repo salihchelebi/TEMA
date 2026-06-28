@@ -1,0 +1,130 @@
+{{ 'ayrinti.css' | asset_url | stylesheet_tag }}
+{{ 'ayrinti.js' | asset_url | script_tag }}
+
+{% liquid
+  assign first_video = blank
+  assign active_id = product.featured_media.id
+
+  for media in product.media
+    if media.media_type == 'video'
+      assign first_video = media
+      assign active_id = media.id
+      break
+    endif
+  endfor
+
+  assign fallback_poster = blank
+  if first_video.preview_image != blank
+    assign fallback_poster = first_video.preview_image | image_url: width: 760
+  elsif product.featured_media.preview_image != blank
+    assign fallback_poster = product.featured_media.preview_image | image_url: width: 760
+  endif
+
+  assign fallback_poster_big = blank
+  if first_video.preview_image != blank
+    assign fallback_poster_big = first_video.preview_image | image_url: width: 2200
+  elsif product.featured_media.preview_image != blank
+    assign fallback_poster_big = product.featured_media.preview_image | image_url: width: 2200
+  endif
+
+  assign thumb_one = fallback_poster
+  assign thumb_two = fallback_poster
+  assign thumb_three = fallback_poster
+  assign img_count = 0
+
+  for media in product.media
+    unless media.media_type == 'video'
+      if media.preview_image != blank
+        assign img_count = img_count | plus: 1
+        if img_count == 1
+          assign thumb_one = media.preview_image | image_url: width: 620
+        elsif img_count == 2
+          assign thumb_two = media.preview_image | image_url: width: 620
+        elsif img_count == 3
+          assign thumb_three = media.preview_image | image_url: width: 620
+        endif
+      endif
+    endunless
+  endfor
+
+  assign alt_text = first_video.alt | default: product.title | escape
+%}
+
+<ayrinti-video-gallery
+  class="ayrinti-gallery"
+  data-closer-loops="2"
+  data-closer-start="1.25"
+  data-closer-end="2"
+  data-product-title="{{ product.title | escape }}"
+  data-material-source="{{ product.title | append: ' ' | append: product.type | append: ' ' | append: product.tags | escape }}"
+>
+  <div class="ayrinti-gallery__layout">
+    <div class="ayrinti-gallery__thumbs" data-ayrinti-thumbs>
+      {% if first_video != blank %}
+        <button type="button" class="ayrinti-gallery__thumb ayrinti-gallery__thumb--video is-active" data-ayrinti-thumb data-ayrinti-video-thumb data-media-id="{{ first_video.id }}" data-media-type="video" data-effect="slow" data-start-ratio="0" aria-label="Cinematic video">
+          <span class="ayrinti-gallery__thumb-inner">
+            {% if thumb_one != blank %}<img src="{{ thumb_one }}" alt="{{ alt_text }} - cinematic" width="150" height="200" loading="eager">{% else %}<span class="ayrinti-gallery__thumb-fallback"></span>{% endif %}
+            <span class="ayrinti-gallery__effect-label">CINEMATIC</span><span class="ayrinti-gallery__play-icon">▶</span>
+          </span>
+        </button>
+
+        <button type="button" class="ayrinti-gallery__thumb ayrinti-gallery__thumb--video" data-ayrinti-thumb data-ayrinti-video-thumb data-media-id="{{ first_video.id }}" data-media-type="video" data-effect="zoom" data-start-ratio="0" aria-label="Closer look video">
+          <span class="ayrinti-gallery__thumb-inner">
+            {% if thumb_two != blank %}<img src="{{ thumb_two }}" alt="{{ alt_text }} - closer look" width="150" height="200" loading="eager">{% else %}<span class="ayrinti-gallery__thumb-fallback"></span>{% endif %}
+            <span class="ayrinti-gallery__effect-label">CLOSER LOOK</span><span class="ayrinti-gallery__play-icon">▶</span>
+          </span>
+        </button>
+
+        <button type="button" class="ayrinti-gallery__thumb ayrinti-gallery__thumb--video" data-ayrinti-thumb data-ayrinti-video-thumb data-media-id="{{ first_video.id }}" data-media-type="video" data-effect="materials" data-start-ratio="0.42" aria-label="Fabric detail video">
+          <span class="ayrinti-gallery__thumb-inner">
+            {% if thumb_three != blank %}<img src="{{ thumb_three }}" alt="{{ alt_text }} - fabric detail" width="150" height="200" loading="eager">{% else %}<span class="ayrinti-gallery__thumb-fallback"></span>{% endif %}
+            <span class="ayrinti-gallery__effect-label">FABRIC DETAIL</span><span class="ayrinti-gallery__play-icon">▶</span>
+          </span>
+        </button>
+      {% endif %}
+
+      {% for media in product.media %}
+        {% unless media.media_type == 'video' %}
+          {% if media.preview_image != blank %}
+            <button type="button" class="ayrinti-gallery__thumb" data-ayrinti-thumb data-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}" aria-label="View product media">
+              <span class="ayrinti-gallery__thumb-inner">
+                <img src="{{ media.preview_image | image_url: width: 620 }}" alt="{{ media.alt | default: product.title | escape }}" width="150" height="200" loading="lazy">
+              </span>
+            </button>
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+
+    <div class="ayrinti-gallery__stage" data-ayrinti-stage>
+      {% for media in product.media %}
+        {% if media.media_type == 'video' %}
+          {% assign poster_big = fallback_poster_big %}
+          {% if media.preview_image != blank %}{% assign poster_big = media.preview_image | image_url: width: 2200 %}{% endif %}
+          <div class="ayrinti-gallery__slide ayrinti-gallery__slide--video {% if media.id == active_id %}is-active{% endif %}" data-ayrinti-slide data-media-id="{{ media.id }}" data-media-type="video">
+            <div class="ayrinti-gallery__video-shell" data-ayrinti-video-shell>
+              {% if poster_big != blank %}<img class="ayrinti-gallery__poster" src="{{ poster_big }}" alt="{{ media.alt | default: product.title | escape }}" width="1200" height="1600" loading="eager">{% endif %}
+              <video class="ayrinti-gallery__video" data-ayrinti-video data-media-id="{{ media.id }}" {% if poster_big != blank %}poster="{{ poster_big }}"{% endif %} muted autoplay playsinline preload="metadata">
+                {% for source in media.sources %}<source src="{{ source.url }}" type="{{ source.mime_type }}" data-width="{{ source.width | default: 0 }}" data-height="{{ source.height | default: 0 }}">{% endfor %}
+              </video>
+              <div class="ayrinti-material-strip" data-material-strip></div>
+              <button type="button" class="ayrinti-gallery__manual-play" data-ayrinti-manual-play aria-label="Play video">▶</button>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% for media in product.media %}
+        {% unless media.media_type == 'video' %}
+          <div class="ayrinti-gallery__slide {% if media.id == active_id %}is-active{% endif %}" data-ayrinti-slide data-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}">
+            {% if media.media_type == 'image' and media.preview_image != blank %}
+              <img class="ayrinti-gallery__image" src="{{ media.preview_image | image_url: width: 1800 }}" alt="{{ media.alt | default: product.title | escape }}" width="{{ media.preview_image.width }}" height="{{ media.preview_image.height }}" loading="lazy">
+            {% else %}
+              <div class="ayrinti-gallery__other-media">{{ media | media_tag }}</div>
+            {% endif %}
+          </div>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</ayrinti-video-gallery>

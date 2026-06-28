@@ -1,0 +1,367 @@
+{%- comment -%}
+  A-G21 GLOBAL LANGUAGE BAR
+  Kaynak veri: snippets/A-g21-dil-verisi.liquid
+  HTML üretici: snippets/A-g21-dil-secici.liquid
+  Amaç: Dil çubuğunu header announcement bölümünün en tepesinde göstermek.
+{%- endcomment -%}
+
+{%- render 'A-g21-inline-stiller' -%}
+{%- render 'A-g21-filtre-temizleme' -%}
+
+<div
+  id="A-G21-HeaderLanguageBar"
+  class="a-g21-global-dil-cubugu"
+  role="navigation"
+  aria-label="Store language selector"
+  data-a-g21-global-language-bar="true"
+  data-a-g21-language-bar="active"
+>
+  <div class="a-g21-global-dil-cubugu__ic">
+    {%- render 'A-g21-dil-secici' -%}
+  </div>
+</div>
+
+{% if section.blocks.size > 1 %}
+  <script
+    src="{{ 'announcement-bar.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+{% endif %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+<aside
+  class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;"
+>
+  {% liquid
+    assign autoplay = false
+    assign show_arrows = false
+
+    if section.blocks.size > 1
+      assign autoplay = true
+      assign show_arrows = true
+    endif
+  %}
+
+  <announcement-bar-component
+    class="announcement-bar__slider"
+    {% if autoplay == true %}
+      autoplay="{{ section.settings.speed }}" aria-live="polite"
+    {% endif %}
+  >
+    {% if show_arrows %}
+      {% render 'slideshow-arrows', icon_style: 'chevron' %}
+    {% endif %}
+
+    <div class="announcement-bar__slides">
+      {% content_for 'blocks' %}
+    </div>
+  </announcement-bar-component>
+</aside>
+
+{% stylesheet %}
+  .a-g21-global-dil-cubugu {
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(202, 164, 90, 0.55);
+    position: relative;
+    z-index: 120;
+    background: linear-gradient(180deg, #fffaf2, #fbf6ec);
+    box-shadow: 0 3px 18px rgba(143, 100, 28, 0.08);
+    box-sizing: border-box;
+  }
+
+  .a-g21-global-dil-cubugu *,
+  .a-g21-global-dil-cubugu *::before,
+  .a-g21-global-dil-cubugu *::after {
+    box-sizing: border-box;
+  }
+
+  .a-g21-global-dil-cubugu__ic {
+    max-width: 1760px;
+    margin: 0 auto;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    direction: ltr;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__liste {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__oge {
+    flex: 0 0 auto;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 3px 8px;
+    border: 1px solid rgba(202, 164, 90, 0.38);
+    border-radius: 999px;
+    text-decoration: none;
+    color: #2c2112;
+    background: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(202, 164, 90, 0.1);
+    transition:
+      transform 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__link:hover,
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__link:focus-visible {
+    transform: translateY(-1px);
+    border-color: #8f641c;
+    background: #fff;
+    outline: none;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__link.is-active {
+    border-color: #8f641c;
+    background: #fffaf2;
+    box-shadow:
+      0 0 0 2px rgba(202, 164, 90, 0.28),
+      0 8px 18px rgba(143, 100, 28, 0.16);
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__bayrak {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+    flex: 0 0 auto;
+  }
+
+  .a-g21-global-dil-cubugu .a-g21-dil-secici__metin {
+    font-size: 12px;
+    line-height: 1;
+    color: #24170a;
+  }
+
+  .announcement-bar {
+    border-block-end: var(--border-bottom-width) solid var(--color-border);
+  }
+
+  .announcement-bar__slider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+
+    @media screen and (max-width: 749px) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .announcement-bar__slides {
+    display: grid;
+    grid: [stack] auto / [stack] auto;
+    width: calc(100% - var(--button-size) * 2);
+    max-width: 680px;
+    margin-inline: auto;
+  }
+
+  .announcement-bar__slides > * {
+    grid-area: stack;
+  }
+
+  .announcement-bar__slide {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    content-visibility: visible;
+
+    &[aria-hidden='true'] {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  .announcement-bar__slider slideshow-arrows {
+    padding: 0;
+    mix-blend-mode: normal;
+  }
+
+  .announcement-bar__slider slideshow-arrows .slideshow-control {
+    color: var(--color-foreground);
+  }
+
+  .announcement-bar__slider .slideshow-control {
+    display: flex;
+    padding: 0;
+    width: var(--button-size);
+    height: var(--button-size);
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    animation: none;
+
+    @media screen and (min-width: 750px) {
+      --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
+
+      .section--page-width &.slideshow-control--previous {
+        transform: translateX(var(--slideshow-control-offset));
+      }
+    }
+  }
+
+  .announcement-bar__slider .slideshow-control .svg-wrapper {
+    width: var(--icon-size-xs);
+    height: var(--icon-size-xs);
+  }
+
+  .announcement-bar__slide {
+    place-content: center;
+  }
+
+  .announcement-bar__text:first-child {
+    margin: 0;
+  }
+
+  .announcement-bar__link {
+    position: absolute;
+    inset: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .a-g21-global-dil-cubugu {
+      min-height: 44px;
+      padding: 6px 8px;
+    }
+
+    .a-g21-global-dil-cubugu .a-g21-dil-secici__liste {
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .a-g21-global-dil-cubugu .a-g21-dil-secici__link {
+      padding: 2px;
+      min-height: 34px;
+    }
+
+    .a-g21-global-dil-cubugu .a-g21-dil-secici__bayrak {
+      width: 30px;
+      height: 30px;
+    }
+
+    .a-g21-global-dil-cubugu .a-g21-dil-secici__metin {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.announcement_bar",
+  "blocks": [
+    {
+      "type": "_announcement"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "t:settings.scroll_speed",
+      "min": 2,
+      "max": 10,
+      "default": 5,
+      "unit": "sec"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "scheme-4",
+      "label": "t:settings.color_scheme"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "t:settings.divider_thickness",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.announcement_bar",
+      "blocks": {
+        "announcement_1": {
+          "type": "_announcement"
+        }
+      },
+      "block_order": ["announcement_1"]
+    }
+  ]
+}
+{% endschema %}

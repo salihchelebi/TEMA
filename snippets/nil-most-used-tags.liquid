@@ -1,0 +1,28 @@
+{% liquid
+  assign nil_compact = compact | default: false
+%}
+<div class="nil-most-used-tags{% if nil_compact %} nil-most-used-tags--compact{% endif %}" data-nil-most-used-tags>
+  {% unless nil_compact %}<h3>MOST USED TAGS</h3>{% endunless %}
+  <div class="nil-most-used-tags__grid">
+    {% render 'nil-premium-filter-chip', label: 'Mermaid', key: 'mermaid', icon: 'mermaid', category: 'most_used_tags', color: 'champagne', count: '36' %}
+    {% render 'nil-premium-filter-chip', label: 'Lace', key: 'lace', icon: 'lace', category: 'most_used_tags', color: 'rose', count: '137' %}
+    {% render 'nil-premium-filter-chip', label: 'Long Sleeve', key: 'long-sleeve', icon: 'long-sleeve', category: 'most_used_tags', color: 'ivory', count: '51' %}
+    {% render 'nil-premium-filter-chip', label: 'Sweetheart', key: 'sweetheart', icon: 'sweetheart', category: 'most_used_tags', color: 'pink', count: '75' %}
+    {% render 'nil-premium-filter-chip', label: 'Strapless', key: 'strapless', icon: 'strapless', category: 'most_used_tags', color: 'ivory', count: '3' %}
+    {% render 'nil-premium-filter-chip', label: 'Corset', key: 'corset', icon: 'corset', category: 'most_used_tags', color: 'ivory', count: '49' %}
+    {% render 'nil-premium-filter-chip', label: 'Beaded', key: 'beaded', icon: 'beaded', category: 'most_used_tags', color: 'peach', count: '59' %}
+    {% render 'nil-premium-filter-chip', label: 'Tulle', key: 'tulle', icon: 'fabrics', category: 'most_used_tags', color: 'ivory', count: '24' %}
+    {% render 'nil-premium-filter-chip', label: 'Mikado', key: 'mikado', icon: 'fabrics', category: 'most_used_tags', color: 'ivory', count: '5' %}
+    {% render 'nil-premium-filter-chip', label: 'Open Back', key: 'open-back', icon: 'corset', category: 'most_used_tags', color: 'ivory', count: '3' %}
+    {% render 'nil-premium-filter-chip', label: 'Cathedral Train', key: 'cathedral-train', icon: 'train', category: 'most_used_tags', color: 'ivory', count: '104' %}
+    {% render 'nil-premium-filter-chip', label: 'Minimal', key: 'minimal', icon: 'fabrics', category: 'most_used_tags', color: 'ivory', count: '1' %}
+    {% render 'nil-premium-filter-chip', label: 'Ivory', key: 'ivory', icon: 'fabrics', category: 'most_used_tags', color: 'ivory', count: '92' %}
+    {% render 'nil-premium-filter-chip', label: 'Champagne', key: 'champagne', icon: 'fabrics', category: 'most_used_tags', color: 'beige', count: '26' %}
+    {% render 'nil-premium-filter-chip', label: 'Modern', key: 'modern', icon: 'sparkle', category: 'most_used_tags', color: 'ivory', count: '19' %}
+    {% render 'nil-premium-filter-chip', label: 'Classic', key: 'classic', icon: 'sparkle', category: 'most_used_tags', color: 'ivory', count: '8' %}
+    {% render 'nil-premium-filter-chip', label: 'Off Shoulder', key: 'off-shoulder', icon: 'off-shoulder', category: 'most_used_tags', color: 'lavender', count: '12' %}
+    {% render 'nil-premium-filter-chip', label: '3D Floral', key: '3d-floral', icon: 'lace', category: 'most_used_tags', color: 'rose', count: '8' %}
+    {% render 'nil-premium-filter-chip', label: 'Sequins', key: 'sequins', icon: 'sequins', category: 'most_used_tags', color: 'peach', count: '1' %}
+    {% render 'nil-premium-filter-chip', label: 'Satin', key: 'satin', icon: 'fabrics', category: 'most_used_tags', color: 'lavender', count: '16' %}
+  </div>
+</div>

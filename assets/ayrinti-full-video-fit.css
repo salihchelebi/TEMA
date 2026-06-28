@@ -1,0 +1,58 @@
+/* GELINLIK21 ayrinti-full-video-fit.css V1
+   Product detail video fix: show the full dress inside the video area without cropping. */
+
+ayrinti-video-gallery .ayrinti-gallery__video-shell{
+  background:#f8f1e8!important;
+  overflow:hidden!important;
+}
+
+ayrinti-video-gallery .ayrinti-gallery__poster,
+ayrinti-video-gallery .ayrinti-gallery__video,
+ayrinti-video-gallery .ayrinti-gallery__video-shell .ayrinti-gallery__poster,
+ayrinti-video-gallery .ayrinti-gallery__video-shell .ayrinti-gallery__video{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  animation:none!important;
+  background:#f8f1e8!important;
+}
+
+ayrinti-video-gallery .ayrinti-gallery__video{
+  transition:opacity .22s ease,filter .22s ease!important;
+}
+
+ayrinti-video-gallery .ayrinti-gallery__video-shell.effect-cinematic .ayrinti-gallery__video,
+ayrinti-video-gallery .ayrinti-gallery__video-shell.effect-closer .ayrinti-gallery__video,
+ayrinti-video-gallery .ayrinti-gallery__video-shell.effect-fabric .ayrinti-gallery__video,
+ayrinti-video-gallery .effect-cinematic .ayrinti-gallery__video,
+ayrinti-video-gallery .effect-closer .ayrinti-gallery__video,
+ayrinti-video-gallery .effect-fabric .ayrinti-gallery__video{
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  animation:none!important;
+}
+
+ayrinti-video-gallery .ayrinti-gallery__video-shell.effect-closer:before,
+ayrinti-video-gallery .ayrinti-gallery__video-shell.effect-closer:after{
+  opacity:0!important;
+}
+
+body.template-product ayrinti-video-gallery video,
+body.template-product .product ayrinti-video-gallery video,
+body.template-product [data-media-type="video"] video{
+  object-fit:contain!important;
+  object-position:center center!important;
+}
+
+@media(max-width:749px){
+  ayrinti-video-gallery .ayrinti-gallery__poster,
+  ayrinti-video-gallery .ayrinti-gallery__video{
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+}

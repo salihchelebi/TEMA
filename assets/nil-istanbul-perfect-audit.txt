@@ -1,0 +1,14 @@
+NIL ISTANBUL PERFECT THEME - applied changes
+- Removed Dubai wording in custom theme snippets; changed to Istanbul atelier.
+- Added advanced Shop by Bridal Style Liquid section with full schema and CDN card images.
+- Updated top visual menu to CDN cards: Princess, Mermaid, Modest, Lace, Royal, WhatsApp.
+- WhatsApp card uses #25D366, white bold text, scale(1.06), green glow.
+- Added visual smart search using product-name keyword queries instead of tag dependency.
+- Added filter heading icons with user-provided CDN URLs.
+- Added product details/story block directly under product image gallery.
+- Right product column is now a compact custom measurement/conversion panel only.
+- Native buy form is retained hidden for add-to-cart functionality.
+- Added safe-zone and overflow protection to prevent right/left overflow.
+- Collection grid is forced to safe responsive 3-column desktop / 2-column tablet / 1-column mobile to stop 4th column clipping.
+- Product cards use card action icons and product CDN icon system.
+- Product detail measurement fields use measurement icon URLs.

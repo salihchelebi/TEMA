@@ -1,0 +1,30 @@
+{%- comment -%}
+A-G21 yatay bayraklı dil seçici. Eski localization/dropdown sınıflarını miras almaz.
+{%- endcomment -%}
+{%- capture g21_aktif_raw -%}{%- render 'A-g21-dil-verisi', g21_mod: 'aktif' -%}{%- endcapture -%}
+{%- assign g21_aktif_dil = g21_aktif_raw | strip | default: 'en' -%}
+{%- capture g21_dil_raw -%}{%- render 'A-g21-dil-verisi', g21_mod: 'liste' -%}{%- endcapture -%}
+{%- assign g21_dil_satirlari = g21_dil_raw | strip | split: '||' -%}
+<nav class="a-g21-dil-secici" aria-label="Language selector" data-a-g21-language-selector="true" dir="ltr">
+  <ul class="a-g21-dil-secici__liste" role="list">
+    {%- for g21_satir in g21_dil_satirlari -%}
+      {%- assign g21_parca = g21_satir | strip | split: '|' -%}
+      {%- assign g21_iso = g21_parca[0] | strip -%}
+      {%- assign g21_kok = g21_parca[1] | strip -%}
+      {%- assign g21_bayrak = g21_parca[2] | strip -%}
+      {%- assign g21_ad = g21_parca[3] | strip -%}
+      {%- assign g21_yerel = g21_parca[4] | strip -%}
+      {%- assign g21_seviye = g21_parca[5] | strip -%}
+      {%- if g21_seviye == 'oncelikli' and g21_iso != blank -%}
+        {%- assign g21_aktif_mi = false -%}
+        {%- if g21_iso == g21_aktif_dil -%}{%- assign g21_aktif_mi = true -%}{%- endif -%}
+        <li class="a-g21-dil-secici__oge">
+          <a class="a-g21-dil-secici__link{% if g21_aktif_mi %} is-active{% endif %}" href="{{ g21_kok }}" hreflang="{{ g21_iso }}" lang="{{ g21_iso }}" title="{{ g21_yerel | escape }}" aria-label="Switch language to {{ g21_ad | escape }}"{% if g21_aktif_mi %} aria-current="true"{% endif %} data-a-g21-lang="{{ g21_iso }}">
+            <span class="a-g21-dil-secici__bayrak" style="background-image:url('https://flagcdn.com/w40/{{ g21_bayrak }}.png')" aria-hidden="true"></span>
+            <span class="a-g21-dil-secici__metin">{{ g21_yerel }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</nav>

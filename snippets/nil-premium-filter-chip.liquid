@@ -1,0 +1,23 @@
+{% liquid
+  assign chip_label = label | default: 'Filter'
+  assign chip_key = key | default: chip_label | handleize
+  assign chip_icon = icon | default: chip_key
+  assign chip_color = color | default: 'ivory'
+  assign chip_category = category | default: ''
+  assign chip_count = count | default: ''
+  assign chip_variant = variant | default: 'chip'
+  assign chip_swatch = swatch_color | default: ''
+%}
+<button type="button"
+  class="nil-premium-chip nil-premium-chip--{{ chip_color }} nil-premium-chip--{{ chip_variant }}{% if active %} is-active{% endif %}{% if disabled %} is-disabled{% endif %}"
+  data-nil-filter-chip
+  data-filter-label="{{ chip_label | escape }}"
+  data-filter-key="{{ chip_key | escape }}"
+  data-filter-category="{{ chip_category | escape }}"
+  {% if chip_swatch != blank %}style="--nil-swatch-color: {{ chip_swatch }};"{% endif %}
+  {% if disabled %}disabled{% endif %}
+  aria-pressed="{% if active %}true{% else %}false{% endif %}">
+  {% if chip_variant == 'swatch' %}<span class="nil-premium-chip__swatch"></span>{% else %}{% render 'nil-local-svg-icon', icon: chip_icon, size: 22 %}{% endif %}
+  <span>{{ chip_label }}</span>
+  {% if chip_count != blank %}<em>{{ chip_count }}</em>{% endif %}
+</button>

@@ -1,0 +1,55 @@
+{% comment %} NIL V30 — CTA after the single product description area. Uses real Shopify form attribute. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+  assign nil_variant = nil_product.selected_or_first_available_variant
+  assign nil_form_id = 'BuyButtons-ProductForm-' | append: section_id
+  assign nil_cta_image = settings.nil_v30_lower_image
+%}
+{% if nil_product != blank and settings.nil_v30_enable_lower_cta %}
+  <section
+    class="nil-v30-lower-cta nil-v30-animate nil-v30-animate--{{ settings.nil_v30_lower_animation | default: 'fade' }}"
+    aria-label="{{ settings.nil_v30_lower_title | escape }}"
+    style="
+      --nil-v30-lower-bg: {{ settings.nil_v30_lower_bg }};
+      --nil-v30-lower-text: {{ settings.nil_v30_lower_text_color }};
+      --nil-v30-lower-subtext: {{ settings.nil_v30_lower_subtext_color }};
+      --nil-v30-lower-border: {{ settings.nil_v30_lower_border_color }};
+      --nil-v30-lower-radius: {{ settings.nil_v30_lower_radius }}px;
+      --nil-v30-lower-border-width: {{ settings.nil_v30_lower_border_width }}px;
+      --nil-v30-lower-padding-y: {{ settings.nil_v30_lower_padding_y }}px;
+      --nil-v30-lower-padding-x: {{ settings.nil_v30_lower_padding_x }}px;
+      --nil-v30-lower-title-size: {{ settings.nil_v30_lower_title_size }}px;
+      --nil-v30-lower-text-size: {{ settings.nil_v30_lower_text_size }}px;
+      --nil-v30-lower-button-bg: {{ settings.nil_v30_lower_button_bg }};
+      --nil-v30-lower-button-text: {{ settings.nil_v30_lower_button_text_color }};
+      --nil-v30-lower-button-border: {{ settings.nil_v30_lower_button_border_color }};
+      --nil-v30-lower-button-height: {{ settings.nil_v30_lower_button_height }}px;
+      --nil-v30-lower-button-radius: {{ settings.nil_v30_lower_button_radius }}px;
+      --nil-v30-lower-align: {{ settings.nil_v30_lower_alignment }};
+    "
+  >
+    {% if nil_cta_image != blank %}
+      <div class="nil-v30-lower-cta__media">
+        {{ nil_cta_image | image_url: width: 260 | image_tag: loading: 'lazy', alt: settings.nil_v30_lower_title, widths: '140, 220, 260' }}
+      </div>
+    {% endif %}
+    <div class="nil-v30-lower-cta__copy">
+      <h2>{{ settings.nil_v30_lower_title | default: 'Ready to make it yours?' }}</h2>
+      <p>{{ settings.nil_v30_lower_subtitle | default: 'Each gown is custom made with love and attention to every detail.' }}</p>
+    </div>
+    <div class="nil-v30-lower-cta__actions">
+      <button
+        class="nil-v30-lower-cta__button"
+        type="submit"
+        form="{{ nil_form_id }}"
+        name="add"
+        {% unless nil_variant.available %}disabled{% endunless %}
+      >
+        <span>{{ settings.nil_v30_lower_button_text | default: 'ADD TO CART' }}</span>
+      </button>
+      {% if settings.nil_v30_lower_show_wishlist %}
+        <button class="nil-v30-lower-cta__wishlist" type="button" aria-label="{{ settings.nil_v30_lower_wishlist_label | escape }}">♡</button>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}

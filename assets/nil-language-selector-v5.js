@@ -1,0 +1,16 @@
+(()=>{if(window.NIL_LANG_V5)return;window.NIL_LANG_V5=1;
+const map={TR:'tr',AZ:'tr',DZ:'ar',BH:'ar',KM:'ar',DJ:'ar',EG:'ar',IQ:'ar',JO:'ar',KW:'ar',LB:'ar',LY:'ar',MR:'ar',MA:'ar',OM:'ar',PS:'ar',QA:'ar',SA:'ar',SO:'ar',SD:'ar',SY:'ar',TN:'ar',AE:'ar',YE:'ar',TD:'ar',ER:'ar',FR:'fr',MC:'fr',BF:'fr',BJ:'fr',CI:'fr',SN:'fr',ML:'fr',NE:'fr',GN:'fr',TG:'fr',GA:'fr',CG:'fr',CD:'fr',CF:'fr',BI:'fr',RW:'fr',MG:'fr',MU:'fr',SC:'fr',HT:'fr',VU:'fr',CM:'fr',GQ:'fr',GF:'fr',PF:'fr',NC:'fr',GP:'fr',MQ:'fr',RE:'fr',YT:'fr',BL:'fr',MF:'fr',PM:'fr',WF:'fr',TF:'fr',NL:'nl',BE:'nl',SR:'nl',AW:'nl',CW:'nl',SX:'nl',BQ:'nl',DE:'de',AT:'de',CH:'de',LI:'de',LU:'de',DK:'de',NO:'de',SE:'de',IS:'de',FO:'de'};
+const langs=['en','tr','ar','fr','nl','de'];
+function pref(){let m=location.pathname.match(/^\/(en|tr|ar|fr|nl|de)(?=\/|$)/);return m?m[1]:''}
+function box(){return document.getElementById('nil-header-language-flags')}
+function clean(){return (location.pathname||'/').replace(/^\/(en|tr|ar|fr|nl|de)(?=\/|$)/,'')||'/'}
+function href(l){let p=clean(),pre=l==='en'?'':'/'+l;if(p==='/')p='/collections/lace-wedding-dresses';return pre+p+location.search+location.hash}
+function countryLang(){let b=box(),c=(b&&b.getAttribute('data-visitor-country')||'').toUpperCase();return map[c]||'en'}
+function homeUrl(){let l=countryLang(),pre=l==='en'?'':'/'+l;return pre+'/collections/lace-wedding-dresses?sort_by=title-ascending'}
+function autoHome(){if(pref())return;let p=(location.pathname||'/').replace(/\/+$/,'/');if(p==='/'||p==='/collections/'){try{if(sessionStorage.getItem('nil_lang_manual')==='1')return}catch(e){}location.href=homeUrl()}}
+function rewrite(){let b=box();if(!b)return;[...b.querySelectorAll('.nil-lang-link')].forEach(a=>{let l=a.getAttribute('hreflang')||a.getAttribute('lang')||'';if(langs.includes(l))a.href=href(l)})}
+function demo(){if(!matchMedia('(min-width:750px)').matches)return;try{if(sessionStorage.getItem('nil_lang_demo_done')==='1')return;sessionStorage.setItem('nil_lang_demo_done','1')}catch(e){}let links=[...document.querySelectorAll('.nil-lang-link')];links.forEach((l,i)=>{setTimeout(()=>{links.forEach(x=>x.classList.remove('nil-lang-demo-active'));l.classList.add('nil-lang-demo-active')},650*i+500);setTimeout(()=>l.classList.remove('nil-lang-demo-active'),650*i+1120)});setTimeout(()=>links.forEach(x=>x.classList.remove('nil-lang-demo-active')),650*links.length+1300)}
+document.addEventListener('click',e=>{let b=box();if(!b)return;let a=e.target.closest&&e.target.closest('.nil-lang-link');if(!a){b.classList.remove('nil-lang-open');return}rewrite();if(matchMedia('(max-width:749px)').matches&&a.classList.contains('is-active')&&!b.classList.contains('nil-lang-open')){e.preventDefault();b.classList.add('nil-lang-open');return}try{sessionStorage.setItem('nil_lang_manual','1')}catch(x){}},true);
+function run(){autoHome();rewrite();demo()}
+document.readyState==='loading'?document.addEventListener('DOMContentLoaded',run):run();window.addEventListener('load',run);document.addEventListener('shopify:section:load',run);
+})();

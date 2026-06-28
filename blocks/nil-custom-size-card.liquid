@@ -1,0 +1,58 @@
+{% doc %}
+  NIL editor-managed custom size CTA block.
+{% enddoc %}
+
+{% liquid
+  assign nil_product = closest.product
+  assign nil_phone = block.settings.whatsapp_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign nil_message = block.settings.whatsapp_message | default: 'Hello, I want to enter my own measurements for:'
+  if nil_product != blank
+    assign nil_url = shop.url | append: nil_product.url
+    assign nil_wa_text = nil_message | append: ' ' | append: nil_product.title | append: ' ' | append: nil_url
+  else
+    assign nil_wa_text = nil_message
+  endif
+  assign nil_icon = block.settings.icon_url | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-16-custom-size-ikon-kendi-olcum-girme-icin.png?v=1781505373'
+%}
+
+{% if nil_product != blank %}
+  <a
+    class="nil-v77-custom-size-card"
+    href="https://wa.me/{{ nil_phone }}?text={{ nil_wa_text | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ block.settings.title | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    <span class="nil-v77-custom-size-card__icon" aria-hidden="true">
+      <img src="{{ nil_icon }}" alt="" width="72" height="72" loading="lazy">
+    </span>
+    <span class="nil-v77-custom-size-card__copy">
+      <small>{{ block.settings.kicker }}</small>
+      <strong>{{ block.settings.title }}</strong>
+      <em>{{ block.settings.subtitle }}</em>
+    </span>
+    <span class="nil-v77-custom-size-card__button" aria-hidden="true">
+      <b>{{ block.settings.button_label }}</b>
+      <small>{{ block.settings.button_note }}</small>
+    </span>
+  </a>
+{% endif %}
+
+{% schema %}
+{
+  "name": "NIL Custom Size Card",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "MADE FOR YOU, PERFECT IN EVERY WAY" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Custom Size" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Personalized measurements. Tailored to perfection." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "GET STARTED" },
+    { "type": "text", "id": "button_note", "label": "Button note", "default": "It's free & easy" },
+    { "type": "text", "id": "whatsapp_phone", "label": "WhatsApp phone", "default": "905334619373" },
+    { "type": "text", "id": "whatsapp_message", "label": "WhatsApp message", "default": "Hello, I want to enter my own measurements for:" },
+    { "type": "url", "id": "icon_url", "label": "Icon CDN URL" }
+  ],
+  "presets": [{ "name": "NIL Custom Size Card", "category": "t:categories.product" }]
+}
+{% endschema %}

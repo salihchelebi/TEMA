@@ -1,0 +1,223 @@
+{% liquid
+  assign sid = section.id
+%}
+
+<section
+  id="NilImageOnlyGrid-{{ sid }}"
+  class="nil-image-only-grid"
+  style="
+    --nig-bg: {{ section.settings.background_color }};
+    --nig-max-width: {{ section.settings.max_width }};
+    --nig-padding-top: {{ section.settings.padding_top }}px;
+    --nig-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --nig-padding-inline: {{ section.settings.safe_padding_desktop }}px;
+    --nig-gap: {{ section.settings.gap }}px;
+    --nig-columns: {{ section.settings.desktop_columns }};
+    --nig-tablet-columns: {{ section.settings.tablet_columns }};
+    --nig-mobile-columns: {{ section.settings.mobile_columns }};
+    --nig-tile-bg: {{ section.settings.tile_background }};
+    --nig-border-color: {{ section.settings.border_color }};
+    --nig-border-hover: {{ section.settings.border_hover_color }};
+    --nig-border-width: {{ section.settings.border_width }}px;
+    --nig-radius: {{ section.settings.radius }}px;
+    --nig-image-padding: {{ section.settings.image_padding }}px;
+    --nig-shadow-opacity: {{ section.settings.shadow_opacity | divided_by: 100.0 }};
+  "
+>
+  <div class="nig-wrap">
+    <div class="nig-grid" role="list">
+      {% for block in section.blocks %}
+        {% liquid
+          assign href = block.settings.link
+          if block.settings.collection != blank
+            assign href = block.settings.collection.url
+          endif
+          if href == blank
+            assign href = '#'
+          endif
+        %}
+        <a
+          class="nig-tile{% if block.settings.is_whatsapp %} nig-whatsapp-tile{% endif %}"
+          href="{{ href }}"
+          {% if block.settings.open_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}
+          aria-label="{{ block.settings.accessibility_label | escape }}"
+          {{ block.shopify_attributes }}
+          style="
+            --tile-bg: {{ block.settings.tile_background }};
+            --tile-border: {{ block.settings.border_color }};
+            --tile-hover-border: {{ block.settings.border_hover_color }};
+            --tile-border-width: {{ block.settings.border_width }}px;
+            --tile-radius: {{ block.settings.radius }}px;
+            --tile-padding: {{ block.settings.image_padding }}px;
+            --tile-shadow-opacity: {{ block.settings.shadow_opacity | divided_by: 100.0 }};
+            --tile-fit: {{ block.settings.image_fit }};
+            --tile-position: {{ block.settings.image_position }};
+          "
+          role="listitem"
+        >
+          <span class="nig-image-stage">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', alt: block.settings.accessibility_label }}
+            {% endif %}
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #NilImageOnlyGrid-{{ sid }} {
+    width: 100%;
+    background: var(--nig-bg);
+    padding: var(--nig-padding-top) var(--nig-padding-inline) var(--nig-padding-bottom);
+    overflow: hidden;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} * {
+    box-sizing: border-box;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-wrap {
+    width: 100%;
+    max-width: var(--nig-max-width);
+    margin: 0 auto;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--nig-columns), minmax(0, 1fr));
+    gap: var(--nig-gap);
+    width: 100%;
+    align-items: stretch;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-tile {
+    display: block;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    width: 100%;
+    background: var(--tile-bg, var(--nig-tile-bg));
+    border: var(--tile-border-width, var(--nig-border-width)) solid var(--tile-border, var(--nig-border-color));
+    border-radius: var(--tile-radius, var(--nig-radius));
+    padding: var(--tile-padding, var(--nig-image-padding));
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 16px 42px rgba(70, 42, 13, var(--tile-shadow-opacity, var(--nig-shadow-opacity)));
+    transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--tile-hover-border, var(--nig-border-hover));
+    box-shadow: 0 22px 58px rgba(70, 42, 13, calc(var(--tile-shadow-opacity, var(--nig-shadow-opacity)) + .08));
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-image-stage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--tile-bg, var(--nig-tile-bg));
+    border-radius: max(0px, calc(var(--tile-radius, var(--nig-radius)) - var(--tile-padding, var(--nig-image-padding))));
+    overflow: hidden;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-image-stage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: var(--tile-fit, contain);
+    object-position: var(--tile-position, center center);
+    border-radius: inherit;
+  }
+
+  #NilImageOnlyGrid-{{ sid }} .nig-image-stage:empty::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    border-radius: inherit;
+  }
+
+  @media (max-width: 989px) {
+    #NilImageOnlyGrid-{{ sid }} {
+      padding-inline: {{ section.settings.safe_padding_tablet }}px;
+    }
+    #NilImageOnlyGrid-{{ sid }} .nig-grid {
+      grid-template-columns: repeat(var(--nig-tablet-columns), minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 749px) {
+    #NilImageOnlyGrid-{{ sid }} {
+      padding-inline: {{ section.settings.safe_padding_mobile }}px;
+    }
+    #NilImageOnlyGrid-{{ sid }} .nig-grid {
+      grid-template-columns: repeat(var(--nig-mobile-columns), minmax(0, 1fr));
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NIL Image Only Grid",
+  "tag": "section",
+  "class": "section-nil-image-only-grid",
+  "max_blocks": 10,
+  "settings": [
+    {"type":"header","content":"Grid layout"},
+    {"type":"text","id":"max_width","label":"Maximum width free value","default":"1760px"},
+    {"type":"range","id":"desktop_columns","label":"Desktop columns","min":2,"max":5,"step":1,"default":5},
+    {"type":"range","id":"tablet_columns","label":"Tablet columns","min":2,"max":5,"step":1,"default":3},
+    {"type":"range","id":"mobile_columns","label":"Mobile columns","min":1,"max":3,"step":1,"default":2},
+    {"type":"range","id":"gap","label":"Gap","min":0,"max":48,"step":2,"unit":"px","default":18},
+    {"type":"range","id":"padding_top","label":"Top padding","min":0,"max":120,"step":4,"unit":"px","default":28},
+    {"type":"range","id":"padding_bottom","label":"Bottom padding","min":0,"max":120,"step":4,"unit":"px","default":32},
+    {"type":"range","id":"safe_padding_desktop","label":"Desktop safe-zone side padding","min":0,"max":80,"step":2,"unit":"px","default":24},
+    {"type":"range","id":"safe_padding_tablet","label":"Tablet safe-zone side padding","min":0,"max":60,"step":2,"unit":"px","default":18},
+    {"type":"range","id":"safe_padding_mobile","label":"Mobile safe-zone side padding","min":0,"max":40,"step":2,"unit":"px","default":12},
+    {"type":"header","content":"Default tile style"},
+    {"type":"color","id":"background_color","label":"Section background","default":"#fbf6ec"},
+    {"type":"color","id":"tile_background","label":"Image stage background","default":"#000000"},
+    {"type":"color","id":"border_color","label":"Border color","default":"#caa45a"},
+    {"type":"color","id":"border_hover_color","label":"Hover border color","default":"#8f641c"},
+    {"type":"range","id":"border_width","label":"Border width","min":0,"max":8,"step":1,"unit":"px","default":2},
+    {"type":"range","id":"radius","label":"Rounded corners","min":0,"max":50,"step":1,"unit":"px","default":22},
+    {"type":"range","id":"image_padding","label":"Inner image padding","min":0,"max":30,"step":1,"unit":"px","default":0},
+    {"type":"range","id":"shadow_opacity","label":"Shadow opacity","min":0,"max":40,"step":1,"unit":"%","default":10}
+  ],
+  "blocks": [
+    {
+      "type":"image_tile",
+      "name":"Image tile",
+      "settings":[
+        {"type":"image_picker","id":"image","label":"Square image"},
+        {"type":"collection","id":"collection","label":"Collection link"},
+        {"type":"url","id":"link","label":"Manual link fallback"},
+        {"type":"checkbox","id":"open_new_tab","label":"Open in new tab","default":false},
+        {"type":"checkbox","id":"is_whatsapp","label":"This tile is WhatsApp image","default":false},
+        {"type":"text","id":"accessibility_label","label":"Accessibility label only, not visible","default":"Collection image"},
+        {"type":"header","content":"Image behavior"},
+        {"type":"select","id":"image_fit","label":"Image fit","options":[{"value":"contain","label":"Contain, never crop"},{"value":"cover","label":"Cover, may crop"},{"value":"fill","label":"Fill, may distort"}],"default":"contain"},
+        {"type":"select","id":"image_position","label":"Image position","options":[{"value":"center center","label":"Center"},{"value":"center top","label":"Top"},{"value":"center bottom","label":"Bottom"},{"value":"left center","label":"Left"},{"value":"right center","label":"Right"}],"default":"center center"},
+        {"type":"header","content":"Per tile override"},
+        {"type":"color","id":"tile_background","label":"Image stage background","default":"#000000"},
+        {"type":"color","id":"border_color","label":"Border color","default":"#caa45a"},
+        {"type":"color","id":"border_hover_color","label":"Hover border color","default":"#8f641c"},
+        {"type":"range","id":"border_width","label":"Border width","min":0,"max":8,"step":1,"unit":"px","default":2},
+        {"type":"range","id":"radius","label":"Rounded corners","min":0,"max":50,"step":1,"unit":"px","default":22},
+        {"type":"range","id":"image_padding","label":"Inner image padding","min":0,"max":30,"step":1,"unit":"px","default":0},
+        {"type":"range","id":"shadow_opacity","label":"Shadow opacity","min":0,"max":40,"step":1,"unit":"%","default":10}
+      ]
+    }
+  ],
+  "presets": [
+    {"name":"NIL Image Only 5x2 Grid","blocks":[
+      {"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile"},
+      {"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile"},{"type":"image_tile","settings":{"is_whatsapp":true,"accessibility_label":"WhatsApp consultation image"}}
+    ]}
+  ]
+}
+{% endschema %}

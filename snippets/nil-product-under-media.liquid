@@ -1,0 +1,27 @@
+{% comment %} NIL V30 — Single product description/story below media. Product description is rendered here once; right panel description block is removed from product.json. {% endcomment %}
+{% if product != blank and settings.nil_v30_show_under_media_description %}
+  {% assign nil_product_title = product.title | default: 'NIL Wedding Dress' %}
+  <section class="nil-product-under-media nil-v30-animate nil-v30-animate--{{ settings.nil_v30_desc_animation }}" aria-label="{{ settings.nil_v30_desc_aria_label | escape }}">
+    {% if settings.nil_v30_desc_eyebrow != blank %}
+      <p class="nil-product-under-media__eyebrow">{{ settings.nil_v30_desc_eyebrow }}</p>
+    {% endif %}
+    {% if settings.nil_v30_desc_title != blank %}
+      <h2>{{ settings.nil_v30_desc_title }}</h2>
+    {% else %}
+      <h2>{{ nil_product_title }}</h2>
+    {% endif %}
+    {% if product.description != blank %}
+      <div class="nil-product-under-media__description rte">{{ product.description }}</div>
+    {% elsif settings.nil_v30_desc_fallback != blank %}
+      <div class="nil-product-under-media__description rte"><p>{{ settings.nil_v30_desc_fallback }}</p></div>
+    {% endif %}
+    {% if settings.nil_v30_desc_show_chips %}
+      <div class="nil-product-under-media__chips" aria-label="NIL product highlights">
+        {% if settings.nil_v30_desc_chip_1 != blank %}<span>{{ settings.nil_v30_desc_chip_1 }}</span>{% endif %}
+        {% if settings.nil_v30_desc_chip_2 != blank %}<span>{{ settings.nil_v30_desc_chip_2 }}</span>{% endif %}
+        {% if settings.nil_v30_desc_chip_3 != blank %}<span>{{ settings.nil_v30_desc_chip_3 }}</span>{% endif %}
+        {% if settings.nil_v30_desc_chip_4 != blank %}<span>{{ settings.nil_v30_desc_chip_4 }}</span>{% endif %}
+      </div>
+    {% endif %}
+  </section>
+{% endif %}

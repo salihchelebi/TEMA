@@ -1,0 +1,860 @@
+{% comment %}
+  File: sections/custom-order-form.liquid
+  NIL Bride / Custom Made Bridal Order Request
+  Theme-only version: uses Shopify native contact form + WhatsApp follow-up.
+  No Admin API required. Does not create real Shopify Draft Orders.
+{% endcomment %}
+
+<section class="nil-custom-order" data-section-id="{{ section.id }}">
+  {% liquid
+    assign whatsapp_number = section.settings.whatsapp_number | default: '905321308242'
+    assign accent_gold = section.settings.accent_gold | default: '#C9A96E'
+
+    assign silhouettes = 'A-Line|scc-a-kesim-facet-a-line.png,Mermaid / Trumpet|scc-balik-trampet-facet-mermaid-trumpet.png,Ball Gown|scc-prenses-balo-facet-ballgown.png,Sheath|scc-duz-kesim-facet-sheath.png,Straight|scc-facet-straight-facet-straight.png,High-Low|scc-on-kisa-arka-uzun-facet-high-low.png,Jumpsuit|scc-facet-jumpsuit-facet-jumpsuit.png,Separates|scc-facet-separates-facet-separates.png,Jacket|scc-facet-jacket-facet-jacket.png' | split: ','
+    assign necklines = 'Sweetheart|scc-kalp-yaka-facet-sweetheart.png,V-Neck|scc-v-yaka-facet-v-neck.png,Square|scc-kare-yaka-facet-square.png,High Neck|scc-dik-yaka-facet-high-neck.png,Boat Neck|scc-kayik-yaka-facet-boatneck.png,Off-the-Shoulder|scc-facet-dress-off-the-shoulder-facet-dress-off-the-shoulder.png,One Shoulder|scc-facet-one-shoulder-facet-one-shoulder.png,Halter|scc-facet-halter-facet-halter.png,Strapless|scc-facet-strapless-facet-strapless.png,Scoop|scc-facet-scoop-facet-scoop.png,Cowl|scc-facet-cowl-facet-cowl.png,Illusion|scc-facet-illusion-facet-illusion.png,Asymmetrical|scc-facet-asymmetrical-facet-asymmetrical.png,Capelet|scc-facet-capelet-facet-capelet.png,Tank|scc-facet-tank-facet-tank.png,Spaghetti Straps|scc-facet-spaghetti-straps-facet-spaghetti-straps.png,Sculpted|scc-facet-sculpted-facet-sculpted.png' | split: ','
+    assign sleeves = 'Sleeveless|scc-facet-sleeveless-facet-sleeveless.png,Cap Sleeves|scc-facet-cap-sleeves-facet-cap-sleeves.png,Short Sleeves|scc-facet-short-sleeves-facet-short-sleeves.png,Elbow Sleeves|scc-facet-elbow-sleeves-facet-elbow-sleeves.png,3/4 Sleeves|scc-facet-three-quarter-sleeves-facet-three-quarter-sleeves.png,Long Sleeves|scc-facet-long-sleeves-facet-long-sleeves.png' | split: ','
+    assign lengths = 'Short|scc-kisa-facet-short.png,Tea Length|scc-cay-boyu-facet-tea-length.png,Midi|scc-midi-facet-midi.png,Ankle Length|scc-bilek-boyu-facet-ankle.png,Long|scc-uzun-facet-long.png,High-Low|scc-on-kisa-arka-uzun-facet-high-low.png' | split: ','
+    assign back_style_options = 'Open Back,Lace-up Corset,Zipper,Buttons,Illusion Back,Closed Back' | split: ','
+    assign train_options = 'No Train,Sweep,Chapel,Cathedral,Royal,Detachable Train' | split: ','
+    assign fabric_options = 'Tulle,Lace,Satin,Chiffon,Organza,Mikado,Crepe,Silk' | split: ','
+    assign embellishment_options = 'Beading,Embroidery,Sequins,Floral Appliqué,Crystals,Pearls,Plain' | split: ','
+    assign color_options = 'Ivory|#fff8ea,White|#ffffff,Soft Ivory|#f8f0df,Champagne|#ecd5aa,Nude Ivory|#e7d2bf,Pearl White|#f4f0e8' | split: ','
+    assign country_options = 'United States,Canada,United Kingdom,Germany,France,Italy,Spain,Netherlands,Sweden,Norway,Denmark,Finland,Turkey,UAE,Saudi Arabia,Kuwait,Qatar,Australia,Japan,South Korea,Other' | split: ','
+    assign phone_code_options = '🇹🇷 +90|+90,🇺🇸 +1|+1,🇨🇦 +1|+1,🇬🇧 +44|+44,🇩🇪 +49|+49,🇫🇷 +33|+33,🇮🇹 +39|+39,🇪🇸 +34|+34,🇳🇱 +31|+31,🇸🇪 +46|+46,🇳🇴 +47|+47,🇩🇰 +45|+45,🇫🇮 +358|+358,🇦🇪 +971|+971,🇸🇦 +966|+966,🇰🇼 +965|+965,🇶🇦 +974|+974,🇦🇺 +61|+61,🇯🇵 +81|+81,🇰🇷 +82|+82,🇧🇷 +55|+55,🇲🇽 +52|+52' | split: ','
+  %}
+
+  <style>
+    #shopify-section-{{ section.id }} {
+      --nil-cof-bg: {{ section.settings.background_color }};
+      --nil-cof-card: {{ section.settings.card_color }};
+      --nil-cof-text: {{ section.settings.text_color }};
+      --nil-cof-muted: rgba(26, 26, 26, .62);
+      --nil-cof-border: rgba(201, 169, 110, .28);
+      --nil-cof-gold: {{ accent_gold }};
+      --nil-cof-shadow: 0 18px 48px rgba(45, 33, 20, .08);
+    }
+
+    #shopify-section-{{ section.id }} .nil-custom-order {
+      background:
+        radial-gradient(circle at top left, rgba(201, 169, 110, .16), transparent 34rem),
+        linear-gradient(180deg, #fffaf2 0%, var(--nil-cof-bg) 45%, #fffaf6 100%);
+      color: var(--nil-cof-text);
+      padding: clamp(34px, 5vw, 72px) 16px clamp(64px, 7vw, 96px);
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+      gap: clamp(22px, 4vw, 54px);
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-eyebrow,
+    #shopify-section-{{ section.id }} .nil-cof-step-label,
+    #shopify-section-{{ section.id }} .nil-cof-field label,
+    #shopify-section-{{ section.id }} .nil-cof-chip-title {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--nil-cof-gold);
+      font-weight: 500;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-title {
+      margin: 8px 0 12px;
+      font-family: var(--font-heading-family, 'Cormorant Garamond', serif);
+      font-size: clamp(38px, 6vw, 78px);
+      line-height: .94;
+      font-weight: 400;
+      letter-spacing: -.035em;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-subtitle {
+      max-width: 620px;
+      font-size: clamp(15px, 1.6vw, 18px);
+      line-height: 1.7;
+      color: var(--nil-cof-muted);
+      margin: 0;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-promise-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-promise {
+      border: 1px solid var(--nil-cof-border);
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: rgba(255,255,255,.68);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-card,
+    #shopify-section-{{ section.id }} .nil-cof-form-card,
+    #shopify-section-{{ section.id }} .nil-cof-step {
+      border: 1px solid var(--nil-cof-border);
+      border-radius: 28px;
+      background: rgba(255,255,255,.72);
+      box-shadow: var(--nil-cof-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-card {
+      padding: 18px;
+      min-height: 330px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-media {
+      aspect-ratio: 4 / 5;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #eee5d9, #fffaf2);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-media.has-image img {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-placeholder {
+      text-align: center;
+      padding: 28px;
+      color: rgba(26,26,26,.48);
+      font-family: var(--font-heading-family, serif);
+      font-size: 28px;
+      letter-spacing: .08em;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-preview-name {
+      margin: 14px 6px 2px;
+      font-family: var(--font-heading-family, serif);
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-form-card {
+      padding: clamp(18px, 3vw, 34px);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-progress {
+      margin-bottom: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-progress-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(201,169,110,.2);
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-progress-fill {
+      width: 14.28%;
+      height: 100%;
+      background: var(--nil-cof-gold);
+      transition: width .32s ease;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-progress-text {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: var(--nil-cof-muted);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-step {
+      padding: clamp(18px, 3vw, 30px);
+      margin-bottom: 18px;
+      background: var(--nil-cof-card);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-step-title {
+      margin: 4px 0 6px;
+      font-family: var(--font-heading-family, serif);
+      font-size: clamp(25px, 3vw, 38px);
+      font-weight: 400;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-step-hint {
+      margin: 0 0 22px;
+      color: var(--nil-cof-muted);
+      line-height: 1.55;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option {
+      display: grid;
+      gap: 9px;
+      cursor: pointer;
+      border: 1px solid rgba(26,26,26,.09);
+      border-radius: 18px;
+      padding: 12px 10px;
+      background: linear-gradient(180deg, #fff 0%, #fffaf3 100%);
+      text-align: center;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      min-height: 128px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option:hover {
+      transform: translateY(-2px);
+      border-color: rgba(201,169,110,.7);
+      box-shadow: 0 12px 28px rgba(45,33,20,.08);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option input,
+    #shopify-section-{{ section.id }} .nil-cof-chip input,
+    #shopify-section-{{ section.id }} .nil-cof-color input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option:has(input:checked),
+    #shopify-section-{{ section.id }} .nil-cof-chip:has(input:checked) span,
+    #shopify-section-{{ section.id }} .nil-cof-color:has(input:checked) .nil-cof-color-dot {
+      border-color: var(--nil-cof-gold);
+      box-shadow: 0 0 0 2px rgba(201,169,110,.32), 0 18px 38px rgba(45,33,20,.10);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      margin: 0 auto;
+      opacity: .78;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option--missing-image img {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option--missing-image::before {
+      content: 'NIL';
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      background: #111;
+      color: #fff;
+      font-family: var(--font-heading-family, serif);
+      letter-spacing: .08em;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-option span {
+      font-size: 12px;
+      line-height: 1.25;
+      color: rgba(26,26,26,.78);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-chip-group {
+      margin-bottom: 22px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-chip-row,
+    #shopify-section-{{ section.id }} .nil-cof-color-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-chip span {
+      display: block;
+      padding: 10px 16px;
+      border: 1px solid rgba(26,26,26,.14);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all .18s ease;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-color {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--nil-cof-muted);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-color-dot {
+      display: block;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(26,26,26,.15);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-unit-toggle {
+      display: inline-flex;
+      border: 1px solid rgba(26,26,26,.12);
+      border-radius: 999px;
+      padding: 3px;
+      background: #fff;
+      margin-bottom: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-unit-btn {
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      padding: 9px 18px;
+      cursor: pointer;
+      color: rgba(26,26,26,.62);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-unit-btn.is-active {
+      background: #111;
+      color: #fff;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-field input,
+    #shopify-section-{{ section.id }} .nil-cof-field select,
+    #shopify-section-{{ section.id }} .nil-cof-field textarea {
+      width: 100%;
+      border: 1px solid rgba(26,26,26,.14);
+      border-radius: 14px;
+      background: rgba(255,255,255,.82);
+      padding: 13px 14px;
+      font-size: 15px;
+      color: var(--nil-cof-text);
+      min-height: 48px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-field input:focus,
+    #shopify-section-{{ section.id }} .nil-cof-field select:focus,
+    #shopify-section-{{ section.id }} .nil-cof-field textarea:focus {
+      outline: 2px solid rgba(201,169,110,.38);
+      border-color: var(--nil-cof-gold);
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-field--full {
+      grid-column: 1 / -1;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-measure-wrap {
+      position: relative;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-unit-label {
+      position: absolute;
+      right: 14px;
+      bottom: 13px;
+      font-size: 12px;
+      color: rgba(26,26,26,.38);
+      pointer-events: none;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-phone-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-notice {
+      border: 1px solid rgba(201,169,110,.34);
+      background: rgba(201,169,110,.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(26,26,26,.70);
+      margin-top: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-submit-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-submit {
+      border: 0;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      padding: 16px 28px;
+      cursor: pointer;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-submit:hover {
+      background: var(--nil-cof-gold);
+      color: #111;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #111;
+      border: 1px solid var(--nil-cof-border);
+      border-radius: 999px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,.72);
+      white-space: nowrap;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-success {
+      padding: 26px;
+      border: 1px solid rgba(37, 211, 102, .35);
+      background: rgba(37, 211, 102, .08);
+      border-radius: 24px;
+      margin-bottom: 22px;
+    }
+
+    #shopify-section-{{ section.id }} .nil-cof-error {
+      padding: 18px;
+      border: 1px solid rgba(180, 40, 40, .3);
+      background: rgba(180,40,40,.06);
+      border-radius: 18px;
+      margin-bottom: 22px;
+    }
+
+    @media screen and (max-width: 989px) {
+      #shopify-section-{{ section.id }} .nil-cof-hero {
+        grid-template-columns: 1fr;
+      }
+
+      #shopify-section-{{ section.id }} .nil-cof-preview-card {
+        max-width: 520px;
+      }
+
+      #shopify-section-{{ section.id }} .nil-cof-icon-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media screen and (max-width: 640px) {
+      #shopify-section-{{ section.id }} .nil-cof-icon-grid,
+      #shopify-section-{{ section.id }} .nil-cof-fields-grid,
+      #shopify-section-{{ section.id }} .nil-cof-submit-row,
+      #shopify-section-{{ section.id }} .nil-cof-phone-row {
+        grid-template-columns: 1fr;
+      }
+
+      #shopify-section-{{ section.id }} .nil-cof-option {
+        min-height: auto;
+      }
+    }
+  </style>
+
+  <div class="nil-cof-shell">
+    <div class="nil-cof-hero">
+      <div>
+        <div class="nil-cof-eyebrow">NIL Bride • Remote Custom Couture</div>
+        <h1 class="nil-cof-title">Custom Wedding Dress Request</h1>
+        <p class="nil-cof-subtitle">
+          Choose your silhouette, neckline, fabric, color and measurements. Our bridal team will review your request and continue with you on WhatsApp.
+        </p>
+        <div class="nil-cof-promise-row" aria-label="NIL Bride promises">
+          <span class="nil-cof-promise">Made-to-order</span>
+          <span class="nil-cof-promise">Remote measurements</span>
+          <span class="nil-cof-promise">6–8 weeks production</span>
+          <span class="nil-cof-promise">Worldwide shipping</span>
+        </div>
+      </div>
+
+      <aside class="nil-cof-preview-card" id="nilCofSelectedDress" hidden>
+        <div class="nil-cof-preview-media" id="nilCofPreviewMedia">
+          <img id="nilCofDressImg" src="" alt="Selected NIL Bride dress" loading="lazy">
+          <div class="nil-cof-preview-placeholder">NIL BRIDE</div>
+        </div>
+        <p class="nil-cof-preview-name" id="nilCofDressName"></p>
+      </aside>
+    </div>
+
+    <div class="nil-cof-form-card">
+      <div class="nil-cof-progress" aria-hidden="true">
+        <div class="nil-cof-progress-track">
+          <div class="nil-cof-progress-fill" id="nilCofProgressFill"></div>
+        </div>
+        <p class="nil-cof-progress-text" id="nilCofProgressText">Step 1 of 7</p>
+      </div>
+
+      {% form 'contact', id: 'nil-cof-form', class: 'nil-cof-form' %}
+        {% if form.posted_successfully? %}
+          <div class="nil-cof-success">
+            <strong>Thank you — your custom request was received.</strong><br>
+            Continue on WhatsApp to send inspiration photos or confirm urgent details.
+          </div>
+        {% endif %}
+
+        {% if form.errors %}
+          <div class="nil-cof-error">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+
+        <input type="hidden" name="contact[form_source]" value="NIL Bride Custom Order Form">
+        <input type="hidden" name="contact[selected_dress]" id="nilCofDressHidden" value="">
+        <input type="hidden" name="contact[selected_dress_handle]" id="nilCofHandleHidden" value="">
+        <input type="hidden" name="contact[selected_dress_url]" id="nilCofUrlHidden" value="">
+        <input type="hidden" name="contact[selected_dress_image]" id="nilCofImageHidden" value="">
+        <input type="hidden" name="contact[measurement_unit]" id="nilCofUnitValue" value="cm">
+        <input type="hidden" name="contact[shopify_draft_order_note]" value="Theme-only form: true draft order requires Shopify Admin API / app. Create draft manually from this lead if needed.">
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 1</div>
+          <h2 class="nil-cof-step-title">Silhouette</h2>
+          <p class="nil-cof-step-hint">Select the overall shape of your dress.</p>
+          <div class="nil-cof-icon-grid">
+            {% for item in silhouettes %}
+              {% assign parts = item | split: '|' %}
+              <label class="nil-cof-option">
+                <input type="radio" name="contact[silhouette]" value="{{ parts[0] | escape }}">
+                <img src="{{ parts[1] | file_url }}" alt="{{ parts[0] | escape }}" loading="lazy" onerror="this.closest('.nil-cof-option').classList.add('nil-cof-option--missing-image')">
+                <span>{{ parts[0] }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 2</div>
+          <h2 class="nil-cof-step-title">Neckline</h2>
+          <p class="nil-cof-step-hint">Choose the neckline closest to your dream dress.</p>
+          <div class="nil-cof-icon-grid">
+            {% for item in necklines %}
+              {% assign parts = item | split: '|' %}
+              <label class="nil-cof-option">
+                <input type="radio" name="contact[neckline]" value="{{ parts[0] | escape }}">
+                <img src="{{ parts[1] | file_url }}" alt="{{ parts[0] | escape }}" loading="lazy" onerror="this.closest('.nil-cof-option').classList.add('nil-cof-option--missing-image')">
+                <span>{{ parts[0] }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 3</div>
+          <h2 class="nil-cof-step-title">Sleeve Style</h2>
+          <p class="nil-cof-step-hint">Long sleeve selections will ask for arm length too.</p>
+          <div class="nil-cof-icon-grid">
+            {% for item in sleeves %}
+              {% assign parts = item | split: '|' %}
+              <label class="nil-cof-option">
+                <input type="radio" name="contact[sleeve_style]" value="{{ parts[0] | escape }}" class="nil-cof-sleeve-radio">
+                <img src="{{ parts[1] | file_url }}" alt="{{ parts[0] | escape }}" loading="lazy" onerror="this.closest('.nil-cof-option').classList.add('nil-cof-option--missing-image')">
+                <span>{{ parts[0] }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 4</div>
+          <h2 class="nil-cof-step-title">Dress Length</h2>
+          <p class="nil-cof-step-hint">Pick the base length. Train length is selected separately.</p>
+          <div class="nil-cof-icon-grid">
+            {% for item in lengths %}
+              {% assign parts = item | split: '|' %}
+              <label class="nil-cof-option">
+                <input type="radio" name="contact[dress_length]" value="{{ parts[0] | escape }}">
+                <img src="{{ parts[1] | file_url }}" alt="{{ parts[0] | escape }}" loading="lazy" onerror="this.closest('.nil-cof-option').classList.add('nil-cof-option--missing-image')">
+                <span>{{ parts[0] }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 5</div>
+          <h2 class="nil-cof-step-title">Style Details</h2>
+          <p class="nil-cof-step-hint">Use quick selections for the bridal team to understand your style.</p>
+
+          <div class="nil-cof-chip-group">
+            <p class="nil-cof-chip-title">Back Style</p>
+            <div class="nil-cof-chip-row">
+              {% for opt in back_style_options %}
+                <label class="nil-cof-chip"><input type="radio" name="contact[back_style]" value="{{ opt | escape }}"><span>{{ opt }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="nil-cof-chip-group">
+            <p class="nil-cof-chip-title">Train Length</p>
+            <div class="nil-cof-chip-row">
+              {% for opt in train_options %}
+                <label class="nil-cof-chip"><input type="radio" name="contact[train_length]" value="{{ opt | escape }}"><span>{{ opt }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="nil-cof-chip-group">
+            <p class="nil-cof-chip-title">Fabric</p>
+            <div class="nil-cof-chip-row">
+              {% for opt in fabric_options %}
+                <label class="nil-cof-chip"><input type="checkbox" name="contact[fabrics][]" value="{{ opt | escape }}"><span>{{ opt }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="nil-cof-chip-group">
+            <p class="nil-cof-chip-title">Embellishments</p>
+            <div class="nil-cof-chip-row">
+              {% for opt in embellishment_options %}
+                <label class="nil-cof-chip"><input type="checkbox" name="contact[embellishments][]" value="{{ opt | escape }}"><span>{{ opt }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="nil-cof-chip-group">
+            <p class="nil-cof-chip-title">Color Tone</p>
+            <div class="nil-cof-color-row">
+              {% for item in color_options %}
+                {% assign parts = item | split: '|' %}
+                <label class="nil-cof-color">
+                  <input type="radio" name="contact[color_tone]" value="{{ parts[0] | escape }}">
+                  <span class="nil-cof-color-dot" style="background: {{ parts[1] }};"></span>
+                  <span>{{ parts[0] }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 6</div>
+          <h2 class="nil-cof-step-title">Measurements</h2>
+          <p class="nil-cof-step-hint">US and Canada customers can use inches; other countries can use cm.</p>
+
+          <div class="nil-cof-unit-toggle" role="group" aria-label="Measurement unit">
+            <button type="button" class="nil-cof-unit-btn is-active" data-nil-unit="cm">cm</button>
+            <button type="button" class="nil-cof-unit-btn" data-nil-unit="in">inches</button>
+          </div>
+
+          <div class="nil-cof-fields-grid">
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Bust</label><input type="number" name="contact[bust]" min="20" max="220" step="0.5" placeholder="88"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Waist</label><input type="number" name="contact[waist]" min="20" max="220" step="0.5" placeholder="68"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Hips</label><input type="number" name="contact[hips]" min="20" max="240" step="0.5" placeholder="96"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Height without shoes</label><input type="number" name="contact[height_without_shoes]" min="40" max="240" step="0.5" placeholder="165"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Heel Height</label><input type="number" name="contact[heel_height]" min="0" max="30" step="0.5" placeholder="7"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Hollow to Floor</label><input type="number" name="contact[hollow_to_floor]" min="40" max="240" step="0.5" placeholder="148"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap"><label>Shoulder Width</label><input type="number" name="contact[shoulder_width]" min="10" max="100" step="0.5" placeholder="38"><span class="nil-cof-unit-label">cm</span></div>
+            <div class="nil-cof-field nil-cof-measure-wrap" id="nilCofArmLength"><label>Arm Length</label><input type="number" name="contact[arm_length]" min="10" max="120" step="0.5" placeholder="60"><span class="nil-cof-unit-label">cm</span></div>
+          </div>
+        </div>
+
+        <div class="nil-cof-step" data-nil-cof-step>
+          <div class="nil-cof-step-label">Step 7</div>
+          <h2 class="nil-cof-step-title">Contact & Wedding Details</h2>
+          <p class="nil-cof-step-hint">We will contact you within 24 hours to confirm the design and production details.</p>
+
+          <div class="nil-cof-fields-grid">
+            <div class="nil-cof-field"><label>Full Name *</label><input type="text" name="contact[name]" required autocomplete="name" placeholder="Your full name"></div>
+            <div class="nil-cof-field"><label>Email *</label><input type="email" name="contact[email]" required autocomplete="email" placeholder="your@email.com"></div>
+            <div class="nil-cof-field nil-cof-field--full"><label>Phone / WhatsApp *</label><div class="nil-cof-phone-row"><select name="contact[phone_code]">{% for item in phone_code_options %}{% assign parts = item | split: '|' %}<option value="{{ parts[1] | escape }}">{{ parts[0] }}</option>{% endfor %}</select><input type="tel" name="contact[phone]" required autocomplete="tel" placeholder="555 123 4567"></div></div>
+            <div class="nil-cof-field"><label>Wedding Date</label><input type="date" name="contact[wedding_date]"></div>
+            <div class="nil-cof-field"><label>Delivery Country</label><select name="contact[delivery_country]" id="nilCofCountry"><option value="">Select your country</option>{% for opt in country_options %}<option value="{{ opt | escape }}">{{ opt }}</option>{% endfor %}</select></div>
+            <div class="nil-cof-field nil-cof-field--full"><label>Reference image link</label><input type="url" name="contact[reference_image_link]" placeholder="Paste Pinterest / Instagram / Drive image link if available"></div>
+            <div class="nil-cof-field nil-cof-field--full"><label>Special Requests / Notes</label><textarea name="contact[body]" placeholder="Tell us details such as modesty preference, detachable sleeves, extra train length, rush production, or inspiration notes."></textarea></div>
+          </div>
+
+          <div class="nil-cof-notice">
+            Native Shopify contact forms can send your request by email, but a real Draft Order and direct file upload require an app/Admin API or external upload service. This theme-only form includes a reference link field and a WhatsApp follow-up for photos.
+          </div>
+        </div>
+
+        <div class="nil-cof-submit-row">
+          <button type="submit" class="nil-cof-submit">Send My Custom Request</button>
+          <a class="nil-cof-whatsapp" id="nilCofWhatsapp" href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener">Continue on WhatsApp</a>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.getElementById('shopify-section-{{ section.id }}');
+      if (!root) return;
+
+      const progressFill = root.querySelector('#nilCofProgressFill');
+      const progressText = root.querySelector('#nilCofProgressText');
+      const steps = Array.from(root.querySelectorAll('[data-nil-cof-step]'));
+      const unitValue = root.querySelector('#nilCofUnitValue');
+      const unitButtons = Array.from(root.querySelectorAll('[data-nil-unit]'));
+      const unitLabels = Array.from(root.querySelectorAll('.nil-cof-unit-label'));
+      const whatsappLink = root.querySelector('#nilCofWhatsapp');
+      const countrySelect = root.querySelector('#nilCofCountry');
+      const sleeveRadios = Array.from(root.querySelectorAll('.nil-cof-sleeve-radio'));
+      const armLength = root.querySelector('#nilCofArmLength');
+      const dressHidden = root.querySelector('#nilCofDressHidden');
+      const imageHidden = root.querySelector('#nilCofImageHidden');
+      const handleHidden = root.querySelector('#nilCofHandleHidden');
+      const urlHidden = root.querySelector('#nilCofUrlHidden');
+      const selectedDress = root.querySelector('#nilCofSelectedDress');
+      const dressName = root.querySelector('#nilCofDressName');
+      const dressImg = root.querySelector('#nilCofDressImg');
+      const previewMedia = root.querySelector('#nilCofPreviewMedia');
+
+      function setUnit(unit) {
+        if (!unitValue) return;
+        unitValue.value = unit;
+        unitButtons.forEach(btn => btn.classList.toggle('is-active', btn.dataset.nilUnit === unit));
+        unitLabels.forEach(label => { label.textContent = unit; });
+      }
+
+      unitButtons.forEach(btn => btn.addEventListener('click', () => setUnit(btn.dataset.nilUnit)));
+
+      if (countrySelect) {
+        countrySelect.addEventListener('change', () => {
+          const country = countrySelect.value;
+          setUnit(country === 'United States' || country === 'Canada' ? 'in' : 'cm');
+        });
+      }
+
+      const language = navigator.language || '';
+      if (language === 'en-US' || language === 'en-CA') setUnit('in');
+
+      function updateArmLength() {
+        const selected = sleeveRadios.find(radio => radio.checked);
+        if (armLength) armLength.style.display = selected && selected.value === 'Long Sleeves' ? '' : 'none';
+      }
+      sleeveRadios.forEach(radio => radio.addEventListener('change', updateArmLength));
+      updateArmLength();
+
+      const params = new URLSearchParams(window.location.search);
+      const selectedName = params.get('title') || params.get('dress') || params.get('product') || '';
+      const selectedImg = params.get('img') || params.get('image') || '';
+      const selectedHandle = params.get('handle') || '';
+      const selectedUrl = params.get('url') || '';
+
+      if (selectedName || selectedImg) {
+        if (selectedDress) selectedDress.hidden = false;
+        if (selectedName) {
+          const decodedName = decodeURIComponent(selectedName);
+          if (dressName) dressName.textContent = decodedName;
+          if (dressHidden) dressHidden.value = decodedName;
+        }
+        if (selectedImg) {
+          const decodedImg = decodeURIComponent(selectedImg);
+          if (dressImg) dressImg.src = decodedImg;
+          if (imageHidden) imageHidden.value = decodedImg;
+          if (previewMedia) previewMedia.classList.add('has-image');
+        }
+        if (selectedHandle && handleHidden) handleHidden.value = decodeURIComponent(selectedHandle);
+        if (selectedUrl && urlHidden) urlHidden.value = decodeURIComponent(selectedUrl);
+      }
+
+      function buildSummary() {
+        const form = root.querySelector('#nil-cof-form');
+        if (!form) return 'Hello NIL Bride, I would like to submit a custom wedding dress request.';
+        const fd = new FormData(form);
+        const fields = ['selected_dress','selected_dress_handle','selected_dress_url','silhouette','neckline','sleeve_style','dress_length','back_style','train_length','color_tone','measurement_unit','bust','waist','hips','height_without_shoes','heel_height','wedding_date','delivery_country','name','email','phone'];
+        const lines = ['Hello NIL Bride, I submitted a custom wedding dress request.'];
+        fields.forEach(key => {
+          const value = fd.get('contact[' + key + ']');
+          if (value) lines.push(key.replaceAll('_', ' ') + ': ' + value);
+        });
+        return lines.join('\n');
+      }
+
+      if (whatsappLink) {
+        whatsappLink.addEventListener('click', () => {
+          whatsappLink.href = 'https://wa.me/{{ whatsapp_number }}?text=' + encodeURIComponent(buildSummary());
+        });
+      }
+
+      if ('IntersectionObserver' in window && progressFill && progressText) {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const index = steps.indexOf(entry.target) + 1;
+            const percent = Math.max(14.28, (index / steps.length) * 100);
+            progressFill.style.width = percent + '%';
+            progressText.textContent = 'Step ' + index + ' of ' + steps.length;
+          });
+        }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+        steps.forEach(step => observer.observe(step));
+      }
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Order Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number without +",
+      "default": "905321308242"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F5F0EB"
+    },
+    {
+      "type": "color",
+      "id": "card_color",
+      "label": "Card color",
+      "default": "#FFFCF7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_gold",
+      "label": "Accent gold",
+      "default": "#C9A96E"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Order Form"
+    }
+  ]
+}
+{% endschema %}

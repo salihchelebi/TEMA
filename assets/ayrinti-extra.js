@@ -1,0 +1,1 @@
+/* GELINLIK21 V10: legacy frame generator disabled for speed and black-screen prevention. */

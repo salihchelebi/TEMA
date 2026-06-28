@@ -1,0 +1,88 @@
+{%- doc -%}
+  Renders a swatch either from a variant image object, Shopify swatch object, or fixed Gelinlik21 color map.
+{%- enddoc -%}
+
+{% liquid
+  assign swatch_value = null
+  assign extra_classes = ''
+  assign nil_cdn = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/'
+  if settings.show_variant_image and variant_image
+    assign swatch_image_width = settings.variant_swatch_width | times: 2
+    assign swatch_image_url = variant_image | image_url: width: swatch_image_width
+    assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+    assign extra_classes = extra_classes | append: ' swatch--variant-image'
+  elsif swatch.image
+    assign swatch_image_url = swatch.image | image_url: width: 80
+    assign swatch_value = 'url(' | append: swatch_image_url | append: ')'
+  elsif swatch.color
+    assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
+  endif
+
+  if swatch_value == null and label != blank
+    assign nil_label = label | downcase | strip | replace: ' ', '-' | replace: '_', '-' | replace: 'ş', 's' | replace: 'ğ', 'g' | replace: 'ü', 'u' | replace: 'ö', 'o' | replace: 'ç', 'c' | replace: 'ı', 'i'
+    assign nil_file = ''
+    case nil_label
+      when 'ivory', 'fildisi'
+        assign nil_file = 'color-renk-ivory-fildisi.png'
+      when 'white', 'beyaz'
+        assign nil_file = 'color-renk-white-beyaz.png'
+      when 'champagne', 'sampanya'
+        assign nil_file = 'color-renk-champagne-sampanya.png'
+      when 'off-white', 'off-white', 'off-white-', 'offwhite', 'kirik-beyaz'
+        assign nil_file = 'color-renk-off-white-kirik-beyaz.png'
+      when 'soft-ivory', 'yumusak-fildisi'
+        assign nil_file = 'color-renk-soft-ivory-yumusak-fildisi.png'
+      when 'burgundy', 'bordo'
+        assign nil_file = 'color-renk-burgundy-bordo.png'
+      when 'black', 'siyah'
+        assign nil_file = 'color-renk-black-siyah.png'
+      when 'emerald-green', 'emerald', 'zumrut-yesili'
+        assign nil_file = 'color-renk-emerald-green-zumrut-yesili.png'
+      when 'teal-turquoise', 'teal', 'turquoise', 'petrol-turkuaz'
+        assign nil_file = 'color-renk-teal-turquoise-petrol-turkuaz.png'
+      when 'deep-purple', 'purple', 'koyu-mor'
+        assign nil_file = 'color-renk-deep-purple-koyu-mor.png'
+      when 'silver-gray', 'silver-grey', 'silver', 'gumus-gri'
+        assign nil_file = 'color-renk-silver-gray-gumus-gri.png'
+      when 'soft-champagne', 'softchampagne', 'yumusak-sampanya'
+        assign nil_file = 'color-renk-soft-champagne-yumusak-sampanya.png'
+      when 'crimson-red', 'crimson', 'red', 'kirmizi'
+        assign nil_file = 'color-renk-crimson-red-kirmizi.png'
+      when 'dusty-rose', 'gul-kurusu'
+        assign nil_file = 'color-renk-dusty-rose-gul-kurusu.png'
+      when 'navy-blue', 'navy', 'lacivert'
+        assign nil_file = 'color-renk-navy-blue-lacivert.png'
+      when 'gold-champagne', 'gold', 'soft-gold', 'altin-sampanya'
+        assign nil_file = 'color-renk-gold-champagne-altin-sampanya.png'
+      when 'royal-blue', 'royal', 'kraliyet-mavisi'
+        assign nil_file = 'color-renk-royal-blue-kraliyet-mavisi.png'
+      when 'pearl-pink', 'blush-pink', 'blush', 'inci-pembe'
+        assign nil_file = 'color-renk-pearl-pink-inci-pembe.png'
+      when 'sage-green', 'sage', 'ada-cayi-yesili'
+        assign nil_file = 'color-renk-sage-green-ada-cayi-yesili.png'
+      when 'mocha', 'moka'
+        assign nil_file = 'color-renk-mocha-moka.png'
+      when 'nude', 'soft-nude', 'beige', 'bej'
+        assign nil_file = 'color-renk-soft-ivory-yumusak-fildisi.png'
+    endcase
+    if nil_file != ''
+      assign swatch_value = 'url(' | append: nil_cdn | append: nil_file | append: ')'
+      assign extra_classes = extra_classes | append: ' nil-liquid-color-swatch'
+    endif
+  endif
+
+  case mode
+    when 'unscaled'
+      assign extra_classes = extra_classes | append: ' swatch--unscaled'
+    when 'filter'
+      assign extra_classes = extra_classes | append: ' swatch--filter'
+    when 'pill'
+      assign extra_classes = extra_classes | append: ' swatch--pill'
+  endcase
+%}
+
+<span
+  class="swatch {{ extra_classes }}{% if swatch_value == null %} swatch--unavailable{% endif %}"
+  style="--swatch-background: {{ swatch_value }}; {% if swatch.image and settings.show_variant_image == false %} --swatch-focal-point: {{ swatch.image.presentation.focal_point }};{% endif %}"
+></span>
+{%- if label != blank -%}<span class="visually-hidden">{{ label }}</span>{%- endif -%}

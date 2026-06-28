@@ -1,0 +1,26 @@
+{% liquid
+  assign k = icon | default: name | default: 'sparkle' | downcase | replace: '_', '-' | replace: ' ', '-'
+  assign size = size | default: 22
+  assign class_name = class | default: 'nil-svg-icon'
+%}
+<span class="{{ class_name }} nil-svg-icon--{{ k }}" style="--nil-icon-size:{{ size }}px" aria-hidden="true">
+{% case k %}
+  {% when 'length' %}<svg viewBox="0 0 24 24"><path d="M8 3h8M12 3v18M9 21h6M10 7h4M10 12h4M10 17h4"/></svg>
+  {% when 'silhouette' or 'mermaid' %}<svg viewBox="0 0 24 24"><path d="M12 3c2 2 3 4 2 7 2 4 4 7 3 11H7c-1-4 1-7 3-11-1-3 0-5 2-7z"/></svg>
+  {% when 'neckline' %}<svg viewBox="0 0 24 24"><path d="M6 4c2 2 4 3 6 3s4-1 6-3l1 6-3 11H8L5 10z"/></svg>
+  {% when 'sleeves' or 'long-sleeve' %}<svg viewBox="0 0 24 24"><path d="M7 4l5 3 5-3 4 6-3 2-2-3v12H8V9l-2 3-3-2z"/></svg>
+  {% when 'price' %}<svg viewBox="0 0 24 24"><path d="M4 11V4h7l9 9-7 7z"/><circle cx="8" cy="8" r="1.5"/></svg>
+  {% when 'fabrics' or 'fabric' or 'lace' %}<svg viewBox="0 0 24 24"><path d="M4 6c5-3 11 3 16 0v12c-5 3-11-3-16 0z"/><path d="M7 7v10M12 6v12M17 7v10"/></svg>
+  {% when 'heart' or 'sweetheart' or 'wishlist' %}<svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"/></svg>
+  {% when 'strapless' %}<svg viewBox="0 0 24 24"><path d="M8 6h8v4l-2 11h-4L8 10z"/></svg>
+  {% when 'off-shoulder' %}<svg viewBox="0 0 24 24"><path d="M5 8c4 3 10 3 14 0M8 8l2 13h4l2-13"/></svg>
+  {% when 'corset' %}<svg viewBox="0 0 24 24"><path d="M8 3h8l-1 18H9zM10 6l4 3-4 3 4 3-4 3"/></svg>
+  {% when 'beaded' or 'sequins' or 'sparkle' %}<svg viewBox="0 0 24 24"><path d="M12 2l2 7 7 3-7 3-2 7-2-7-7-3 7-3z"/></svg>
+  {% when 'train' or 'cathedral-train' %}<svg viewBox="0 0 24 24"><path d="M12 3c2 3 4 7 3 11l5 7H4l5-7c-1-4 1-8 3-11z"/></svg>
+  {% when 'close' %}<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  {% when 'cart' or 'bag' %}<svg viewBox="0 0 24 24"><path d="M6 8h12l1 13H5zM9 8a3 3 0 0 1 6 0"/></svg>
+  {% when 'filter' %}<svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+  {% when 'check' %}<svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
+  {% else %}<svg viewBox="0 0 24 24"><path d="M12 2l2 7 7 3-7 3-2 7-2-7-7-3 7-3z"/></svg>
+{% endcase %}
+</span>

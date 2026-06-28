@@ -1,0 +1,37 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "custom-order-form",
+      "settings": {
+        "whatsapp_number": "905334619373",
+        "background_color": "#F5F0EB",
+        "card_color": "#FFFCF7",
+        "text_color": "#1A1A1A",
+        "accent_gold": "#C9A96E"
+      }
+    },
+    "nil_custom_order_pdf_tools": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<script src=\"{{ 'nil-custom-order-pdf.js' | asset_url }}\" defer></script>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "main",
+    "nil_custom_order_pdf_tools"
+  ]
+}

@@ -1,0 +1,480 @@
+{%- doc -%}
+  Renders a default variant picker, used to display the variant picker in the variants block.
+
+  @param {object} product_resource - The product object.
+  @param {object} [block] - The block object
+  @param {object} section - The section object.
+  @param {object} product - The current product object (used to determine selected variant state).
+{%- enddoc -%}
+
+{% assign block_settings = block.settings %}
+{% liquid
+  assign nil_v77_color_label = block_settings.color_label | default: 'Color'
+  assign nil_v77_size_label = block_settings.size_label | default: 'Size'
+  assign nil_v77_features_label = block_settings.features_label | default: 'Dress Features'
+  assign nil_v77_size_guide_label = block_settings.size_guide_label | default: 'Size Guide'
+  assign nil_v77_feature_layout = block_settings.feature_layout | default: 'wrap'
+  assign nil_v77_feature_gap = block_settings.feature_gap | default: 10
+  assign nil_v77_feature_min_width = block_settings.feature_min_width | default: 132
+  assign nil_v77_feature_max_width = block_settings.feature_max_width | default: 280
+  assign nil_v77_feature_padding_y = block_settings.feature_padding_y | default: 12
+  assign nil_v77_feature_padding_x = block_settings.feature_padding_x | default: 16
+  assign nil_v77_feature_radius = block_settings.feature_border_radius | default: 12
+  assign nil_v77_feature_font_size = block_settings.feature_font_size | default: 12
+  assign nil_v77_feature_icon_size = block_settings.feature_icon_size | default: 24
+  assign nil_v77_feature_bg = block_settings.feature_background | default: '#fffefa'
+  assign nil_v77_feature_text = block_settings.feature_text_color | default: '#24211e'
+  assign nil_v77_feature_border = block_settings.feature_border_color | default: '#d7b77e'
+  assign nil_v77_feature_selected_bg = block_settings.feature_selected_background | default: '#111111'
+  assign nil_v77_feature_selected_text = block_settings.feature_selected_text_color | default: '#ffffff'
+  assign nil_v77_feature_selected_border = block_settings.feature_selected_border_color | default: '#e0bf82'
+%}
+
+{% unless product_resource.has_only_default_variant %}
+  {% liquid
+    assign button_background_brightness = section.settings.color_scheme.settings.foreground | color_brightness
+    if button_background_brightness < 105
+      assign strikethrough_color_mix = '#000'
+    else
+      assign strikethrough_color_mix = '#fff'
+    endif
+  %}
+  <variant-picker
+    class="variant-picker spacing-style variant-picker--{{ block_settings.alignment }}"
+    style="--color-strikethrough-mix: {{ strikethrough_color_mix }}; --nil-v77-feature-gap: {{ nil_v77_feature_gap }}px; --nil-v77-feature-min-width: {{ nil_v77_feature_min_width }}px; --nil-v77-feature-max-width: {{ nil_v77_feature_max_width }}px; --nil-v77-feature-padding-y: {{ nil_v77_feature_padding_y }}px; --nil-v77-feature-padding-x: {{ nil_v77_feature_padding_x }}px; --nil-v77-feature-radius: {{ nil_v77_feature_radius }}px; --nil-v77-feature-font-size: {{ nil_v77_feature_font_size }}px; --nil-v77-feature-icon-size: {{ nil_v77_feature_icon_size }}px; --nil-v77-feature-bg: {{ nil_v77_feature_bg }}; --nil-v77-feature-text: {{ nil_v77_feature_text }}; --nil-v77-feature-border: {{ nil_v77_feature_border }}; --nil-v77-feature-selected-bg: {{ nil_v77_feature_selected_bg }}; --nil-v77-feature-selected-text: {{ nil_v77_feature_selected_text }}; --nil-v77-feature-selected-border: {{ nil_v77_feature_selected_border }}; {% render 'spacing-style', settings: block_settings %}"
+    data-section-id="{{ section.id }}"
+    data-nil-label-source="theme-editor-settings"
+    data-product-id="{{ product_resource.id }}"
+    data-block-id="{{ block.id }}"
+    data-product-url="{{ product_resource.url }}"
+    ref="mainVariantPicker"
+    {% if product.id == product_resource.id %}
+      data-template-product-match="true"
+    {% endif %}
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-shopify-visual-preview
+    {% endif %}
+  >
+    <form class="variant-picker__form">
+      {%- for product_option in product_resource.options_with_values -%}
+        {%- liquid
+          assign swatch_count = product_option.values | map: 'swatch' | compact | size
+          assign variant_style = block_settings.variant_style
+          assign option_name_downcase = product_option.name | downcase | strip
+          assign nil_option_extra_class = ''
+          assign nil_option_has_custom_color = false
+          assign nil_option_is_feature = false
+          assign nil_option_display_label = product_option.name
+          assign option_id_attribute = ''
+          assign fieldset_id = ''
+          assign longest_value = 0
+
+          if option_name_downcase contains 'color' or option_name_downcase contains 'renk'
+            assign nil_option_extra_class = ' nil-v77-option--color'
+            assign nil_option_has_custom_color = true
+            assign nil_option_display_label = nil_v77_color_label
+            if block_settings.show_swatches
+              assign variant_style = 'swatch'
+            endif
+          elsif option_name_downcase contains 'size' or option_name_downcase contains 'beden' or option_name_downcase contains 'boyut'
+            assign nil_option_extra_class = ' nil-v77-option--size'
+            assign nil_option_display_label = nil_v77_size_label
+          elsif option_name_downcase contains 'veil' or option_name_downcase contains 'duvak' or option_name_downcase contains 'giysi' or option_name_downcase contains 'özellik' or option_name_downcase contains 'ozellik' or option_name_downcase contains 'features'
+            assign nil_option_extra_class = ' nil-v77-option--veil nil-v77-feature-layout--' | append: nil_v77_feature_layout
+            assign nil_option_display_label = nil_v77_features_label
+            assign nil_option_is_feature = true
+            assign variant_style = 'buttons'
+          endif
+
+          if swatch_count > 0 and block_settings.show_swatches and nil_option_is_feature == false
+            if block_settings.variant_style == 'dropdowns'
+              assign variant_style = 'swatch_dropdown'
+            else
+              assign variant_style = 'swatch'
+            endif
+          endif
+
+          if variant_style == 'buttons' and settings.variant_button_width == 'equal-width-buttons'
+            assign fieldset_id = section.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.name | handleize
+            assign option_id_attribute = 'data-option-id="' | append: fieldset_id | append: '"'
+            assign longest_value = 0
+          endif
+        -%}
+
+        {%- if product_option.values.size == 1 and variant_style != 'swatch' and nil_option_is_feature == false -%}
+          <div
+            class="variant-option"
+            data-testid="variant-option-single"
+          >
+            {{- nil_option_display_label | escape -}}
+            <span
+              class="variant-option__swatch-value"
+              data-testid="variant-option-single-value"
+            >
+              {{- product_option.selected_value -}}
+            </span>
+          </div>
+        {%- elsif variant_style == 'swatch' or variant_style == 'buttons' -%}
+          {%- assign fieldset_index = forloop.index0 -%}
+          <fieldset
+            class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}{{ nil_option_extra_class }}"
+            data-fieldset-index="{{ fieldset_index }}"
+            ref="fieldsets[]"
+            {{ option_id_attribute }}
+          >
+            <legend>
+              <span class="nil-v77-legend-title">{{ nil_option_display_label | escape -}}</span>
+              {%- if variant_style == 'swatch' -%}
+                <span class="variant-option__swatch-value">{{ product_option.selected_value }}</span>
+              {%- endif %}
+              {% if nil_option_extra_class contains 'nil-v77-option--size' %}
+                <a class="nil-v77-size-guide-link" href="#nil-v77-size-help">
+                  <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-28-size-guide-icon-beden-tablosu-linki-icin.png?v=1781505374" alt="" width="20" height="20" loading="lazy">
+                  <span>{{ nil_v77_size_guide_label | escape }}</span>
+                </a>
+              {% endif %}
+            </legend>
+            {%- for product_option_value in product_option.values -%}
+              {% if product_option_value.size > longest_value and option_id_attribute %}
+                {% assign longest_value = product_option_value.size %}
+              {% endif %}
+              {% liquid
+                assign nil_value = product_option_value.name | downcase | strip
+                assign custom_swatch_url = ''
+                if nil_option_has_custom_color
+                  case nil_value
+                    when 'ivory', 'soft ivory', 'off white', 'off-white', 'kırık beyaz'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-01-renk-swatch-ivory-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'white', 'beyaz', 'beyaz / kırık beyaz'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-02-renk-swatch-white-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'champagne', 'soft champagne', 'soft-champagne', 'şampanya'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-03-renk-swatch-champagne-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'blush', 'soft nude', 'pudra pembe', 'nude', 'nude / bej', 'bej'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-04-renk-swatch-blush-urun-renk-secimi-icin.png?v=1781505374'
+                    when 'emerald green', 'emerald', 'zümrüt yeşili', 'zümrüt'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-05-renk-swatch-emerald-green-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'navy blue', 'navy', 'saks mavisi', 'saks', 'bebe mavisi'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-06-renk-swatch-navy-blue-urun-renk-secimi-icin.png?v=1781505374'
+                    when 'crimson red', 'crimson', 'red', 'bordo', 'kırmızı'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-07-renk-swatch-crimson-red-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'teal turquoise', 'teal', 'turquoise', 'turkuaz', 'mint yeşili', 'mint'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-08-renk-swatch-teal-turquoise-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'dusty rose', 'somon', 'somon / şeftali', 'şeftali'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-09-renk-swatch-dusty-rose-urun-renk-secimi-icin.png?v=1781505374'
+                    when 'deep purple', 'purple', 'mürdüm', 'mürdüm / mor', 'mor', 'lila', 'lila / lavanta', 'lavanta'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-10-renk-swatch-deep-purple-urun-renk-secimi-icin.png?v=1781505373'
+                    when 'gold champagne', 'gold', 'gold / altın', 'altın', 'gümüş', 'silver', 'silver gray', 'silver grey'
+                      assign custom_swatch_url = 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-11-renk-swatch-gold-champagne-urun-renk-secimi-icin.png?v=1781505374'
+                  endcase
+                endif
+              %}
+              <label
+                class="variant-option__button-label{% if variant_style == 'swatch' %} variant-option__button-label--has-swatch{% endif %}{% if nil_option_is_feature %} nil-v77-feature-chip{% endif %}"
+              >
+                <input
+                  type="radio"
+                  name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
+                  value="{{ product_option_value | escape }}"
+                  aria-label="{{ product_option_value.name | escape }}{% if product_option_value.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}"
+                  {% if product_option_value.available == false %}
+                    aria-disabled="true"
+                  {% endif %}
+                  data-previous-checked="false"
+                  data-fieldset-index="{{ fieldset_index }}"
+                  data-input-index="{{ forloop.index0 }}"
+                  data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+                  data-option-value-id="{{ product_option_value.id }}"
+                  data-option-available="{{ product_option_value.available }}"
+                  data-connected-product-url="{{ product_option_value.product_url }}"
+                  {% if product_option_value.variant.id %}
+                    data-variant-id="{{ product_option_value.variant.id }}"
+                  {% endif %}
+                  {% if product_option_value.selected %}
+                    data-current-checked="true"
+                    checked
+                  {% else %}
+                    data-current-checked="false"
+                  {% endif %}
+                >
+                {% liquid
+                  assign nil_feature_icon = blank
+                  assign nil_feature_display_text = product_option_value
+                  if nil_option_is_feature
+                    assign nil_feature_value = product_option_value.name | downcase | strip
+                    assign nil_feature_match_1 = block_settings.feature_1_match | default: 'complimentary,plain,included'
+                    assign nil_feature_match_2 = block_settings.feature_2_match | default: 'fingertip,short veil'
+                    assign nil_feature_match_3 = block_settings.feature_3_match | default: 'chapel,220'
+                    assign nil_feature_match_4 = block_settings.feature_4_match | default: 'cathedral,300'
+                    assign nil_feature_matches_1 = nil_feature_match_1 | downcase | split: ','
+                    assign nil_feature_matches_2 = nil_feature_match_2 | downcase | split: ','
+                    assign nil_feature_matches_3 = nil_feature_match_3 | downcase | split: ','
+                    assign nil_feature_matches_4 = nil_feature_match_4 | downcase | split: ','
+                    assign nil_feature_slot = 0
+                    for nil_feature_match in nil_feature_matches_1
+                      assign nil_feature_key = nil_feature_match | strip
+                      if nil_feature_key != blank and nil_feature_value contains nil_feature_key
+                        assign nil_feature_slot = 1
+                      endif
+                    endfor
+                    for nil_feature_match in nil_feature_matches_2
+                      assign nil_feature_key = nil_feature_match | strip
+                      if nil_feature_key != blank and nil_feature_value contains nil_feature_key
+                        assign nil_feature_slot = 2
+                      endif
+                    endfor
+                    for nil_feature_match in nil_feature_matches_3
+                      assign nil_feature_key = nil_feature_match | strip
+                      if nil_feature_key != blank and nil_feature_value contains nil_feature_key
+                        assign nil_feature_slot = 3
+                      endif
+                    endfor
+                    for nil_feature_match in nil_feature_matches_4
+                      assign nil_feature_key = nil_feature_match | strip
+                      if nil_feature_key != blank and nil_feature_value contains nil_feature_key
+                        assign nil_feature_slot = 4
+                      endif
+                    endfor
+                    case nil_feature_slot
+                      when 1
+                        if block_settings.feature_1_icon != blank
+                          assign nil_feature_icon = block_settings.feature_1_icon | image_url: width: 96
+                        endif
+                        if block_settings.feature_use_editor_labels and block_settings.feature_1_label != blank
+                          assign nil_feature_display_text = block_settings.feature_1_label
+                        endif
+                      when 2
+                        if block_settings.feature_2_icon != blank
+                          assign nil_feature_icon = block_settings.feature_2_icon | image_url: width: 96
+                        endif
+                        if block_settings.feature_use_editor_labels and block_settings.feature_2_label != blank
+                          assign nil_feature_display_text = block_settings.feature_2_label
+                        endif
+                      when 3
+                        if block_settings.feature_3_icon != blank
+                          assign nil_feature_icon = block_settings.feature_3_icon | image_url: width: 96
+                        endif
+                        if block_settings.feature_use_editor_labels and block_settings.feature_3_label != blank
+                          assign nil_feature_display_text = block_settings.feature_3_label
+                        endif
+                      when 4
+                        if block_settings.feature_4_icon != blank
+                          assign nil_feature_icon = block_settings.feature_4_icon | image_url: width: 96
+                        endif
+                        if block_settings.feature_use_editor_labels and block_settings.feature_4_label != blank
+                          assign nil_feature_display_text = block_settings.feature_4_label
+                        endif
+                    endcase
+                  endif
+                %}
+                {% if variant_style == 'swatch' %}
+                  {% liquid
+                    assign featured_media = product_option_value.variant.featured_media
+
+                    # If the variant has no featured media, and we have a combined listing product, then fall back to
+                    # using the featured media of the child product that is linked to this option value.
+                    if featured_media == blank and product_option_value.product_url
+                      assign featured_media = product_option_value.variant.product.featured_media
+                    endif
+                  %}
+
+                  {% if custom_swatch_url != blank %}
+                    <span
+                      class="swatch swatch--custom nil-v77-color-swatch"
+                      style="background-image: url('{{ custom_swatch_url }}');"
+                    ></span>
+                  {% else %}
+                    {% render 'swatch',
+                      swatch: product_option_value.swatch,
+                      variant_image: featured_media,
+                      mode: 'unscaled'
+                    %}
+                  {% endif %}
+                  {% if nil_option_has_custom_color %}
+                    <span class="nil-v77-swatch-label">{{ product_option_value | escape }}</span>
+                  {% endif %}
+                {% else %}
+                  {% if product_option_value.available == true %}
+                    <span
+                      class="variant-option__button-label__pill"
+                      data-key="variant-option-pill"
+                    ></span>
+                  {% endif %}
+                  {% if nil_option_is_feature and nil_feature_icon != blank %}
+                    <span class="nil-v77-feature-chip__icon" aria-hidden="true">
+                      <img src="{{ nil_feature_icon }}" alt="" loading="lazy" width="{{ nil_v77_feature_icon_size }}" height="{{ nil_v77_feature_icon_size }}">
+                    </span>
+                  {% endif %}
+                  <span
+                    class="variant-option__button-label__text{% if nil_option_is_feature %} nil-v77-feature-chip__text{% endif %}"
+                    data-key="variant-option-text"
+                  >
+                    {{- nil_feature_display_text | escape -}}
+                  </span>
+                {% endif %}
+                {% render 'strikethrough-variant', product_option: product_option_value %}
+              </label>
+            {%- endfor -%}
+            {% if option_id_attribute %}
+              {% style %}
+                [data-option-id="{{ fieldset_id }}"] {
+                  --variant-ch: {{ longest_value | times: 0.65 }}em;
+                }
+              {% endstyle %}
+            {% endif %}
+          </fieldset>
+        {%- elsif block_settings.variant_style == 'dropdowns' -%}
+          {%
+            # There is an opportunity to build a custom select component that will allow us to style the select element further (animation for dropdown, swatches shown in the dropdown options, etc)
+            # It's too bad as it mean rebuilding baked in behaviours but I think we've already done that for the locale selectors
+            # in dawn. So it might mean more time spent in setting it up but worth it for future updates/styling.
+          %}
+          {% liquid
+            assign property_being_updated = false
+            if settings.variant_swatch_width != settings.variant_swatch_height
+              assign property_being_updated = true
+              # (original width / original height) x new height (20px at the moment) = new width
+              assign new_width = settings.variant_swatch_width | times: 1.0 | divided_by: settings.variant_swatch_height | times: 20
+            endif
+          %}
+
+          <div class="variant-option variant-option--dropdowns">
+            <label for="Option-{{ block.id }}-{{ forloop.index0 }}">{{ nil_option_display_label | escape }}</label>
+            <div
+              class="variant-option__select-wrapper"
+              style="
+                {%- if property_being_updated  -%}
+                  --variant-picker-swatch-width: clamp(10px,{{ new_width }}px, 50px);
+                {%- endif -%}
+              "
+            >
+              <select
+                id="Option-{{ block.id }}-{{ forloop.index0 }}"
+                name="options[{{ product_option.name | escape }}]"
+                class="variant-option__select"
+              >
+                {%- for product_option_value in product_option.values -%}
+                  <option
+                    value="{{ product_option_value | escape }}"
+                    data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+                    data-option-value-id="{{ product_option_value.id }}"
+                    data-variant-id="{{ product_option_value.variant.id }}"
+                    data-connected-product-url="{{ product_option_value.product_url }}"
+                    {% if product_option_value.selected %}
+                      selected="selected"
+                    {% endif %}
+                  >
+                    {% if product_option_value.available == false %}
+                      {{ product_option_value | escape }} - {{ 'content.unavailable' | t }}
+                    {% else %}
+                      {{ product_option_value | escape }}
+                    {% endif %}
+                  </option>
+                {%- endfor -%}
+              </select>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                class="icon icon-caret"
+                viewBox="0 0 10 6"
+              >
+                {%- render 'icon', icon: 'caret' -%}
+              </svg>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <script type="application/json">
+        {{ product_resource.selected_or_first_available_variant | json }}
+      </script>
+    </form>
+  </variant-picker>
+{% endunless %}
+
+{% stylesheet %}
+  /* Variant picker container styles - unique to main variant picker */
+  .variant-picker {
+    width: 100%;
+  }
+
+  .variant-picker__form {
+    width: 100%;
+  }
+
+  .variant-picker[data-shopify-visual-preview] {
+    min-width: 300px;
+    padding-inline-start: max(4px, var(--padding-inline-start));
+  }
+
+  /* Dropdown variant option styles */
+  .variant-option__select-wrapper {
+    display: flex;
+    position: relative;
+    border: var(--style-border-width-inputs) solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs);
+    align-items: center;
+    margin-top: var(--margin-2xs);
+    overflow: clip;
+  }
+
+  .variant-option__select-wrapper:has(.swatch) {
+    --variant-picker-swatch-width: 20px;
+    --variant-picker-swatch-height: 20px;
+  }
+
+  .variant-option__select-wrapper:hover {
+    border-color: var(--color-variant-hover-border);
+  }
+
+  .variant-option__select:focus-visible {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .variant-option__select {
+    padding-block: var(--padding-md);
+    padding-inline: var(--padding-lg) calc(var(--padding-lg) + var(--icon-size-2xs));
+    appearance: none;
+    border: 0;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .variant-option__select-wrapper .icon {
+    position: absolute;
+    right: var(--padding-md);
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--icon-size-2xs);
+    height: var(--icon-size-2xs);
+    pointer-events: none;
+  }
+
+  .variant-option__select--has-swatch {
+    padding-inline-start: calc((2 * var(--padding-sm)) + var(--variant-picker-swatch-width));
+  }
+
+  .variant-option__select-wrapper .swatch {
+    position: absolute;
+    top: 50%;
+    left: var(--padding-md);
+    transform: translateY(-50%);
+  }
+
+  /* Variant picker alignment modifiers */
+  .variant-picker--center,
+  .variant-picker--center .variant-option {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .variant-picker--right,
+  .variant-picker--right .variant-option {
+    text-align: right;
+    justify-content: right;
+  }
+{% endstylesheet %}

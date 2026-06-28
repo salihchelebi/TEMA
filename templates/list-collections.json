@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "a_g21_koleksiyonlar_ana": {
+      "type": "A-g21-koleksiyonlar-ana",
+      "settings": {
+        "g21_dil_cubugu_goster": true,
+        "g21_baslik": "Wedding Dress Collections",
+        "g21_aciklama": "Explore bridal collections by silhouette, lace, modesty and luxury details.",
+        "g21_cta": "View Collection",
+        "g21_desktop_kolon": 5,
+        "g21_tablet_kolon": 3,
+        "g21_mobil_kolon": "2",
+        "g21_gap": 18,
+        "g21_whatsapp_goster": true,
+        "g21_whatsapp_tel": "905334619373",
+        "g21_whatsapp_baslik": "Private Bridal Consultation",
+        "g21_whatsapp_metin": "Send your dream dress details and get personal support.",
+        "g21_whatsapp_buton": "Chat on WhatsApp",
+        "g21_whatsapp_mesaj": "Hello, I would like bridal consultation from Gelinlik21."
+      }
+    }
+  },
+  "order": ["a_g21_koleksiyonlar_ana"]
+}

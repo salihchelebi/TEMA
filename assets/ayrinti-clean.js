@@ -1,0 +1,1 @@
+(()=>{function c(){document.querySelectorAll('ayrinti-video-gallery .is-loading').forEach(x=>x.classList.remove('is-loading'))}setTimeout(c,4200);setInterval(c,8000)})();

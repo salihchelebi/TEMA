@@ -1,0 +1,388 @@
+{% liquid
+  assign manual_cards = 0
+  for block in section.blocks
+    if block.type == 'collection_card' and block.settings.collection != blank
+      assign manual_cards = manual_cards | plus: 1
+    endif
+  endfor
+
+  assign page_width = section.settings.page_width
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign columns_mobile = section.settings.columns_mobile | default: '2'
+  assign image_ratio = section.settings.image_ratio | default: 'portrait'
+%}
+
+<section
+  id="NilMainCollections-{{ section.id }}"
+  class="nil-main-collections nil-main-collections--{{ page_width }}"
+  style="
+    --nil-bg: {{ section.settings.background_color }};
+    --nil-text: {{ section.settings.text_color }};
+    --nil-muted: {{ section.settings.muted_color }};
+    --nil-accent: {{ section.settings.accent_color }};
+    --nil-card-bg: {{ section.settings.card_background }};
+    --nil-card-text: {{ section.settings.card_text_color }};
+    --nil-card-border: {{ section.settings.card_border_color }};
+    --nil-columns-desktop: {{ columns_desktop }};
+    --nil-columns-mobile: {{ columns_mobile }};
+    --nil-gap: {{ section.settings.grid_gap }}px;
+    --nil-card-radius: {{ section.settings.card_radius }}px;
+    --nil-card-border-width: {{ section.settings.card_border_width }}px;
+    --nil-padding-top: {{ section.settings.padding_top }}px;
+    --nil-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="nil-main-collections__inner">
+    <div class="nil-main-collections__header">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'heading' %}
+            {% if block.settings.heading != blank %}
+              <{{ block.settings.heading_tag }} class="nil-main-collections__heading" style="--nil-heading-size: {{ block.settings.heading_size }}px; --nil-heading-color: {{ block.settings.heading_color }};" {{ block.shopify_attributes }}>
+                {{ block.settings.heading }}
+              </{{ block.settings.heading_tag }}>
+            {% endif %}
+
+          {% when 'text' %}
+            {% if block.settings.text != blank %}
+              <div class="nil-main-collections__text rte" style="--nil-text-block-color: {{ block.settings.text_color }}; --nil-text-block-size: {{ block.settings.text_size }}px;" {{ block.shopify_attributes }}>
+                {{ block.settings.text }}
+              </div>
+            {% endif %}
+
+          {% when 'button' %}
+            {% if block.settings.label != blank %}
+              <a class="nil-main-collections__button" href="{{ block.settings.link | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
+                {{ block.settings.label }}
+              </a>
+            {% endif %}
+
+          {% when 'spacer' %}
+            <div class="nil-main-collections__spacer" style="height: {{ block.settings.height }}px" {{ block.shopify_attributes }}></div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    <div class="nil-main-collections__grid" data-image-ratio="{{ image_ratio }}">
+      {% if manual_cards > 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'collection_card' and block.settings.collection != blank %}
+            {% liquid
+              assign card_collection = block.settings.collection
+              assign card_title = block.settings.custom_title | default: card_collection.title
+              assign card_description = block.settings.custom_description | default: card_collection.description
+              assign card_image = block.settings.custom_image | default: card_collection.image
+            %}
+            <a class="nil-main-collections__card" href="{{ card_collection.url }}" style="--nil-card-custom-bg: {{ block.settings.card_background }}; --nil-card-custom-text: {{ block.settings.card_text_color }};" {{ block.shopify_attributes }}>
+              <span class="nil-main-collections__media">
+                {% if card_image != blank %}
+                  {{ card_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 540, 720, 900, 1200', sizes: '(min-width: 990px) 25vw, 50vw', alt: card_title }}
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'nil-main-collections__placeholder' }}
+                {% endif %}
+              </span>
+              <span class="nil-main-collections__body">
+                <span class="nil-main-collections__title">{{ card_title }}</span>
+                {% if section.settings.show_product_count %}
+                  <span class="nil-main-collections__count">{{ card_collection.all_products_count }} products</span>
+                {% endif %}
+                {% if section.settings.show_description and card_description != blank %}
+                  <span class="nil-main-collections__description">{{ card_description | strip_html | truncate: 140 }}</span>
+                {% endif %}
+              </span>
+            </a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% paginate collections by section.settings.collections_per_page %}
+          {% for card_collection in collections %}
+            {% liquid
+              assign card_title = card_collection.title
+              assign card_image = card_collection.image
+            %}
+            <a class="nil-main-collections__card" href="{{ card_collection.url }}">
+              <span class="nil-main-collections__media">
+                {% if card_image != blank %}
+                  {{ card_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 540, 720, 900, 1200', sizes: '(min-width: 990px) 25vw, 50vw', alt: card_title }}
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'nil-main-collections__placeholder' }}
+                {% endif %}
+              </span>
+              <span class="nil-main-collections__body">
+                <span class="nil-main-collections__title">{{ card_title }}</span>
+                {% if section.settings.show_product_count %}
+                  <span class="nil-main-collections__count">{{ card_collection.all_products_count }} products</span>
+                {% endif %}
+                {% if section.settings.show_description and card_collection.description != blank %}
+                  <span class="nil-main-collections__description">{{ card_collection.description | strip_html | truncate: 140 }}</span>
+                {% endif %}
+              </span>
+            </a>
+          {% else %}
+            <div class="nil-main-collections__empty">No collections found.</div>
+          {% endfor %}
+
+          {% if paginate.pages > 1 %}
+            <nav class="nil-main-collections__pagination" aria-label="Pagination">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}">Previous</a>
+              {% endif %}
+              <span>{{ paginate.current_page }} / {{ paginate.pages }}</span>
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}">Next</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% endpaginate %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .nil-main-collections {
+    background: var(--nil-bg);
+    color: var(--nil-text);
+    padding-block: var(--nil-padding-top) var(--nil-padding-bottom);
+  }
+
+  .nil-main-collections__inner {
+    width: min(100% - 32px, 1480px);
+    margin-inline: auto;
+  }
+
+  .nil-main-collections--full .nil-main-collections__inner {
+    width: min(100% - 24px, 100%);
+  }
+
+  .nil-main-collections__header {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .nil-main-collections__heading {
+    margin: 0;
+    color: var(--nil-heading-color, var(--nil-text));
+    font-size: clamp(30px, 5vw, var(--nil-heading-size));
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+
+  .nil-main-collections__text {
+    color: var(--nil-text-block-color, var(--nil-muted));
+    font-size: var(--nil-text-block-size, 16px);
+    max-width: 760px;
+  }
+
+  .nil-main-collections__text p {
+    margin: 0;
+  }
+
+  .nil-main-collections__button {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 22px;
+    border: 1px solid var(--nil-accent);
+    border-radius: 999px;
+    color: var(--nil-accent);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .nil-main-collections__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--nil-columns-desktop), minmax(0, 1fr));
+    gap: var(--nil-gap);
+  }
+
+  .nil-main-collections__card {
+    display: grid;
+    overflow: hidden;
+    border: var(--nil-card-border-width) solid var(--nil-card-border);
+    border-radius: var(--nil-card-radius);
+    background: var(--nil-card-custom-bg, var(--nil-card-bg));
+    color: var(--nil-card-custom-text, var(--nil-card-text));
+    text-decoration: none;
+    box-shadow: 0 18px 60px rgba(31, 24, 18, 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .nil-main-collections__card:hover {
+    transform: translateY(-3px);
+    border-color: var(--nil-accent);
+    box-shadow: 0 26px 80px rgba(31, 24, 18, 0.14);
+  }
+
+  .nil-main-collections__media {
+    display: block;
+    position: relative;
+    background: #f7f1e8;
+  }
+
+  .nil-main-collections__grid[data-image-ratio='portrait'] .nil-main-collections__media { aspect-ratio: 3 / 4; }
+  .nil-main-collections__grid[data-image-ratio='square'] .nil-main-collections__media { aspect-ratio: 1 / 1; }
+  .nil-main-collections__grid[data-image-ratio='landscape'] .nil-main-collections__media { aspect-ratio: 16 / 10; }
+  .nil-main-collections__grid[data-image-ratio='adapt'] .nil-main-collections__media { aspect-ratio: auto; }
+
+  .nil-main-collections__media img,
+  .nil-main-collections__placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .nil-main-collections__body {
+    display: grid;
+    gap: 7px;
+    padding: 16px 16px 18px;
+  }
+
+  .nil-main-collections__title {
+    font-weight: 800;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .nil-main-collections__count,
+  .nil-main-collections__description {
+    color: var(--nil-muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .nil-main-collections__pagination {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  .nil-main-collections__pagination a {
+    color: var(--nil-accent);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .nil-main-collections__empty {
+    grid-column: 1 / -1;
+    padding: 32px;
+    text-align: center;
+    border: 1px dashed var(--nil-card-border);
+    color: var(--nil-muted);
+  }
+
+  @media screen and (max-width: 749px) {
+    .nil-main-collections__inner {
+      width: min(100% - 24px, 100%);
+    }
+
+    .nil-main-collections__grid {
+      grid-template-columns: repeat(var(--nil-columns-mobile), minmax(0, 1fr));
+      gap: max(10px, calc(var(--nil-gap) * 0.65));
+    }
+
+    .nil-main-collections__body {
+      padding: 12px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NIL Collection List",
+  "tag": "section",
+  "class": "nil-main-collection-list-section",
+  "enabled_on": {
+    "templates": ["list-collections"]
+  },
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "page_width", "label": "Page width", "options": [ { "value": "boxed", "label": "Boxed" }, { "value": "full", "label": "Full" } ], "default": "boxed" },
+    { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 1, "max": 6, "step": 1, "default": 4 },
+    { "type": "select", "id": "columns_mobile", "label": "Mobile columns", "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ], "default": "2" },
+    { "type": "range", "id": "collections_per_page", "label": "Collections per page", "min": 4, "max": 50, "step": 1, "default": 24 },
+    { "type": "range", "id": "grid_gap", "label": "Grid gap", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 18 },
+    { "type": "select", "id": "image_ratio", "label": "Image ratio", "options": [ { "value": "portrait", "label": "Portrait 3:4" }, { "value": "square", "label": "Square" }, { "value": "landscape", "label": "Landscape" }, { "value": "adapt", "label": "Adapt" } ], "default": "portrait" },
+    { "type": "checkbox", "id": "show_product_count", "label": "Show product count", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": false },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#fff8ee" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1f1812" },
+    { "type": "color", "id": "muted_color", "label": "Muted text", "default": "#7a6a58" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#b8893d" },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_text_color", "label": "Card text", "default": "#1f1812" },
+    { "type": "color", "id": "card_border_color", "label": "Card border", "default": "#e0c28a" },
+    { "type": "range", "id": "card_radius", "label": "Card radius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "card_border_width", "label": "Card border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 1 },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by collection" },
+        { "type": "select", "id": "heading_tag", "label": "Heading tag", "options": [ { "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" }, { "value": "h3", "label": "H3" } ], "default": "h1" },
+        { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 88, "step": 1, "unit": "px", "default": 56 },
+        { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#1f1812" }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Explore our curated bridal, engagement and evening collections.</p>" },
+        { "type": "range", "id": "text_size", "label": "Text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
+        { "type": "color", "id": "text_color", "label": "Text color", "default": "#7a6a58" }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "View all dresses" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "spacer",
+      "name": "Spacer",
+      "settings": [
+        { "type": "range", "id": "height", "label": "Height", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 16 }
+      ]
+    },
+    {
+      "type": "collection_card",
+      "name": "Manual collection card",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "custom_title", "label": "Custom title" },
+        { "type": "textarea", "id": "custom_description", "label": "Custom description" },
+        { "type": "image_picker", "id": "custom_image", "label": "Custom image" },
+        { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+        { "type": "color", "id": "card_text_color", "label": "Card text", "default": "#1f1812" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NIL Collection List",
+      "blocks": [
+        { "type": "heading" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1520 @@
+{% comment %}
+  File: sections/1-nil-lux-footer.liquid
+  NIL / NISAI premium footer section.
+  This section is intentionally self-contained. The layout CSS is scoped to
+  #NilLuxFooter-{{ section.id }} so theme CSS cannot collapse it into a vertical list.
+{% endcomment %}
+
+<div
+  id="NilLuxFooter-{{ section.id }}"
+  class="nil-lux-footer color-{{ section.settings.color_scheme }}"
+  style="
+    --nil-footer-bg: {{ section.settings.bg_color }};
+    --nil-footer-soft-bg: {{ section.settings.soft_bg_color }};
+    --nil-footer-card-bg: {{ section.settings.card_bg_color }};
+    --nil-footer-text: {{ section.settings.text_color }};
+    --nil-footer-muted: {{ section.settings.muted_text_color }};
+    --nil-footer-gold: {{ section.settings.accent_color }};
+    --nil-footer-border: {{ section.settings.border_color }};
+    --nil-footer-max-width: {{ section.settings.max_width }}px;
+  "
+>
+  {% if section.settings.show_top_trust_bar %}
+    <div class="nil-lux-footer__top-trust">
+      <div class="nil-lux-footer__top-trust-inner">
+        {% for block in section.blocks %}
+          {% if block.type == 'trust_item_top' %}
+            <div class="nil-lux-footer__trust-item" {{ block.shopify_attributes }}>
+              <span class="nil-lux-footer__icon" aria-hidden="true">
+                {% case block.settings.icon %}
+                  {% when 'shipping' %}
+                    <svg viewBox="0 0 32 32" focusable="false"><path d="M4 9h16v12H4zM20 13h5l3 4v4h-8zM9 25a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM24 25a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+                  {% when 'dress' %}
+                    <svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l4 6-3 4 7 14H8l7-14-3-4 4-6zM12 10h8"/></svg>
+                  {% when 'secure' %}
+                    <svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l10 4v7c0 7-4.5 11-10 13-5.5-2-10-6-10-13V8l10-4zM12 16l3 3 6-7"/></svg>
+                  {% when 'whatsapp' %}
+                    <svg viewBox="0 0 32 32" focusable="false"><path d="M16 5a11 11 0 0 0-9.5 16.5L5 27l5.7-1.5A11 11 0 1 0 16 5z"/><path d="M12 12c1.5 4 4 6.5 8 8l2-2-3-2-1 1c-1.8-.8-3.2-2.2-4-4l1-1-2-3-2 3z"/></svg>
+                  {% else %}
+                    <svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l3.5 8.5L28 16l-8.5 3.5L16 28l-3.5-8.5L4 16l8.5-3.5L16 4z"/></svg>
+                {% endcase %}
+              </span>
+              <span class="nil-lux-footer__trust-copy">
+                <strong>{{ block.settings.heading }}</strong>
+                <small>{{ block.settings.text }}</small>
+              </span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="nil-lux-footer__main">
+    <div class="nil-lux-footer__brand">
+      {% if section.settings.logo != blank %}
+        <img
+          class="nil-lux-footer__logo-img"
+          src="{{ section.settings.logo | image_url: width: 520 }}"
+          alt="{{ section.settings.logo_alt | default: shop.name | escape }}"
+          width="{{ section.settings.logo_width }}"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="nil-lux-footer__logo-text" aria-label="{{ section.settings.logo_alt | default: shop.name | escape }}">
+          <span>{{ section.settings.brand_name | default: 'NIL' }}</span>
+          <small>{{ section.settings.brand_subtitle | default: 'Wedding Dress' }}</small>
+        </div>
+      {% endif %}
+
+      {% if section.settings.brand_description != blank %}
+        <p class="nil-lux-footer__brand-desc">{{ section.settings.brand_description }}</p>
+      {% endif %}
+
+      {% if section.settings.show_socials %}
+        <div class="nil-lux-footer__social-wrap">
+          <h3>Follow Us</h3>
+          <div class="nil-lux-footer__socials" aria-label="Social links">
+            {% if section.settings.instagram_url != blank %}
+              <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 32 32" focusable="false"><rect x="7" y="7" width="18" height="18" rx="5"/><circle cx="16" cy="16" r="4"/><path d="M22 10.5h.1"/></svg>
+              </a>
+            {% endif %}
+            {% if section.settings.whatsapp_number != blank %}
+              <a href="https://wa.me/{{ section.settings.whatsapp_number }}?text={{ section.settings.whatsapp_message | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <svg viewBox="0 0 32 32" focusable="false"><path d="M16 5a11 11 0 0 0-9.5 16.5L5 27l5.7-1.5A11 11 0 1 0 16 5z"/><path d="M12 12c1.5 4 4 6.5 8 8l2-2-3-2-1 1c-1.8-.8-3.2-2.2-4-4l1-1-2-3-2 3z"/></svg>
+              </a>
+            {% endif %}
+            {% if section.settings.pinterest_url != blank %}
+              <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+                <svg viewBox="0 0 32 32" focusable="false"><path d="M16 5a10 10 0 0 0-3 19c.5-2 1-4 1.5-6M16 16c3 1 5-1 5-4 0-3-2-5-5-5s-5 2-5 5c0 2 1 3 2 4"/></svg>
+              </a>
+            {% endif %}
+            {% if section.settings.email != blank %}
+              <a href="mailto:{{ section.settings.email }}" aria-label="Email">
+                <svg viewBox="0 0 32 32" focusable="false"><path d="M5 9h22v14H5z"/><path d="M5 10l11 8 11-8"/></svg>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="nil-lux-footer__menus">
+      {% for block in section.blocks %}
+        {% if block.type == 'menu_column' %}
+          <nav class="nil-lux-footer__menu-col" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+            {% if block.settings.heading != blank %}
+              <h3>{{ block.settings.heading }}</h3>
+            {% endif %}
+            <ul>
+              {% if block.settings.menu != blank %}
+                {% assign selected_menu = linklists[block.settings.menu] %}
+                {% for link in selected_menu.links %}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {% endfor %}
+              {% else %}
+                {% if block.settings.link_1_label != blank %}<li><a href="{{ block.settings.link_1_url | default: '#' }}">{{ block.settings.link_1_label }}</a></li>{% endif %}
+                {% if block.settings.link_2_label != blank %}<li><a href="{{ block.settings.link_2_url | default: '#' }}">{{ block.settings.link_2_label }}</a></li>{% endif %}
+                {% if block.settings.link_3_label != blank %}<li><a href="{{ block.settings.link_3_url | default: '#' }}">{{ block.settings.link_3_label }}</a></li>{% endif %}
+                {% if block.settings.link_4_label != blank %}<li><a href="{{ block.settings.link_4_url | default: '#' }}">{{ block.settings.link_4_label }}</a></li>{% endif %}
+                {% if block.settings.link_5_label != blank %}<li><a href="{{ block.settings.link_5_url | default: '#' }}">{{ block.settings.link_5_label }}</a></li>{% endif %}
+                {% if block.settings.link_6_label != blank %}<li><a href="{{ block.settings.link_6_url | default: '#' }}">{{ block.settings.link_6_label }}</a></li>{% endif %}
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_contact_column %}
+      <div class="nil-lux-footer__contact">
+        <h3>{{ section.settings.contact_heading | default: 'Customer Care' }}</h3>
+
+        {% if section.settings.address != blank %}
+          <p>
+            <span aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 28s8-8 8-15a8 8 0 0 0-16 0c0 7 8 15 8 15z"/><circle cx="16" cy="13" r="3"/></svg></span>
+            <span>{{ section.settings.address | newline_to_br }}</span>
+          </p>
+        {% endif %}
+
+        {% if section.settings.whatsapp_number != blank %}
+          <p>
+            <span aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M16 5a11 11 0 0 0-9.5 16.5L5 27l5.7-1.5A11 11 0 1 0 16 5z"/><path d="M12 12c1.5 4 4 6.5 8 8l2-2-3-2-1 1c-1.8-.8-3.2-2.2-4-4l1-1-2-3-2 3z"/></svg></span>
+            <span><a href="https://wa.me/{{ section.settings.whatsapp_number }}?text={{ section.settings.whatsapp_message | url_encode }}" target="_blank" rel="noopener noreferrer">{{ section.settings.whatsapp_display }}</a><br><small>(WhatsApp)</small></span>
+          </p>
+        {% endif %}
+
+        {% if section.settings.email != blank %}
+          <p>
+            <span aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><path d="M5 9h22v14H5z"/><path d="M5 10l11 8 11-8"/></svg></span>
+            <span><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></span>
+          </p>
+        {% endif %}
+
+        {% if section.settings.hours != blank %}
+          <p>
+            <span aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><circle cx="16" cy="16" r="11"/><path d="M16 9v8l5 3"/></svg></span>
+            <span>{{ section.settings.hours | newline_to_br }}</span>
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <aside class="nil-lux-footer__action-card" aria-label="WhatsApp consultation and newsletter">
+      {% if section.settings.show_whatsapp_box %}
+        <div class="nil-lux-footer__wa-box">
+          <h3>{{ section.settings.wa_heading | default: 'WhatsApp Consultation' }}</h3>
+          <p>{{ section.settings.wa_text }}</p>
+          {% if section.settings.whatsapp_number != blank %}
+            <a class="nil-lux-footer__wa-btn" href="https://wa.me/{{ section.settings.whatsapp_number }}?text={{ section.settings.whatsapp_message | url_encode }}" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M16 5a11 11 0 0 0-9.5 16.5L5 27l5.7-1.5A11 11 0 1 0 16 5z"/><path d="M12 12c1.5 4 4 6.5 8 8l2-2-3-2-1 1c-1.8-.8-3.2-2.2-4-4l1-1-2-3-2 3z"/></svg>
+              <span>{{ section.settings.wa_button_label | default: 'Chat on WhatsApp' }}</span>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.show_newsletter %}
+        <div class="nil-lux-footer__newsletter">
+          <h3>{{ section.settings.newsletter_heading | default: 'Join Our Bridal List' }}</h3>
+          <p>{{ section.settings.newsletter_text }}</p>
+
+          {% form 'customer', id: 'NilLuxuryFooterNewsletter' %}
+            <input type="hidden" name="contact[tags]" value="newsletter,footer,nil-bridal-list">
+            <div class="nil-lux-footer__newsletter-row">
+              <input
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                aria-label="{{ section.settings.newsletter_placeholder }}"
+                placeholder="{{ section.settings.newsletter_placeholder }}"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                required
+              >
+              <button type="submit">{{ section.settings.newsletter_button | default: 'Subscribe' }}</button>
+            </div>
+            {% if form.posted_successfully? %}
+              <p class="nil-lux-footer__form-msg">{{ section.settings.newsletter_success }}</p>
+            {% endif %}
+            {% if form.errors %}
+              <div class="nil-lux-footer__form-msg">{{ form.errors | default_errors }}</div>
+            {% endif %}
+          {% endform %}
+        </div>
+      {% endif %}
+    </aside>
+  </div>
+
+  {% if section.settings.show_middle_trust_bar %}
+    <div class="nil-lux-footer__bottom-trust">
+      {% for block in section.blocks %}
+        {% if block.type == 'trust_item_bottom' %}
+          <div class="nil-lux-footer__mini-trust" {{ block.shopify_attributes }}>
+            <span class="nil-lux-footer__icon" aria-hidden="true">
+              {% case block.settings.icon %}
+                {% when 'alterations' %}
+                  <svg viewBox="0 0 32 32" focusable="false"><path d="M10 7c4 4 8 4 12 0M8 25c5-3 11-3 16 0M10 7l-4 18M22 7l4 18"/></svg>
+                {% when 'gift' %}
+                  <svg viewBox="0 0 32 32" focusable="false"><path d="M5 13h22v14H5zM5 13h22M16 13v14M8 9c0-2 2-4 4-2l4 6M24 9c0-2-2-4-4-2l-4 6"/></svg>
+                {% when 'appointment' %}
+                  <svg viewBox="0 0 32 32" focusable="false"><path d="M7 8h18v18H7zM11 5v6M21 5v6M7 13h18M12 18h8"/></svg>
+                {% when 'dream' %}
+                  <svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l4 6-3 4 7 14H8l7-14-3-4 4-6zM12 10h8"/></svg>
+                {% else %}
+                  <svg viewBox="0 0 32 32" focusable="false"><path d="M16 4l3.5 8.5L28 16l-8.5 3.5L16 28l-3.5-8.5L4 16l8.5-3.5L16 4z"/></svg>
+              {% endcase %}
+            </span>
+            <span class="nil-lux-footer__trust-copy">
+              <strong>{{ block.settings.heading }}</strong>
+              <small>{{ block.settings.text }}</small>
+            </span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="nil-lux-footer__legal">
+    <div class="nil-lux-footer__copyright">
+      © {{ 'now' | date: '%Y' }} {{ section.settings.brand_name | default: shop.name }}. {{ section.settings.copyright_text | default: 'All Rights Reserved.' }}
+    </div>
+
+    {% if section.settings.show_policy_links %}
+      <div class="nil-lux-footer__policies">
+        <a href="/policies/privacy-policy">Privacy Policy</a>
+        <span>·</span>
+        <a href="/policies/terms-of-service">Terms of Service</a>
+        <span>·</span>
+        <a href="/policies/refund-policy">Refund Policy</a>
+        <span>·</span>
+        <a href="/policies/shipping-policy">Shipping Policy</a>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_payment_badges %}
+      <div class="nil-lux-footer__payments" aria-label="Payment methods">
+        <span>VISA</span>
+        <span>MASTERCARD</span>
+        <span>IYZCO</span>
+        <span>WESTERN UNION</span>
+        <span>MONEY GRAM</span>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if section.settings.show_instagram_strip %}
+    <div class="nil-lux-footer__instagram">
+      <div class="nil-lux-footer__instagram-copy">
+        <strong>{{ section.settings.instagram_heading | default: 'Follow @nilweddingdress' }}</strong>
+        <span>{{ section.settings.instagram_text | default: 'Tag us to be featured' }}</span>
+      </div>
+
+      <div class="nil-lux-footer__instagram-grid">
+        {% assign instagram_index = 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'instagram_image' %}
+            {% assign instagram_index = instagram_index | plus: 1 %}
+            <a href="{{ section.settings.instagram_url | default: '#' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <img
+                  src="{{ block.settings.image | image_url: width: 480 }}"
+                  alt="{{ block.settings.alt | default: 'NIL Wedding Dress Instagram image' | escape }}"
+                  width="480"
+                  height="480"
+                  loading="lazy"
+                >
+              {% else %}
+                <span class="nil-lux-footer__insta-placeholder nil-lux-footer__insta-placeholder--{{ instagram_index }}" aria-hidden="true"></span>
+              {% endif %}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <a class="nil-lux-footer__instagram-more" href="{{ section.settings.instagram_url | default: '#' }}" target="_blank" rel="noopener noreferrer">
+        <span>{{ section.settings.instagram_button | default: 'View More on Instagram' }}</span>
+        <b aria-hidden="true">→</b>
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  #NilLuxFooter-{{ section.id }} {
+    --nil-footer-bg: {{ section.settings.bg_color }};
+    --nil-footer-soft-bg: {{ section.settings.soft_bg_color }};
+    --nil-footer-card-bg: {{ section.settings.card_bg_color }};
+    --nil-footer-text: {{ section.settings.text_color }};
+    --nil-footer-muted: {{ section.settings.muted_text_color }};
+    --nil-footer-gold: {{ section.settings.accent_color }};
+    --nil-footer-border: {{ section.settings.border_color }};
+    --nil-footer-max-width: {{ section.settings.max_width }}px;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: var(--nil-footer-bg) !important;
+    color: var(--nil-footer-text) !important;
+    border-top: 1px solid var(--nil-footer-border) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }},
+  #NilLuxFooter-{{ section.id }} *,
+  #NilLuxFooter-{{ section.id }} *::before,
+  #NilLuxFooter-{{ section.id }} *::after {
+    box-sizing: border-box !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.45 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__top-trust {
+    width: 100% !important;
+    border-bottom: 1px solid var(--nil-footer-border) !important;
+    background: linear-gradient(90deg, var(--nil-footer-bg), #fff8ef, var(--nil-footer-bg)) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__top-trust-inner {
+    width: 100% !important;
+    max-width: var(--nil-footer-max-width) !important;
+    margin: 0 auto !important;
+    padding: 36px 56px !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    align-items: center !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item {
+    min-height: 52px !important;
+    padding: 0 40px !important;
+    border-right: 1px solid var(--nil-footer-border) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item:last-child,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust:last-child {
+    border-right: 0 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__icon {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--nil-footer-gold) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-copy {
+    display: block !important;
+    min-width: 0 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} strong,
+  #NilLuxFooter-{{ section.id }} h3 {
+    display: block !important;
+    margin: 0 !important;
+    color: #111 !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+    letter-spacing: .13em !important;
+    text-transform: uppercase !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} small {
+    display: block !important;
+    margin: 4px 0 0 !important;
+    color: var(--nil-footer-muted) !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__main {
+    width: 100% !important;
+    max-width: var(--nil-footer-max-width) !important;
+    margin: 0 auto !important;
+    padding: 68px 64px 48px !important;
+    display: grid !important;
+    grid-template-columns: 250px minmax(500px, 1fr) 250px 300px !important;
+    gap: 52px !important;
+    align-items: start !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__brand {
+    max-width: 250px !important;
+    display: block !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__logo-img {
+    display: block !important;
+    width: {{ section.settings.logo_width }}px !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    margin: 0 0 24px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__logo-text span {
+    display: block !important;
+    margin: 0 !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    font-size: 54px !important;
+    line-height: .9 !important;
+    letter-spacing: .14em !important;
+    font-weight: 400 !important;
+    color: var(--nil-footer-gold) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__logo-text small {
+    display: block !important;
+    margin-top: 16px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    letter-spacing: .45em !important;
+    text-transform: uppercase !important;
+    color: var(--nil-footer-gold) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__brand-desc {
+    max-width: 245px !important;
+    margin: 34px 0 30px !important;
+    color: var(--nil-footer-text) !important;
+    font-size: 15px !important;
+    line-height: 1.75 !important;
+    letter-spacing: 0 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__brand::after {
+    content: '' !important;
+    display: block !important;
+    width: 100% !important;
+    height: 1px !important;
+    background: var(--nil-footer-border) !important;
+    margin: 30px 0 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__social-wrap h3 {
+    margin: 0 0 18px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__socials {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 18px !important;
+    align-items: center !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__socials a {
+    width: 24px !important;
+    height: 24px !important;
+    color: var(--nil-footer-gold) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menus {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(135px, 1fr)) !important;
+    gap: 52px !important;
+    align-items: start !important;
+    width: 100% !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menu-col h3,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact h3,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__action-card h3 {
+    margin: 0 0 26px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menu-col ul {
+    display: block !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menu-col li {
+    display: block !important;
+    margin: 0 0 19px !important;
+    padding: 0 !important;
+    color: var(--nil-footer-text) !important;
+    font-size: 15px !important;
+    line-height: 1.3 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menu-col a,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact a {
+    color: var(--nil-footer-text) !important;
+    opacity: .9 !important;
+    transition: color .2s ease, opacity .2s ease !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__menu-col a:hover,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact a:hover {
+    color: var(--nil-footer-gold) !important;
+    opacity: 1 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact {
+    display: block !important;
+    max-width: 250px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact p {
+    display: grid !important;
+    grid-template-columns: 26px 1fr !important;
+    gap: 14px !important;
+    align-items: start !important;
+    margin: 0 0 22px !important;
+    color: var(--nil-footer-text) !important;
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact p > span:first-child {
+    color: var(--nil-footer-gold) !important;
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact small {
+    margin-top: 2px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__action-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    padding: 32px 32px 34px !important;
+    background: var(--nil-footer-card-bg) !important;
+    border: 1px solid rgba(189, 130, 51, .18) !important;
+    box-shadow: 0 22px 54px rgba(117, 78, 32, .06) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__action-card p {
+    margin: 0 0 20px !important;
+    color: var(--nil-footer-text) !important;
+    font-size: 15px !important;
+    line-height: 1.75 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__wa-box {
+    display: block !important;
+    margin: 0 0 30px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__wa-btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 12px 18px !important;
+    border: 1px solid var(--nil-footer-gold) !important;
+    background: transparent !important;
+    color: var(--nil-footer-gold) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: .13em !important;
+    text-transform: uppercase !important;
+    transition: background .2s ease, color .2s ease, transform .2s ease !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__wa-btn svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__wa-btn:hover {
+    background: var(--nil-footer-gold) !important;
+    color: #fff !important;
+    transform: translateY(-1px) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__newsletter {
+    display: block !important;
+    border-top: 1px solid var(--nil-footer-border) !important;
+    padding-top: 26px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__newsletter-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__newsletter input {
+    display: block !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    border: 1px solid var(--nil-footer-border) !important;
+    background: rgba(255,255,255,.62) !important;
+    color: var(--nil-footer-text) !important;
+    padding: 0 16px !important;
+    font-size: 14px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__newsletter button {
+    display: block !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    border: 0 !important;
+    background: linear-gradient(135deg, var(--nil-footer-gold), #c99444) !important;
+    color: #fff !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: .14em !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__form-msg {
+    margin-top: 12px !important;
+    color: var(--nil-footer-gold) !important;
+    font-size: 13px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__bottom-trust {
+    width: calc(100% - 112px) !important;
+    max-width: calc(var(--nil-footer-max-width) - 112px) !important;
+    margin: 0 auto !important;
+    padding: 24px 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    border-top: 1px solid var(--nil-footer-border) !important;
+    border-bottom: 1px solid var(--nil-footer-border) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust {
+    padding: 0 34px !important;
+    border-right: 1px solid var(--nil-footer-border) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__legal {
+    width: 100% !important;
+    max-width: var(--nil-footer-max-width) !important;
+    margin: 0 auto !important;
+    padding: 30px 56px 34px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr !important;
+    gap: 28px !important;
+    align-items: center !important;
+    color: var(--nil-footer-muted) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__copyright {
+    text-align: left !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__policies {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__payments {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__payments span {
+    min-width: 54px !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 9px !important;
+    border: 1px solid #d9d1c8 !important;
+    border-radius: 4px !important;
+    background: rgba(255,255,255,.54) !important;
+    color: #777 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 32px 56px !important;
+    background: var(--nil-footer-soft-bg) !important;
+    display: grid !important;
+    grid-template-columns: 250px minmax(540px, 1fr) 170px !important;
+    gap: 32px !important;
+    align-items: center !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-copy strong {
+    margin-bottom: 8px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-copy span {
+    display: block !important;
+    font-size: 14px !important;
+    color: var(--nil-footer-text) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-grid a {
+    display: block !important;
+    overflow: hidden !important;
+    background: #eadcca !important;
+    min-height: 120px !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-grid img,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder {
+    display: block !important;
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    min-height: 120px !important;
+    object-fit: cover !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder {
+    background:
+      radial-gradient(circle at 52% 26%, rgba(255,255,255,.75) 0 10%, transparent 11%),
+      linear-gradient(135deg, #d6b991 0%, #f6eadc 48%, #b98a53 100%) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder--2,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder--5 {
+    background:
+      radial-gradient(circle at 45% 24%, rgba(255,255,255,.7) 0 9%, transparent 10%),
+      linear-gradient(135deg, #f5e7d4 0%, #c69a65 58%, #7d5d40 100%) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder--3,
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__insta-placeholder--6 {
+    background:
+      radial-gradient(circle at 55% 22%, rgba(255,255,255,.68) 0 9%, transparent 10%),
+      linear-gradient(135deg, #8b765c 0%, #f9ead7 52%, #d4b48b 100%) !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-more {
+    min-height: 120px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-align: center !important;
+    padding: 18px !important;
+    background: rgba(255,255,255,.48) !important;
+    color: #111 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.55 !important;
+    letter-spacing: .11em !important;
+    text-transform: uppercase !important;
+  }
+
+  #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-more b {
+    font-size: 22px !important;
+    line-height: 1 !important;
+    color: #111 !important;
+  }
+
+  @media screen and (max-width: 1180px) {
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__top-trust-inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      row-gap: 26px !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item:nth-child(2n) {
+      border-right: 0 !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__main {
+      grid-template-columns: 1fr 1.45fr !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__action-card,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__brand,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__contact {
+      max-width: none !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__bottom-trust {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust:nth-child(2n) {
+      border-right: 0 !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__legal {
+      grid-template-columns: 1fr !important;
+      text-align: center !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__copyright,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__payments {
+      text-align: center !important;
+      justify-content: center !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram {
+      grid-template-columns: 1fr !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__top-trust-inner,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__main,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__bottom-trust,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__legal,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram {
+      width: 100% !important;
+      max-width: none !important;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+      grid-template-columns: 1fr !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust {
+      justify-content: flex-start !important;
+      border-right: 0 !important;
+      border-bottom: 1px solid var(--nil-footer-border) !important;
+      padding: 0 0 20px !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__trust-item:last-child,
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__mini-trust:last-child {
+      border-bottom: 0 !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__main {
+      gap: 36px !important;
+      padding-top: 44px !important;
+      padding-bottom: 38px !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__menus {
+      grid-template-columns: 1fr !important;
+      gap: 30px !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #NilLuxFooter-{{ section.id }} .nil-lux-footer__instagram-more {
+      min-height: 88px !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NIL Luxury Footer",
+  "tag": "section",
+  "class": "nil-lux-footer-section",
+  "enabled_on": {
+    "groups": [
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "logo_alt",
+      "label": "Logo alt text",
+      "default": "NIL Wedding Dress"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 170
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "NIL"
+    },
+    {
+      "type": "text",
+      "id": "brand_subtitle",
+      "label": "Brand subtitle",
+      "default": "Wedding Dress"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_description",
+      "label": "Brand description",
+      "default": "Timeless elegance, modern craftsmanship. Discover your dream dress, made just for you."
+    },
+    {
+      "type": "header",
+      "content": "Social & contact"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_socials",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "pinterest_url",
+      "label": "Pinterest URL"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number, digits only",
+      "default": "905334619373"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_display",
+      "label": "WhatsApp display text",
+      "default": "+90 533 461 93 73"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "WhatsApp prefilled message",
+      "default": "Hello, I need help choosing a NIL Wedding Dress."
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@nilweddingdress.com"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_column",
+      "label": "Show customer care column",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact heading",
+      "default": "Customer Care"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "default": "NIL Wedding Dress Showroom\nIstanbul, Türkiye"
+    },
+    {
+      "type": "textarea",
+      "id": "hours",
+      "label": "Working hours",
+      "default": "Mon - Sat / 10:00 - 19:00\nGMT+3"
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp consultation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_whatsapp_box",
+      "label": "Show WhatsApp consultation",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wa_heading",
+      "label": "WhatsApp heading",
+      "default": "WhatsApp Consultation"
+    },
+    {
+      "type": "textarea",
+      "id": "wa_text",
+      "label": "WhatsApp text",
+      "default": "Get instant help from our bridal consultants for sizing, fabric selection, customization and delivery questions."
+    },
+    {
+      "type": "text",
+      "id": "wa_button_label",
+      "label": "WhatsApp button label",
+      "default": "Chat on WhatsApp"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Join Our Bridal List"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "Be the first to know about new arrivals, private offers and bridal styling inspiration."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Newsletter button",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_success",
+      "label": "Newsletter success message",
+      "default": "Thank you for joining our bridal list."
+    },
+    {
+      "type": "header",
+      "content": "Trust bars"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_top_trust_bar",
+      "label": "Show top trust bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_middle_trust_bar",
+      "label": "Show lower trust bar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Bottom"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policy_links",
+      "label": "Show policy links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_badges",
+      "label": "Show payment badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "All Rights Reserved."
+    },
+    {
+      "type": "header",
+      "content": "Instagram strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_instagram_strip",
+      "label": "Show Instagram strip",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "instagram_heading",
+      "label": "Instagram heading",
+      "default": "Follow @nilweddingdress"
+    },
+    {
+      "type": "text",
+      "id": "instagram_text",
+      "label": "Instagram text",
+      "default": "Tag us to be featured"
+    },
+    {
+      "type": "text",
+      "id": "instagram_button",
+      "label": "Instagram button",
+      "default": "View More on Instagram"
+    },
+    {
+      "type": "header",
+      "content": "Layout & colors"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width",
+      "min": 1200,
+      "max": 1800,
+      "step": 24,
+      "unit": "px",
+      "default": 1536
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Theme color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#fffaf3"
+    },
+    {
+      "type": "color",
+      "id": "soft_bg_color",
+      "label": "Soft background color",
+      "default": "#f7efe4"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background color",
+      "default": "#fbf3e8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1d1712"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Muted text color",
+      "default": "#50483f"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Gold accent color",
+      "default": "#bd8233"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e7d6c1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item_top",
+      "name": "Top trust item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "shipping",
+              "label": "Shipping"
+            },
+            {
+              "value": "dress",
+              "label": "Dress"
+            },
+            {
+              "value": "secure",
+              "label": "Secure"
+            },
+            {
+              "value": "whatsapp",
+              "label": "WhatsApp"
+            }
+          ],
+          "default": "shipping"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Worldwide Shipping"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fast & secure delivery"
+        }
+      ]
+    },
+    {
+      "type": "menu_column",
+      "name": "Menu column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Shopify menu"
+        },
+        {
+          "type": "header",
+          "content": "Manual links if no menu selected"
+        },
+        {
+          "type": "text",
+          "id": "link_1_label",
+          "label": "Link 1 label",
+          "default": "All Dresses"
+        },
+        {
+          "type": "url",
+          "id": "link_1_url",
+          "label": "Link 1 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_2_label",
+          "label": "Link 2 label",
+          "default": "New Arrivals"
+        },
+        {
+          "type": "url",
+          "id": "link_2_url",
+          "label": "Link 2 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_3_label",
+          "label": "Link 3 label",
+          "default": "Best Sellers"
+        },
+        {
+          "type": "url",
+          "id": "link_3_url",
+          "label": "Link 3 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_4_label",
+          "label": "Link 4 label",
+          "default": "Custom Made"
+        },
+        {
+          "type": "url",
+          "id": "link_4_url",
+          "label": "Link 4 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_5_label",
+          "label": "Link 5 label",
+          "default": "Accessories"
+        },
+        {
+          "type": "url",
+          "id": "link_5_url",
+          "label": "Link 5 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_6_label",
+          "label": "Link 6 label",
+          "default": "Sale"
+        },
+        {
+          "type": "url",
+          "id": "link_6_url",
+          "label": "Link 6 URL"
+        }
+      ]
+    },
+    {
+      "type": "trust_item_bottom",
+      "name": "Bottom trust item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "alterations",
+              "label": "Alterations"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "appointment",
+              "label": "Appointment"
+            },
+            {
+              "value": "dream",
+              "label": "Dream dress"
+            }
+          ],
+          "default": "alterations"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Free Alterations"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Perfect fit guaranteed"
+        }
+      ]
+    },
+    {
+      "type": "instagram_image",
+      "name": "Instagram image",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "NIL Wedding Dress bridal image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NIL Luxury Footer",
+      "blocks": [
+        {
+          "type": "trust_item_top",
+          "settings": {
+            "icon": "shipping",
+            "heading": "Worldwide Shipping",
+            "text": "Fast & secure delivery"
+          }
+        },
+        {
+          "type": "trust_item_top",
+          "settings": {
+            "icon": "dress",
+            "heading": "Custom Made",
+            "text": "Perfectly tailored for you"
+          }
+        },
+        {
+          "type": "trust_item_top",
+          "settings": {
+            "icon": "secure",
+            "heading": "Secure Payments",
+            "text": "100% safe & secure"
+          }
+        },
+        {
+          "type": "trust_item_top",
+          "settings": {
+            "icon": "whatsapp",
+            "heading": "Personal Assistance",
+            "text": "Chat with our experts"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Collections"
+          }
+        },
+        {
+          "type": "menu_column",
+          "settings": {
+            "heading": "Help & Info"
+          }
+        },
+        {
+          "type": "trust_item_bottom",
+          "settings": {
+            "icon": "alterations",
+            "heading": "Free Alterations",
+            "text": "Perfect fit guaranteed"
+          }
+        },
+        {
+          "type": "trust_item_bottom",
+          "settings": {
+            "icon": "gift",
+            "heading": "Exclusive Benefits",
+            "text": "For our bridal list"
+          }
+        },
+        {
+          "type": "trust_item_bottom",
+          "settings": {
+            "icon": "appointment",
+            "heading": "Book Appointment",
+            "text": "In-store or online"
+          }
+        },
+        {
+          "type": "trust_item_bottom",
+          "settings": {
+            "icon": "dream",
+            "heading": "Design Your Dream Dress",
+            "text": "Start your custom journey"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

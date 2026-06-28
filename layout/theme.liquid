@@ -1,0 +1,573 @@
+<!doctype html>
+<html
+  {% if request.design_mode %}
+    class="shopify-design-mode"
+  {% endif %}
+  lang="{{ request.locale.iso_code }}"
+  dir="{% if request.locale.iso_code contains 'ar' %}rtl{% else %}ltr{% endif %}"
+>
+  <head>
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {% # theme-check-disable RemoteAsset %}
+
+    {% comment %}
+      NIL / NISAI safe theme layout.
+      Footer path:
+      layout/theme.liquid -> sections/footer-group.json -> sections/1-nil-lux-footer.liquid
+
+      IMPORTANT:
+      Collection template must render only through {{ content_for_layout }}.
+      No hardcoded collection/grid/section render is allowed after footer.
+    {% endcomment %}
+     <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18225005115"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18225005115');
+</script>
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JKWX9L19GJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-JKWX9L19GJ');
+    </script>
+
+    {% if settings.transition_to_main_product or settings.page_transition_enabled %}
+      <link
+        rel="expect"
+        href="#MainContent"
+        blocking="render"
+        id="view-transition-render-blocker"
+      >
+    {% endif %}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'stylesheets' -%}
+    {%- render 'fonts' -%}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-schemes' -%}
+
+    {{ 'nil-luxury-visual-v3.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-luxury-visual-v4.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-score-max.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-perfect-50.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-istanbul-perfect-theme.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-100-final-overrides.css' | asset_url | stylesheet_tag }}
+
+    {% if request.page_type == 'collection' or request.page_type == 'search' %}
+      {{ 'nil-collection-premium-controls.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+
+    {{ 'nil-v30-conversion-first.css' | asset_url | stylesheet_tag }}
+    {{ 'nil-color-swatches.css' | asset_url | stylesheet_tag }}
+
+    <script src="{{ 'nil-color-swatches.js' | asset_url }}" defer></script>
+    <script src="{{ 'nil-bridal-visual-v3.js' | asset_url }}" defer></script>
+    <script src="{{ 'nil-bridal-visual-v4.js' | asset_url }}" defer></script>
+    <script src="{{ 'nil-score-max.js' | asset_url }}" defer></script>
+    <script src="{{ 'nil-perfect-50.js' | asset_url }}" defer></script>
+    <script src="{{ 'nil-istanbul-perfect-theme.js' | asset_url }}" defer></script>
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    {% unless request.design_mode %}
+      {% if request.page_type == 'index' %}
+        <meta id="nil-homepage-redirect-to-collections" http-equiv="refresh" content="0;url=/collections">
+        <script>
+          window.location.replace('/collections');
+        </script>
+      {% endif %}
+    {% endunless %}
+
+    {{ content_for_header }}
+
+    {% # theme-check-enable RemoteAsset %}
+
+    <style>
+      html {
+        min-height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100%;
+        overflow-x: hidden;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      #header-group {
+        position: relative;
+        z-index: 40;
+      }
+
+      #MainContent {
+        min-height: 40vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      .content-for-layout {
+        width: 100%;
+      }
+
+      img,
+      svg,
+      video,
+      iframe {
+        max-width: 100%;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      #nil-main-footer {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 1px !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        clear: both !important;
+        position: relative !important;
+        z-index: 5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      #nil-main-footer .shopify-section-group-footer-group,
+      #nil-main-footer .shopify-section {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      {% if request.page_type == 'collection' %}
+        body.nil-template-collection #nil-main-footer ~ .nil-main-modern-collection,
+        body.nil-template-collection #nil-main-footer ~ .nil-collection-header,
+        body.nil-template-collection #nil-main-footer ~ .nil-premium-controls,
+        body.nil-template-collection #nil-main-footer ~ .nil-quick-filter-strip,
+        body.nil-template-collection #nil-main-footer ~ .nil-premium-results-sort,
+        body.nil-template-collection #nil-main-footer ~ .nil-collection-benefits,
+        body.nil-template-collection #nil-main-footer ~ .product-grid-container,
+        body.nil-template-collection #nil-main-footer ~ .main-collection-grid,
+        body.nil-template-collection #nil-main-footer ~ .collection-wrapper,
+        body.nil-template-collection #nil-main-footer ~ .nil-collection-layout-v9,
+        body.nil-template-collection #nil-main-footer ~ .nil-products-area-v9,
+        body.nil-template-collection #nil-main-footer ~ .nil-google-filter-sidebar,
+        body.nil-template-collection #nil-main-footer ~ .nil-visual-smart-search,
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-main-modern-collection),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-collection-header),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-premium-controls),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-quick-filter-strip),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-premium-results-sort),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-collection-benefits),
+        body.nil-template-collection #nil-main-footer ~ *:has(.product-grid-container),
+        body.nil-template-collection #nil-main-footer ~ *:has(.main-collection-grid),
+        body.nil-template-collection #nil-main-footer ~ *:has(.collection-wrapper),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-collection-layout-v9),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-products-area-v9),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-google-filter-sidebar),
+        body.nil-template-collection #nil-main-footer ~ *:has(.nil-visual-smart-search) {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
+          min-height: 0 !important;
+          max-height: 0 !important;
+          overflow: hidden !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: 0 !important;
+          pointer-events: none !important;
+        }
+      {% endif %}
+    </style>
+
+    <!-- NIL LUXURY ROUTING SAFE FIX: footer-group.json loads 1-nil-lux-footer.liquid -->
+  </head>
+
+  <body
+    class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }} nil-luxury-v3 nil-premium-filter-v6 nil-has-footer-group nil-template-{{ request.page_type }} nil-template-{{ template.name | handle }}{% if request.page_type == 'search' %} nil-search-compact-mode{% endif %}"
+    data-nil-page="{{ request.page_type }}"
+    data-nil-template="{{ template.name | handle }}"
+    data-nil-default-grid-columns="{{ settings.nil_default_grid_columns | default: 3 }}"
+  >
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+
+    {% render 'nil-announcement-bar' %}
+
+    <div id="header-group">
+      {% sections 'header-group' %}
+    </div>
+
+    {% unless request.page_type == 'collection' or request.page_type == 'product' or request.page_type == 'search' %}
+      {% render 'nil-mega-menu' %}
+    {% endunless %}
+
+    <script>
+      (function () {
+        function setNilHeaderCustomProperties() {
+          const header = document.querySelector('header-component');
+          const headerGroup = document.querySelector('#header-group');
+
+          if (!header || !headerGroup) return;
+
+          const hasHeaderSection = headerGroup.querySelector('.header-section');
+          const headerTopRow = header.querySelector('.header__row--top');
+          const headerHeight = header.offsetHeight || 0;
+
+          let headerGroupHeight = 0;
+          const children = headerGroup.children || [];
+
+          for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+
+            if (element === header || !(element instanceof HTMLElement)) continue;
+
+            headerGroupHeight += element.offsetHeight || 0;
+          }
+
+          if (header.hasAttribute('transparent') && header.parentElement && header.parentElement.nextElementSibling) {
+            headerGroupHeight += headerHeight;
+          }
+
+          document.body.style.setProperty('--header-height', `${headerHeight}px`);
+          document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
+
+          if (headerTopRow) {
+            window.requestAnimationFrame(function () {
+              document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight || 0}px`);
+            });
+          }
+
+          if (!hasHeaderSection || !header.hasAttribute('transparent')) {
+            document.body.style.setProperty('--transparent-header-offset-boolean', '0');
+            return;
+          }
+
+          const hasImmediateSection =
+            hasHeaderSection.nextElementSibling &&
+            hasHeaderSection.nextElementSibling.classList &&
+            hasHeaderSection.nextElementSibling.classList.contains('shopify-section');
+
+          const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
+
+          document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
+        }
+
+        function setNilHeaderMenuStyle() {
+          const headerComponent = document.querySelector('#header-component');
+
+          if (!headerComponent) return;
+
+          const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
+          const overflowList = headerComponent.querySelector('overflow-list');
+          const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
+
+          headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
+        }
+
+        function runNilHeaderSetup() {
+          setNilHeaderCustomProperties();
+          setNilHeaderMenuStyle();
+        }
+
+        runNilHeaderSetup();
+
+        window.addEventListener(
+          'resize',
+          function () {
+            window.requestAnimationFrame(runNilHeaderSetup);
+          },
+          { passive: true }
+        );
+
+        document.addEventListener('shopify:section:load', runNilHeaderSetup);
+        document.addEventListener('shopify:section:reorder', runNilHeaderSetup);
+        document.addEventListener('shopify:block:select', runNilHeaderSetup);
+      })();
+    </script>
+
+    <main
+      id="MainContent"
+      class="content-for-layout"
+      role="main"
+      tabindex="-1"
+      data-page-transition-enabled="{{ settings.page_transition_enabled }}"
+      data-product-transition="{{ settings.transition_to_main_product }}"
+      data-template="{{ template }}"
+    >
+      {% if request.page_type == 'index' %}
+        {% render 'nil-home-showcase' %}
+      {% endif %}
+
+      {{ content_for_layout }}
+    </main>
+
+    <footer
+      id="nil-main-footer"
+      class="nil-main-footer-shell"
+      role="contentinfo"
+      aria-label="Footer"
+    >
+      {% sections 'footer-group' %}
+    </footer>
+
+    {% render 'search-modal' %}
+
+    {% if settings.quick_add or settings.mobile_quick_add %}
+      {% render 'quick-add-modal' %}
+    {% endif %}
+
+    {% render 'nil-floating-whatsapp' %}
+    {% render 'nil-cookie-banner' %}
+    {% render 'nil-language-suggestion-popup' %}
+
+    {% if request.page_type == 'collection' or request.page_type == 'search' or request.design_mode %}
+      <script
+        id="nil-filter-taxonomy-script"
+        src="{{ 'nil-filter-taxonomy.js' | asset_url }}"
+        defer
+      ></script>
+
+      <script
+        id="nil-collection-premium-controls-script"
+        src="{{ 'nil-collection-premium-controls.js' | asset_url }}"
+        data-nil-no-fallback-render="true"
+        data-nil-use-existing-collection="true"
+        data-nil-target="#MainContent"
+        defer
+      ></script>
+    {% endif %}
+
+    {% if request.page_type == 'collection' %}
+      <script>
+        (function () {
+          'use strict';
+
+          if (window.__NIL_COLLECTION_AFTER_FOOTER_GUARD__) return;
+          window.__NIL_COLLECTION_AFTER_FOOTER_GUARD__ = true;
+
+          var collectionSelectors = [
+            '.nil-main-modern-collection',
+            '.nil-collection-header',
+            '.nil-premium-controls',
+            '.nil-quick-filter-strip',
+            '.nil-premium-results-sort',
+            '.nil-collection-benefits',
+            '.product-grid-container',
+            '.main-collection-grid',
+            '.collection-wrapper',
+            '.nil-collection-layout-v9',
+            '.nil-products-area-v9',
+            '.nil-google-filter-sidebar',
+            '.nil-visual-smart-search'
+          ].join(',');
+
+          function isCollectionPage() {
+            return (
+              document.body &&
+              (
+                document.body.classList.contains('nil-template-collection') ||
+                document.body.getAttribute('data-nil-page') === 'collection' ||
+                document.body.getAttribute('data-nil-template') === 'collection'
+              )
+            );
+          }
+
+          function looksLikeDuplicateCollectionNode(node) {
+            if (!node || node.nodeType !== 1) return false;
+            if (node.id === 'nil-main-footer') return false;
+            if (node.id === 'MainContent') return false;
+            if (node.id === 'header-group') return false;
+
+            if (node.matches && node.matches(collectionSelectors)) return true;
+            if (node.querySelector && node.querySelector(collectionSelectors)) return true;
+
+            var text = '';
+            try {
+              text = (node.textContent || '').replace(/\s+/g, ' ').trim();
+            } catch (error) {
+              text = '';
+            }
+
+            if (!text) return false;
+
+            var hasLuxuryCollectionText =
+              text.indexOf('Luxury Bridal Collection') !== -1 ||
+              text.indexOf('Search all dresses') !== -1 ||
+              text.indexOf('Search all products') !== -1;
+
+            var hasCollectionControlsText =
+              text.indexOf('SORT BY:') !== -1 ||
+              text.indexOf('MIN PRICE') !== -1 ||
+              text.indexOf('MAX PRICE') !== -1 ||
+              text.indexOf('COLUMNS:') !== -1;
+
+            var hasProductCardsText =
+              text.indexOf('View Dress') !== -1 &&
+              (
+                text.indexOf('Wedding Dress') !== -1 ||
+                text.indexOf('G21-') !== -1 ||
+                text.indexOf('NIL-') !== -1
+              );
+
+            return hasLuxuryCollectionText && (hasCollectionControlsText || hasProductCardsText);
+          }
+
+          function removeCollectionFragmentsInsideFooter() {
+            var footer = document.getElementById('nil-main-footer');
+            if (!footer) return;
+
+            var fragments = footer.querySelectorAll(collectionSelectors);
+            fragments.forEach(function (fragment) {
+              var luxFooter = fragment.closest('.nil-lux-footer');
+              if (luxFooter && luxFooter.id && luxFooter.id.indexOf('NilLuxFooter-') === 0) return;
+              fragment.remove();
+            });
+          }
+
+          function removeNodesAfterFooter() {
+            var footer = document.getElementById('nil-main-footer');
+            if (!footer) return;
+
+            var node = footer.nextElementSibling;
+
+            while (node) {
+              var next = node.nextElementSibling;
+
+              if (looksLikeDuplicateCollectionNode(node)) {
+                node.remove();
+              }
+
+              node = next;
+            }
+          }
+
+          function removeDuplicateMainSections() {
+            var main = document.getElementById('MainContent');
+            if (!main) return;
+
+            var sections = Array.prototype.slice.call(main.querySelectorAll(':scope > .shopify-section'));
+            var keptCollectionSection = false;
+
+            sections.forEach(function (section) {
+              var hasCollectionUi =
+                section.querySelector &&
+                section.querySelector(collectionSelectors);
+
+              if (!hasCollectionUi) return;
+
+              if (!keptCollectionSection) {
+                keptCollectionSection = true;
+                return;
+              }
+
+              section.remove();
+            });
+          }
+
+          function runNilCollectionAfterFooterGuard() {
+            if (!isCollectionPage()) return;
+
+            removeCollectionFragmentsInsideFooter();
+            removeDuplicateMainSections();
+            removeNodesAfterFooter();
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runNilCollectionAfterFooterGuard);
+          } else {
+            runNilCollectionAfterFooterGuard();
+          }
+
+          window.addEventListener('load', runNilCollectionAfterFooterGuard);
+
+          document.addEventListener('shopify:section:load', runNilCollectionAfterFooterGuard);
+          document.addEventListener('shopify:section:select', runNilCollectionAfterFooterGuard);
+          document.addEventListener('shopify:section:reorder', runNilCollectionAfterFooterGuard);
+          document.addEventListener('shopify:block:select', runNilCollectionAfterFooterGuard);
+
+          var observerTarget = document.body || document.documentElement;
+
+          if (observerTarget && window.MutationObserver) {
+            var guardTimer = null;
+
+            var observer = new MutationObserver(function () {
+              window.clearTimeout(guardTimer);
+              guardTimer = window.setTimeout(runNilCollectionAfterFooterGuard, 40);
+            });
+
+            observer.observe(observerTarget, {
+              childList: true,
+              subtree: false
+            });
+          }
+
+          window.NILRunCollectionAfterFooterGuard = runNilCollectionAfterFooterGuard;
+        })();
+      </script>
+    {% endif %}
+
+    <script src="{{ 'nil-language-suggestion.js' | asset_url }}" defer></script>
+
+    <script>
+      (function () {
+        function nilFooterSafetyCheck() {
+          const footerShell = document.querySelector('#nil-main-footer');
+          if (!footerShell) return;
+
+          footerShell.style.display = 'block';
+          footerShell.style.visibility = 'visible';
+          footerShell.style.opacity = '1';
+          footerShell.style.height = 'auto';
+          footerShell.style.maxHeight = 'none';
+          footerShell.style.overflow = 'visible';
+
+          if (typeof window.NILRunCollectionAfterFooterGuard === 'function') {
+            window.NILRunCollectionAfterFooterGuard();
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', nilFooterSafetyCheck);
+        } else {
+          nilFooterSafetyCheck();
+        }
+
+        window.addEventListener('load', nilFooterSafetyCheck);
+        document.addEventListener('shopify:section:load', nilFooterSafetyCheck);
+        document.addEventListener('shopify:section:select', nilFooterSafetyCheck);
+        document.addEventListener('shopify:section:reorder', nilFooterSafetyCheck);
+      })();
+    </script>
+  </body>
+</html>

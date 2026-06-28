@@ -1,0 +1,40 @@
+{% doc %}
+  NIL editor-managed product FAQ block.
+{% enddoc %}
+
+{% if closest.product != blank %}
+  <div class="nil-v6-product-faq nil-v77-faq-block" aria-label="{{ block.settings.aria_label | escape }}" {{ block.shopify_attributes }}>
+    <details {% if block.settings.open_1 %}open{% endif %}>
+      <summary>{{ block.settings.question_1 }}</summary>
+      <div class="nil-v77-faq-block__answer rte">{{ block.settings.answer_1 }}</div>
+    </details>
+    <details {% if block.settings.open_2 %}open{% endif %}>
+      <summary>{{ block.settings.question_2 }}</summary>
+      <div class="nil-v77-faq-block__answer rte">{{ block.settings.answer_2 }}</div>
+    </details>
+    <details {% if block.settings.open_3 %}open{% endif %}>
+      <summary>{{ block.settings.question_3 }}</summary>
+      <div class="nil-v77-faq-block__answer rte">{{ block.settings.answer_3 }}</div>
+    </details>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "NIL Product FAQ",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "aria_label", "label": "Aria label", "default": "Product questions" },
+    { "type": "text", "id": "question_1", "label": "Question 1", "default": "How is this dress produced?" },
+    { "type": "richtext", "id": "answer_1", "label": "Answer 1", "default": "<p>Every NIL bridal gown is prepared as custom made with size support and production planning.</p>" },
+    { "type": "checkbox", "id": "open_1", "label": "Open question 1", "default": true },
+    { "type": "text", "id": "question_2", "label": "Question 2", "default": "Can I send my measurements on WhatsApp?" },
+    { "type": "richtext", "id": "answer_2", "label": "Answer 2", "default": "<p>Yes. Measurements, wedding date, preferred color and small changes can be confirmed with the bridal team.</p>" },
+    { "type": "checkbox", "id": "open_2", "label": "Open question 2", "default": false },
+    { "type": "text", "id": "question_3", "label": "Question 3", "default": "How long does production take?" },
+    { "type": "richtext", "id": "answer_3", "label": "Answer 3", "default": "<p>Standard custom bridal production is planned around 6–8 weeks plus express shipping time.</p>" },
+    { "type": "checkbox", "id": "open_3", "label": "Open question 3", "default": false }
+  ],
+  "presets": [{ "name": "NIL Product FAQ", "category": "t:categories.product" }]
+}
+{% endschema %}

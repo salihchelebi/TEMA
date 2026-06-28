@@ -1,0 +1,99 @@
+{% doc %}
+  NIL editor-managed trust strip and premium product highlights.
+{% enddoc %}
+
+{% liquid
+  assign nil_product = closest.product
+  assign icon_secure = block.settings.icon_secure | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-22-secure-payment-ikon-guvenli-odeme-icin.png?v=1781505374'
+  assign icon_shipping = block.settings.icon_shipping | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-32-international-shipping-icon-yurtdisi-kargo-icin.png?v=1781505374'
+  assign icon_delivery = block.settings.icon_delivery | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-21-door-delivery-ikon-kapiya-teslimat-icin.png?v=1781505374'
+  assign icon_order = block.settings.icon_order | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-16-custom-size-ikon-kendi-olcum-girme-icin.png?v=1781505373'
+  assign icon_craft = block.settings.icon_craft | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-29-handmade-icon-el-isciligi-vurgusu-icin.png?v=1781505374'
+  assign icon_fabric = block.settings.icon_fabric | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-30-fabric-icon-kumas-detayi-vurgusu-icin.png?v=1781505375'
+  assign icon_design = block.settings.icon_design | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-23-sparkle-gold-ikon-premium-parilti-vurgusu-icin.png?v=1781505374'
+  assign icon_auth = block.settings.icon_auth | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-18-authenticity-ikon-orijinallik-garantisi-icin.png?v=1781505374'
+%}
+
+{% if nil_product != blank %}
+  <div class="nil-v77-editor-trust" {{ block.shopify_attributes }}>
+    <div class="nil-v30-trust-panel nil-v77-trust-strip" aria-label="{{ block.settings.strip_aria_label | escape }}">
+      <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+        <span class="nil-v30-trust-panel__icon"><img src="{{ icon_secure }}" alt="" loading="lazy" width="64" height="64"></span>
+        <span class="nil-v30-trust-panel__copy"><strong>{{ block.settings.strip_1_title }}</strong><small>{{ block.settings.strip_1_text }}</small></span>
+      </div>
+      <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+        <span class="nil-v30-trust-panel__icon"><img src="{{ icon_shipping }}" alt="" loading="lazy" width="64" height="64"></span>
+        <span class="nil-v30-trust-panel__copy"><strong>{{ block.settings.strip_2_title }}</strong><small>{{ block.settings.strip_2_text }}</small></span>
+      </div>
+      <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+        <span class="nil-v30-trust-panel__icon"><img src="{{ icon_delivery }}" alt="" loading="lazy" width="64" height="64"></span>
+        <span class="nil-v30-trust-panel__copy"><strong>{{ block.settings.strip_3_title }}</strong><small>{{ block.settings.strip_3_text }}</small></span>
+      </div>
+      <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+        <span class="nil-v30-trust-panel__icon"><img src="{{ icon_order }}" alt="" loading="lazy" width="64" height="64"></span>
+        <span class="nil-v30-trust-panel__copy"><strong>{{ block.settings.strip_4_title }}</strong><small>{{ block.settings.strip_4_text }}</small></span>
+      </div>
+    </div>
+
+    <div class="nil-v77-premium-cards" aria-label="{{ block.settings.cards_aria_label | escape }}">
+      <div class="nil-v77-premium-card">
+        <img src="{{ icon_craft }}" alt="" loading="lazy" width="64" height="64">
+        <strong>{{ block.settings.card_1_title }}</strong>
+        <span>{{ block.settings.card_1_text }}</span>
+      </div>
+      <div class="nil-v77-premium-card">
+        <img src="{{ icon_fabric }}" alt="" loading="lazy" width="64" height="64">
+        <strong>{{ block.settings.card_2_title }}</strong>
+        <span>{{ block.settings.card_2_text }}</span>
+      </div>
+      <div class="nil-v77-premium-card">
+        <img src="{{ icon_design }}" alt="" loading="lazy" width="64" height="64">
+        <strong>{{ block.settings.card_3_title }}</strong>
+        <span>{{ block.settings.card_3_text }}</span>
+      </div>
+      <div class="nil-v77-premium-card">
+        <img src="{{ icon_auth }}" alt="" loading="lazy" width="64" height="64">
+        <strong>{{ block.settings.card_4_title }}</strong>
+        <span>{{ block.settings.card_4_text }}</span>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "NIL Trust + Premium Cards",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "strip_aria_label", "label": "Trust strip aria label", "default": "NIL trust badges" },
+    { "type": "text", "id": "strip_1_title", "label": "Strip 1 title", "default": "Secure Checkout" },
+    { "type": "text", "id": "strip_1_text", "label": "Strip 1 text", "default": "SSL encrypted" },
+    { "type": "text", "id": "strip_2_title", "label": "Strip 2 title", "default": "Free Shipping" },
+    { "type": "text", "id": "strip_2_text", "label": "Strip 2 text", "default": "Worldwide" },
+    { "type": "text", "id": "strip_3_title", "label": "Strip 3 title", "default": "Door Delivery" },
+    { "type": "text", "id": "strip_3_text", "label": "Strip 3 text", "default": "To your address" },
+    { "type": "text", "id": "strip_4_title", "label": "Strip 4 title", "default": "Made to Order" },
+    { "type": "text", "id": "strip_4_text", "label": "Strip 4 text", "default": "Just for you" },
+    { "type": "header", "content": "Premium cards" },
+    { "type": "text", "id": "cards_aria_label", "label": "Premium cards aria label", "default": "NIL premium product highlights" },
+    { "type": "text", "id": "card_1_title", "label": "Card 1 title", "default": "Premium Craftsmanship" },
+    { "type": "text", "id": "card_1_text", "label": "Card 1 text", "default": "Handcrafted with refined bridal details." },
+    { "type": "text", "id": "card_2_title", "label": "Card 2 title", "default": "Luxury Fabrics" },
+    { "type": "text", "id": "card_2_text", "label": "Card 2 text", "default": "Selected for structure, softness and elegance." },
+    { "type": "text", "id": "card_3_title", "label": "Card 3 title", "default": "Timeless Design" },
+    { "type": "text", "id": "card_3_text", "label": "Card 3 text", "default": "Made to look beautiful from every angle." },
+    { "type": "text", "id": "card_4_title", "label": "Card 4 title", "default": "Authenticity" },
+    { "type": "text", "id": "card_4_text", "label": "Card 4 text", "default": "Designed by NISAI bridal atelier." },
+    { "type": "header", "content": "Icon CDN URLs" },
+    { "type": "url", "id": "icon_secure", "label": "Secure icon URL" },
+    { "type": "url", "id": "icon_shipping", "label": "Shipping icon URL" },
+    { "type": "url", "id": "icon_delivery", "label": "Delivery icon URL" },
+    { "type": "url", "id": "icon_order", "label": "Made to order icon URL" },
+    { "type": "url", "id": "icon_craft", "label": "Craft icon URL" },
+    { "type": "url", "id": "icon_fabric", "label": "Fabric icon URL" },
+    { "type": "url", "id": "icon_design", "label": "Design icon URL" },
+    { "type": "url", "id": "icon_auth", "label": "Authenticity icon URL" }
+  ],
+  "presets": [{ "name": "NIL Trust + Premium Cards", "category": "t:categories.product" }]
+}
+{% endschema %}

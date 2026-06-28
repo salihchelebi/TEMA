@@ -1,0 +1,355 @@
+{% liquid
+  assign product_resource = closest.product
+  if request.visual_preview_mode and product_resource == blank
+    assign product_resource = collections.all.products.first
+  endif
+-%}
+
+{% unless product_resource == blank %}
+  {% render 'variant-main-picker', product_resource: product_resource, section: section, product: product, block: block %}
+{% endunless %}
+
+{% schema %}
+{
+  "name": "t:names.product_variant_picker",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.resource_reference_product_variant_picker"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:content.edit_variants_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "variant_style",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "dropdowns",
+          "label": "t:options.dropdowns"
+        },
+        {
+          "value": "buttons",
+          "label": "t:options.buttons"
+        }
+      ],
+      "default": "buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "t:settings.swatches",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Option labels"
+    },
+    {
+      "type": "text",
+      "id": "color_label",
+      "label": "Color label",
+      "default": "Color"
+    },
+    {
+      "type": "text",
+      "id": "size_label",
+      "label": "Size label",
+      "default": "Size"
+    },
+    {
+      "type": "text",
+      "id": "features_label",
+      "label": "Dress features / veil label",
+      "default": "Dress Features"
+    },
+    {
+      "type": "text",
+      "id": "size_guide_label",
+      "label": "Size guide label",
+      "default": "Size Guide"
+    },
+    {
+      "type": "header",
+      "content": "Dress Features chip layout"
+    },
+    {
+      "type": "select",
+      "id": "feature_layout",
+      "label": "Dress Features layout",
+      "options": [
+        {
+          "value": "wrap",
+          "label": "Yatay / wrap"
+        },
+        {
+          "value": "scroll",
+          "label": "Yatay kaydırmalı"
+        },
+        {
+          "value": "grid",
+          "label": "Grid"
+        }
+      ],
+      "default": "wrap"
+    },
+    {
+      "type": "range",
+      "id": "feature_gap",
+      "label": "Chip gap",
+      "min": 4,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "feature_min_width",
+      "label": "Chip minimum width",
+      "min": 90,
+      "max": 260,
+      "step": 5,
+      "unit": "px",
+      "default": 135
+    },
+    {
+      "type": "range",
+      "id": "feature_max_width",
+      "label": "Chip maximum width",
+      "min": 150,
+      "max": 420,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "feature_padding_y",
+      "label": "Chip vertical padding",
+      "min": 6,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "feature_padding_x",
+      "label": "Chip horizontal padding",
+      "min": 8,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "feature_border_radius",
+      "label": "Chip corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "feature_font_size",
+      "label": "Chip font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_size",
+      "label": "Chip icon size",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color_background",
+      "id": "feature_background",
+      "label": "Chip background",
+      "default": "#fffefa"
+    },
+    {
+      "type": "color",
+      "id": "feature_text_color",
+      "label": "Chip text color",
+      "default": "#24211e"
+    },
+    {
+      "type": "color",
+      "id": "feature_border_color",
+      "label": "Chip border color",
+      "default": "#d7b77e"
+    },
+    {
+      "type": "color_background",
+      "id": "feature_selected_background",
+      "label": "Selected chip background",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "feature_selected_text_color",
+      "label": "Selected chip text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "feature_selected_border_color",
+      "label": "Selected chip border color",
+      "default": "#e0bf82"
+    },
+    {
+      "type": "header",
+      "content": "Dress Features editor labels and icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_use_editor_labels",
+      "label": "Use editor labels instead of variant value text",
+      "default": false
+    },
+    {
+      "type": "paragraph",
+      "content": "Optional: match keywords are used to attach each editor label/icon to the matching product option value. Input value remains the real Shopify variant value."
+    },
+    {
+      "type": "text",
+      "id": "feature_1_label",
+      "label": "Feature 1 editor label",
+      "default": "Complimentary Plain Veil"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_match",
+      "label": "Feature 1 match keywords",
+      "default": "complimentary,plain,included"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_1_icon",
+      "label": "Feature 1 icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_label",
+      "label": "Feature 2 editor label",
+      "default": "Fingertip Veil"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_match",
+      "label": "Feature 2 match keywords",
+      "default": "fingertip,short veil"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_2_icon",
+      "label": "Feature 2 icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_label",
+      "label": "Feature 3 editor label",
+      "default": "Chapel Veil"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_match",
+      "label": "Feature 3 match keywords",
+      "default": "chapel,220"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_3_icon",
+      "label": "Feature 3 icon"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_label",
+      "label": "Feature 4 editor label",
+      "default": "Cathedral Veil"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_match",
+      "label": "Feature 4 match keywords",
+      "default": "cathedral,300"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_4_icon",
+      "label": "Feature 4 icon"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "t:settings.alignment",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.product_variant_picker",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

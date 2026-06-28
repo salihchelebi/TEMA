@@ -1,0 +1,86 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} nil-trust-strip-section"
+  style="--trust-gap: {{ section.settings.gap }}px; padding-block-start: {{ section.settings.padding_top }}px; padding-block-end: {{ section.settings.padding_bottom }}px;"
+  {{ section.shopify_attributes }}
+>
+  <div class="nil-trust-strip">
+    {% for block in section.blocks %}
+      {% if block.type == 'trust_item' %}
+        <div class="nil-trust-item" {{ block.shopify_attributes }}>
+          {% if block.settings.link != blank %}
+            <a href="{{ block.settings.link }}" {% if block.settings.open_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+          {% endif %}
+          {% if block.settings.icon_image != blank %}
+            <img src="{{ block.settings.icon_image | image_url: width: 80 }}" alt="{{ block.settings.title }}" loading="lazy" width="60" height="60">
+          {% elsif block.settings.icon_svg != blank %}
+            <img src="{{ block.settings.icon_svg | asset_url }}" alt="{{ block.settings.title }}" loading="lazy" width="60" height="60">
+          {% endif %}
+          <strong>{{ block.settings.title }}</strong>
+          <span>{{ block.settings.subtitle }}</span>
+          {% if block.settings.link != blank %}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nil-trust-strip-section { background: var(--color-background); }
+  .nil-trust-strip { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--trust-gap, 24px); width: 100%; }
+  .nil-trust-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; min-width: 100px; }
+  .nil-trust-item a { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; text-decoration: none; color: inherit; }
+  .nil-trust-item img { width: 60px; height: 60px; object-fit: contain; }
+  .nil-trust-item strong { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .nil-trust-item span { display: block; font-size: 0.75rem; opacity: 0.7; }
+  @media screen and (max-width: 749px) {
+    .nil-trust-strip { gap: 16px; }
+    .nil-trust-item { min-width: 80px; }
+    .nil-trust-item img { width: 48px; height: 48px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "NIL Trust Strip",
+  "tag": "div",
+  "class": "nil-trust-strip-wrapper",
+  "settings": [
+    { "type": "select", "id": "section_width", "label": "Width", "options": [{ "value": "page-width", "label": "Page" }, { "value": "full-width", "label": "Full" }], "default": "page-width" },
+    { "type": "range", "id": "gap", "label": "Gap between items", "min": 8, "max": 80, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 24 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust Item",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Custom Made" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Bridal dresses" },
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image (upload)" },
+        { "type": "text", "id": "icon_svg", "label": "Icon SVG asset filename (e.g. nil-icon-footer-custom-made-dress.svg)" },
+        { "type": "url", "id": "link", "label": "Link (optional)" },
+        { "type": "checkbox", "id": "open_new_tab", "label": "Open in new tab", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NIL Trust Strip",
+      "category": "NIL Custom",
+      "blocks": [
+        { "type": "trust_item", "settings": { "title": "Custom Made", "subtitle": "Bridal dresses", "icon_svg": "nil-icon-footer-custom-made-dress.svg" } },
+        { "type": "trust_item", "settings": { "title": "Worldwide", "subtitle": "Shipping", "icon_svg": "nil-icon-footer-worldwide-shipping.svg" } },
+        { "type": "trust_item", "settings": { "title": "Secure", "subtitle": "Payment", "icon_svg": "nil-icon-footer-secure-payment.svg" } },
+        { "type": "trust_item", "settings": { "title": "Handmade", "subtitle": "Details", "icon_svg": "nil-icon-footer-handmade-details.svg" } },
+        { "type": "trust_item", "settings": { "title": "WhatsApp", "subtitle": "Consultation", "icon_svg": "nil-icon-footer-whatsapp-consultation.svg", "link": "https://wa.me/905334619373", "open_new_tab": true } },
+        { "type": "trust_item", "settings": { "title": "Size", "subtitle": "Support", "icon_svg": "nil-icon-footer-size-support.svg" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

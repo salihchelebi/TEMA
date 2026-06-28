@@ -1,0 +1,1 @@
+/* GELINLIK21 V10: legacy file intentionally disabled. Main logic is in ayrinti.js. */

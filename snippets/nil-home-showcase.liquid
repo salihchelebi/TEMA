@@ -1,0 +1,43 @@
+{% comment %} NIL LUXURY V4 START — visible homepage hero, collection cards, and trust experience {% endcomment %}
+<section class="nil-v4-home" aria-label="NIL Wedding Dress luxury bridal homepage">
+  <div class="nil-v4-hero">
+    <div class="nil-v4-hero__bg" role="img" aria-label="Luxury bride wearing a handcrafted wedding dress inside an ivory bridal showroom"></div>
+    <div class="nil-v4-hero__shade" aria-hidden="true"></div>
+    <div class="nil-v4-hero__copy">
+      <p class="nil-v4-kicker">Luxury Wedding Dresses</p>
+      <h1>Handcrafted<br>Bridal Elegance</h1>
+      <div class="nil-v4-divider" aria-hidden="true"><span>✥</span></div>
+      <p class="nil-v4-subtitle">Custom Made for Your Special Day</p>
+      <div class="nil-v4-cta-row">
+        <a class="nil-v4-btn nil-v4-btn--dark" href="{{ routes.collections_url }}/all">Shop Collections <span aria-hidden="true">→</span></a>
+        <a class="nil-v4-btn nil-v4-btn--light" href="https://wa.me/905334619373?text={{ 'Hello, I am interested in NIL Wedding Dress. Can you help me choose a luxury wedding dress?' | url_encode }}" target="_blank" rel="noopener">☏ Contact on WhatsApp</a>
+      </div>
+      <div class="nil-v4-hero-trust" aria-label="NIL Wedding Dress service highlights">
+        <div><b>◇</b><strong>Premium Fabrics</strong><span>Finest quality materials</span></div>
+        <div><b>♡</b><strong>Handcrafted</strong><span>By expert artisans</span></div>
+        <div><b>♙</b><strong>Custom Made</strong><span>Perfectly tailored for you</span></div>
+        <div><b>◎</b><strong>Worldwide</strong><span>Shipping available</span></div>
+      </div>
+    </div>
+    <div class="nil-v4-hero__bottom">Istanbul Atelier · Private Appointments · Bridal Styling Experience</div>
+  </div>
+
+  <section class="nil-v4-collections" aria-label="Shop NIL Wedding Dress collections">
+    <aside class="nil-v4-collections__intro">
+      <p class="nil-v4-kicker">Collections</p>
+      <h2>Find Your<br>Dream Dress</h2>
+      <div class="nil-v4-divider nil-v4-divider--left" aria-hidden="true"><span>✥</span></div>
+      <p>Discover our exclusive range of handcrafted bridal gowns, designed for your most unforgettable moments.</p>
+      <a class="nil-v4-btn nil-v4-btn--light" href="https://wa.me/905334619373?text={{ 'Hello, I would like to book a bridal consultation with NIL Wedding Dress.' | url_encode }}" target="_blank" rel="noopener">☏ Book a Consultation</a>
+      <a class="nil-v4-text-link" href="{{ routes.collections_url }}/all">View all collections →</a>
+    </aside>
+    <div class="nil-v4-collection-grid">
+      <a class="nil-v4-collection-card" href="{{ routes.collections_url }}/princess-ball-gowns"><img src="{{ 'nil-v4-card-princess.jpg' | asset_url }}" alt="Princess ball gown wedding dresses"><div><h3>Princess<br>Ball Gowns</h3><p>Timeless volume. Regal by design.</p><span>→</span></div></a>
+      <a class="nil-v4-collection-card" href="{{ routes.collections_url }}/mermaid-wedding-dresses"><img src="{{ 'nil-v4-card-mermaid.jpg' | asset_url }}" alt="Mermaid wedding dresses"><div><h3>Mermaid<br>Wedding Dresses</h3><p>Sculpted to perfection. Made to stun.</p><span>→</span></div></a>
+      <a class="nil-v4-collection-card" href="{{ routes.collections_url }}/modest-wedding-dresses"><img src="{{ 'nil-v4-card-modest.jpg' | asset_url }}" alt="Modest wedding dresses"><div><h3>Modest<br>Wedding Dresses</h3><p>Graceful coverage. Uncompromised beauty.</p><span>→</span></div></a>
+      <a class="nil-v4-collection-card" href="{{ routes.collections_url }}/lace-wedding-dresses"><img src="{{ 'hero-3.svg' | asset_url }}" alt="Lace wedding dresses"><div><h3>Lace<br>Wedding Dresses</h3><p>Intricate details. Timeless romance.</p><span>→</span></div></a>
+      <a class="nil-v4-collection-card" href="{{ routes.collections_url }}/royal-collection"><img src="{{ 'nil-v4-card-royal.jpg' | asset_url }}" alt="Royal bridal collection"><div><h3>Royal<br>Collection</h3><p>For the queen in you. Couture heritage.</p><span>→</span></div></a>
+    </div>
+  </section>
+</section>
+{% comment %} NIL LUXURY V4 END {% endcomment %}

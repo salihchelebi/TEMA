@@ -1,0 +1,54 @@
+{% comment %} NIL V77 — Static premium product accordions. No JS required. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+%}
+{% if nil_product != blank %}
+  <div class="nil-v77-accordion" aria-label="Product help sections">
+    <details class="nil-v77-accordion__item">
+      <summary>
+        <span class="nil-v77-accordion__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-25-info-icon-bilgi-aciklama-alani-icin.png?v=1781505374" alt="" loading="lazy" width="28" height="28"></span>
+        <span>Description</span>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <div class="nil-v77-accordion__content rte">
+        {% if nil_product.description != blank %}
+          {{ nil_product.description }}
+        {% else %}
+          <p>Elegant bridal design crafted with premium fabrics, refined details and a made-to-order finish.</p>
+        {% endif %}
+      </div>
+    </details>
+    <details class="nil-v77-accordion__item">
+      <summary>
+        <span class="nil-v77-accordion__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-32-international-shipping-icon-yurtdisi-kargo-icin.png?v=1781505374" alt="" loading="lazy" width="28" height="28"></span>
+        <span>Delivery</span>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <div class="nil-v77-accordion__content"><p>Worldwide delivery is available. Final timing depends on production, customization and destination country.</p></div>
+    </details>
+    <details class="nil-v77-accordion__item">
+      <summary>
+        <span class="nil-v77-accordion__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-24-check-icon-secim-onay-isareti-icin.png?v=1781505374" alt="" loading="lazy" width="28" height="28"></span>
+        <span>Returns</span>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <div class="nil-v77-accordion__content"><p>Please contact our bridal stylist before ordering for size and customization confirmation.</p></div>
+    </details>
+    <details id="nil-v77-size-help" class="nil-v77-accordion__item">
+      <summary>
+        <span class="nil-v77-accordion__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-28-size-guide-icon-beden-tablosu-linki-icin.png?v=1781505374" alt="" loading="lazy" width="28" height="28"></span>
+        <span>Size Help</span>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <div class="nil-v77-accordion__content"><p>For the best fit, choose your regular bridal size or use Custom Size to share exact measurements.</p></div>
+    </details>
+    <details class="nil-v77-accordion__item">
+      <summary>
+        <span class="nil-v77-accordion__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-30-fabric-icon-kumas-detayi-vurgusu-icin.png?v=1781505375" alt="" loading="lazy" width="28" height="28"></span>
+        <span>Care Instructions</span>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <div class="nil-v77-accordion__content"><p>Professional bridal dry cleaning is recommended. Store in a breathable garment bag away from moisture and direct sunlight.</p></div>
+    </details>
+  </div>
+{% endif %}

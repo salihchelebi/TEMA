@@ -1,0 +1,21 @@
+{%- comment -%}
+A-G21 WhatsApp destek kartı. Koleksiyon döngüsünün yerine geçmez; sadece isteğe bağlı destek bileşenidir.
+{%- endcomment -%}
+{%- liquid
+  assign g21_phone = g21_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '('
+  assign g21_phone = g21_phone | remove: ')'
+  assign g21_title = g21_title | default: 'Private Bridal Consultation'
+  assign g21_text = g21_text | default: 'Send us your dream dress details and get personal support.'
+  assign g21_button = g21_button | default: 'Chat on WhatsApp'
+  assign g21_message = g21_message | default: 'Hello, I would like bridal consultation from Gelinlik21.'
+-%}
+{%- if g21_phone != blank -%}
+  <article class="a-g21-whatsapp-karti" data-a-g21-whatsapp-card="true">
+    <div class="a-g21-whatsapp-karti__ikon" aria-hidden="true">✆</div>
+    <h3 class="a-g21-whatsapp-karti__baslik">{{ g21_title }}</h3>
+    <p class="a-g21-whatsapp-karti__metin">{{ g21_text }}</p>
+    <a class="a-g21-whatsapp-karti__buton" href="https://wa.me/{{ g21_phone }}?text={{ g21_message | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="{{ g21_button | escape }}">
+      {{ g21_button }}
+    </a>
+  </article>
+{%- endif -%}

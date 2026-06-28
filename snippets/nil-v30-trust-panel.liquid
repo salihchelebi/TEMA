@@ -1,0 +1,47 @@
+{% comment %} NIL V77 — Premium trust strip + mini benefit cards. Lightweight; CDN icons only. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+%}
+{% if nil_product != blank %}
+  <div class="nil-v30-trust-panel nil-v77-trust-strip" aria-label="NIL trust badges">
+    <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+      <span class="nil-v30-trust-panel__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-22-secure-payment-ikon-guvenli-odeme-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64"></span>
+      <span class="nil-v30-trust-panel__copy"><strong>Secure Checkout</strong><small>SSL encrypted</small></span>
+    </div>
+    <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+      <span class="nil-v30-trust-panel__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-32-international-shipping-icon-yurtdisi-kargo-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64"></span>
+      <span class="nil-v30-trust-panel__copy"><strong>Free Shipping</strong><small>Worldwide</small></span>
+    </div>
+    <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+      <span class="nil-v30-trust-panel__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-21-door-delivery-ikon-kapiya-teslimat-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64"></span>
+      <span class="nil-v30-trust-panel__copy"><strong>Door Delivery</strong><small>To your address</small></span>
+    </div>
+    <div class="nil-v30-trust-panel__item nil-v77-trust-strip__item">
+      <span class="nil-v30-trust-panel__icon"><img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-16-custom-size-ikon-kendi-olcum-girme-icin.png?v=1781505373" alt="" loading="lazy" width="64" height="64"></span>
+      <span class="nil-v30-trust-panel__copy"><strong>Made to Order</strong><small>Just for you</small></span>
+    </div>
+  </div>
+
+  <div class="nil-v77-premium-cards" aria-label="NIL premium product highlights">
+    <div class="nil-v77-premium-card">
+      <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-29-handmade-icon-el-isciligi-vurgusu-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64">
+      <strong>Premium Craftsmanship</strong>
+      <span>Handcrafted with refined bridal details.</span>
+    </div>
+    <div class="nil-v77-premium-card">
+      <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-30-fabric-icon-kumas-detayi-vurgusu-icin.png?v=1781505375" alt="" loading="lazy" width="64" height="64">
+      <strong>Luxury Fabrics</strong>
+      <span>Selected for structure, softness and elegance.</span>
+    </div>
+    <div class="nil-v77-premium-card">
+      <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-23-sparkle-gold-ikon-premium-parilti-vurgusu-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64">
+      <strong>Timeless Design</strong>
+      <span>Made to look beautiful from every angle.</span>
+    </div>
+    <div class="nil-v77-premium-card">
+      <img src="https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-18-authenticity-ikon-orijinallik-garantisi-icin.png?v=1781505374" alt="" loading="lazy" width="64" height="64">
+      <strong>Authenticity</strong>
+      <span>Designed by NISAI bridal atelier.</span>
+    </div>
+  </div>
+{% endif %}

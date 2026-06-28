@@ -1,0 +1,215 @@
+<script id="nil-collection-404-rescue">
+  (function(){
+    var path = (window.location.pathname || '').replace(/\/$/, '');
+    var handle = (path.match(/^\/collections\/([^\/?#]+)$/i) || [])[1];
+    if (!handle || handle === 'all') return;
+    var map = {
+      'new-arrivals': '/collections/all?sort_by=created-descending',
+      'best-sellers': '/collections/all?sort_by=best-selling',
+      'sale': '/collections/all?nilf_tag=sale',
+      'accessories': '/collections/all?nilf_tag=accessories',
+      'princess-wedding-dresses': '/collections/all?nilf_silhouette=princess,ball-gown',
+      'princess-ball-gowns': '/collections/all?nilf_silhouette=princess,ball-gown',
+      'mermaid-wedding-dresses': '/collections/all?nilf_silhouette=mermaid',
+      'modest-wedding-dresses': '/collections/all?nilf_tag=modest&nilf_sleeve-length=long-sleeve',
+      'lace-wedding-dresses': '/collections/all?nilf_fabrics=lace',
+      'royal-collection': '/collections/all?nilf_tag=royal',
+      'ball-gown-wedding-dresses': '/collections/all?nilf_silhouette=ball-gown',
+      'a-line-wedding-dresses': '/collections/all?nilf_silhouette=a-line',
+      'hijab-wedding-dresses': '/collections/all?nilf_tag=hijab,modest',
+      'long-sleeve-wedding-dresses': '/collections/all?nilf_sleeve-length=long-sleeve',
+      'wedding-dresses': '/collections/all',
+      'engagement-dresses': '/collections/all?nilf_tag=engagement',
+      'evening-dresses': '/collections/all?nilf_tag=evening'
+    };
+    if (map[handle]) {
+      window.location.replace(map[handle]);
+    }
+  })();
+</script>
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="
+    section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}
+    {% if section.settings.section_height != "" %} {{ section.settings.section_height | prepend: "section--height-" }}{% endif %}
+  "
+>
+  <div>
+    <div
+      class="
+        spacing-style
+        layout-panel-flex
+        layout-panel-flex--column
+        section-content-wrapper
+        mobile-column
+      "
+      style="
+        {% render 'layout-panel-style', settings: section.settings %}
+        {% render 'spacing-style', settings: section.settings %}
+      "
+    >
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.404",
+  "class": "section-wrapper",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "content_direction",
+      "label": "t:settings.direction",
+      "options": [
+        {
+          "value": "column",
+          "label": "t:options.vertical"
+        }
+      ],
+      "default": "column",
+      "visible_if": "{{ section.settings.horizontal_alignment_flex_direction_column == 'fake-value' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "small",
+          "label": "t:options.small"
+        },
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        },
+        {
+          "value": "full-screen",
+          "label": "t:options.full_screen"
+        }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment_flex_direction_column",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment_flex_direction_column",
+      "label": "t:settings.position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.top"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,415 @@
+{%- render 'A-g21-inline-stiller' -%}
+{%- render 'A-g21-filtre-temizleme' -%}
+
+<div
+  class="a-g21-global-dil-cubugu a-g21-collection-language-top"
+  role="navigation"
+  aria-label="Collection language selector"
+  data-a-g21-global-language-bar="true"
+  data-a-g21-language-bar="active"
+  data-a-g21-collection-language-top="true"
+>
+  <div class="a-g21-global-dil-cubugu__ic">
+    {%- render 'A-g21-dil-secici' -%}
+  </div>
+</div>
+
+<section
+  class="a-g21-koleksiyon-sayfasi"
+  data-a-g21-collection-page="true"
+  style="
+    --a-g21-cols-desktop: {{ section.settings.g21_desktop_kolon | default: 4 }};
+    --a-g21-cols-tablet: {{ section.settings.g21_tablet_kolon | default: 3 }};
+    --a-g21-cols-mobile: {{ section.settings.g21_mobil_kolon | default: 2 }};
+    --a-g21-grid-gap: {{ section.settings.g21_gap | default: 18 }}px;
+  "
+>
+  <header class="a-g21-koleksiyon-sayfasi__header">
+    <h1>{{ collection.title }}</h1>
+
+    {%- if collection.description != blank -%}
+      <div class="a-g21-koleksiyon-sayfasi__desc">
+        {{ collection.description }}
+      </div>
+    {%- endif -%}
+  </header>
+
+  {%- paginate collection.products by section.settings.g21_urun_sayisi -%}
+    <div class="a-g21-filtre-shell" data-a-g21-filter-shell="true">
+      <form
+        class="a-g21-filtre-form"
+        data-a-g21-filter-form="true"
+        data-a-g21-mobile-open="false"
+        method="get"
+        action="{{ collection.url }}"
+      >
+        <div class="a-g21-filtre-form__ust">
+          <button
+            class="a-g21-filtre-toggle"
+            type="button"
+            data-a-g21-filter-toggle="true"
+            aria-expanded="false"
+          >
+            Filters
+          </button>
+
+          <label class="a-g21-sort-label">
+            Sort
+
+            <select
+              class="a-g21-sort-select"
+              name="sort_by"
+              data-a-g21-sort="true"
+              onchange="this.form.submit()"
+            >
+              {%- assign g21_sort_by = collection.sort_by | default: collection.default_sort_by -%}
+
+              {%- for option in collection.sort_options -%}
+                <option
+                  value="{{ option.value }}"
+                  {% if option.value == g21_sort_by %}
+                    selected
+                  {% endif %}
+                >
+                  {{ option.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </label>
+        </div>
+
+        <aside class="a-g21-filtre-panel" data-a-g21-filter-panel="true">
+          {%- for filter in collection.filters -%}
+            {%- liquid
+              assign g21_filter_key = filter.param_name | default: '' | downcase
+              assign g21_filter_label = filter.label | default: '' | downcase
+              assign g21_skip_filter = false
+
+              if g21_filter_key contains 'tag'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_key contains 'availability'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_label contains 'tag'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_label contains 'stok'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_label contains 'stock'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_label contains 'availability'
+                assign g21_skip_filter = true
+              endif
+
+              if g21_filter_label contains 'daha fazla'
+                assign g21_skip_filter = true
+              endif
+            -%}
+
+            {%- unless g21_skip_filter -%}
+              <details class="a-g21-filtre-grup" open>
+                <summary>{{ filter.label }}</summary>
+
+                <div class="a-g21-filtre-secenekler">
+                  {%- if filter.type == 'price_range' -%}
+                    <div class="a-g21-price-row">
+                      <label>
+                        Min
+
+                        <input
+                          name="{{ filter.min_value.param_name }}"
+                          type="number"
+                          min="0"
+                          inputmode="numeric"
+                          {% if filter.min_value.value %}
+                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                          {% endif %}
+                        >
+                      </label>
+
+                      <label>
+                        Max
+
+                        <input
+                          name="{{ filter.max_value.param_name }}"
+                          type="number"
+                          min="0"
+                          inputmode="numeric"
+                          {% if filter.max_value.value %}
+                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                          {% endif %}
+                        >
+                      </label>
+                    </div>
+                  {%- else -%}
+                    {%- for value in filter.values -%}
+                      {%- liquid
+                        assign g21_value_label = value.label | default: '' | downcase
+                        assign g21_skip_value = false
+
+                        if g21_value_label contains 'g21-'
+                          assign g21_skip_value = true
+                        endif
+
+                        if g21_value_label contains 'nil-'
+                          assign g21_skip_value = true
+                        endif
+                      -%}
+
+                      {%- unless g21_skip_value -%}
+                        <label class="a-g21-filtre-value{% if value.active %} is-active{% endif %}">
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}
+                              checked
+                            {% endif %}
+                            {% if value.count == 0 and value.active == false %}
+                              disabled
+                            {% endif %}
+                            onchange="this.form.submit()"
+                          >
+
+                          <span>{{ value.label }}</span>
+                          <small>{{ value.count }}</small>
+                        </label>
+                      {%- endunless -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </details>
+            {%- endunless -%}
+          {%- endfor -%}
+
+          <button class="a-g21-filtre-submit" type="submit">
+            Apply
+          </button>
+
+          <a class="a-g21-filtre-clear" href="{{ collection.url }}">
+            Clear
+          </a>
+        </aside>
+      </form>
+    </div>
+
+    <div class="a-g21-urun-grid" data-a-g21-product-grid="true">
+      {%- for product in collection.products -%}
+        <article class="a-g21-urun-karti">
+          <a class="a-g21-urun-karti__link" href="{{ product.url | within: collection }}">
+            <span class="a-g21-urun-karti__media">
+              {%- if product.featured_media.preview_image != blank -%}
+                {{
+                  product.featured_media.preview_image
+                  | image_url: width: 900
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '320, 480, 640, 900',
+                    sizes: '(min-width: 990px) 25vw, 50vw',
+                    alt: product.title,
+                    class: 'a-g21-urun-karti__img'
+                }}
+              {%- else -%}
+                <span class="a-g21-koleksiyon-karti__placeholder">
+                  G21
+                </span>
+              {%- endif -%}
+            </span>
+
+            <span class="a-g21-urun-karti__info">
+              <strong>{{ product.title }}</strong>
+              <em>{{ product.price_min | money }}</em>
+              <span>View Dress</span>
+            </span>
+          </a>
+        </article>
+      {%- else -%}
+        <div class="a-g21-bos-durum">
+          No products found in this collection.
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="a-g21-pagination" role="navigation" aria-label="Pagination">
+        {{ paginate | default_pagination }}
+      </nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% stylesheet %}
+  .a-g21-collection-language-top {
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(202, 164, 90, 0.55);
+    position: relative;
+    z-index: 80;
+    background: linear-gradient(180deg, #fffaf2, #fbf6ec);
+    box-shadow: 0 3px 18px rgba(143, 100, 28, 0.08);
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    direction: ltr;
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__liste {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__oge {
+    flex: 0 0 auto;
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 3px 8px;
+    border: 1px solid rgba(202, 164, 90, 0.38);
+    border-radius: 999px;
+    text-decoration: none;
+    color: #2c2112;
+    background: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__link.is-active {
+    border-color: #8f641c;
+    background: #fffaf2;
+    box-shadow: 0 0 0 2px rgba(202, 164, 90, 0.28);
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__bayrak {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    flex: 0 0 auto;
+  }
+
+  .a-g21-collection-language-top .a-g21-dil-secici__metin {
+    font-size: 12px;
+    line-height: 1;
+    color: #24170a;
+  }
+
+  @media screen and (max-width: 749px) {
+    .a-g21-collection-language-top {
+      min-height: 44px;
+      padding: 6px 8px;
+    }
+
+    .a-g21-collection-language-top .a-g21-dil-secici__liste {
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .a-g21-collection-language-top .a-g21-dil-secici__link {
+      padding: 2px;
+      min-height: 34px;
+    }
+
+    .a-g21-collection-language-top .a-g21-dil-secici__bayrak {
+      width: 30px;
+      height: 30px;
+    }
+
+    .a-g21-collection-language-top .a-g21-dil-secici__metin {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A-G21 Koleksiyon",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "g21_dil_cubugu_goster",
+      "label": "Dil çubuğunu göster",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "g21_urun_sayisi",
+      "label": "Sayfa başına ürün",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "g21_desktop_kolon",
+      "label": "Masaüstü kolon",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "g21_tablet_kolon",
+      "label": "Tablet kolon",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "g21_mobil_kolon",
+      "label": "Mobil kolon",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "g21_gap",
+      "label": "Grid aralığı",
+      "min": 8,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    }
+  ],
+  "presets": [
+    {
+      "name": "A-G21 Koleksiyon"
+    }
+  ]
+}
+{% endschema %}

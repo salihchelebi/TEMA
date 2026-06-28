@@ -1,0 +1,48 @@
+{% doc %}
+  NIL editor-managed WhatsApp consultation block.
+{% enddoc %}
+
+{% liquid
+  assign nil_product = closest.product
+  assign nil_product_title = nil_product.title | default: 'NIL Wedding Dress'
+  assign nil_product_url = shop.url | append: nil_product.url
+  assign nil_phone = block.settings.whatsapp_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign nil_message = block.settings.whatsapp_message | default: 'Hello, I need help with sizing and customization for this wedding dress:'
+  assign nil_wa_text = nil_message | append: ' ' | append: nil_product_title | append: ' ' | append: nil_product_url
+  assign nil_icon = block.settings.icon_url | default: 'https://cdn.shopify.com/s/files/1/1005/2278/7104/files/tema-15-whatsapp-ikon-danismanlik-iletisim-icin.png?v=1781505374'
+%}
+
+{% if nil_product != blank %}
+  <a
+    class="nil-v30-whatsapp nil-v30-animate nil-v30-animate--slide-up"
+    href="https://wa.me/{{ nil_phone }}?text={{ nil_wa_text | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ block.settings.title | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    <span class="nil-v30-whatsapp__icon" aria-hidden="true">
+      <img src="{{ nil_icon }}" alt="" loading="lazy" width="72" height="72">
+    </span>
+    <span class="nil-v30-whatsapp__copy">
+      <strong>{{ block.settings.title }}</strong>
+      <small>{{ block.settings.subtitle }}</small>
+    </span>
+    <span class="nil-v30-whatsapp__arrow" aria-hidden="true">›</span>
+  </a>
+{% endif %}
+
+{% schema %}
+{
+  "name": "NIL WhatsApp Consultation",
+  "tag": null,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "WHATSAPP CONSULTATION" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Chat with our bridal stylist for personalized advice" },
+    { "type": "text", "id": "whatsapp_phone", "label": "WhatsApp phone", "default": "905334619373" },
+    { "type": "text", "id": "whatsapp_message", "label": "WhatsApp message", "default": "Hello, I need help with sizing and customization for this wedding dress:" },
+    { "type": "url", "id": "icon_url", "label": "Icon CDN URL" }
+  ],
+  "presets": [{ "name": "NIL WhatsApp Consultation", "category": "t:categories.product" }]
+}
+{% endschema %}

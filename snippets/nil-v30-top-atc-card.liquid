@@ -1,0 +1,53 @@
+{% comment %} NIL V30 — Conversion First top add-to-cart card. Uses the real Shopify product form through the form attribute. {% endcomment %}
+{% liquid
+  assign nil_product = product | default: closest.product
+  assign nil_variant = nil_product.selected_or_first_available_variant
+  assign nil_form_id = 'BuyButtons-ProductForm-' | append: section.id
+  assign nil_top_icon = section.settings.nil_v30_top_icon_custom
+%}
+{% if nil_product != blank and section.settings.nil_v30_enable_top_atc != false %}
+  <div
+    class="nil-v30-top-atc nil-v30-animate nil-v30-animate--{{ section.settings.nil_v30_panel_animation | default: 'slide-up' }}"
+    data-nil-v30-top-atc
+    style="
+      --nil-v30-top-bg: {{ section.settings.nil_v30_top_bg }};
+      --nil-v30-top-text: {{ section.settings.nil_v30_top_text_color }};
+      --nil-v30-top-subtext: {{ section.settings.nil_v30_top_subtext_color }};
+      --nil-v30-top-border: {{ section.settings.nil_v30_top_border_color }};
+      --nil-v30-top-radius: {{ section.settings.nil_v30_top_radius }}px;
+      --nil-v30-top-border-width: {{ section.settings.nil_v30_top_border_width }}px;
+      --nil-v30-top-height: {{ section.settings.nil_v30_top_min_height }}px;
+      --nil-v30-top-padding-y: {{ section.settings.nil_v30_top_padding_y }}px;
+      --nil-v30-top-padding-x: {{ section.settings.nil_v30_top_padding_x }}px;
+      --nil-v30-top-gap: {{ section.settings.nil_v30_top_gap }}px;
+      --nil-v30-top-title-size: {{ section.settings.nil_v30_top_title_size }}px;
+      --nil-v30-top-subtitle-size: {{ section.settings.nil_v30_top_subtitle_size }}px;
+      --nil-v30-top-icon-size: {{ section.settings.nil_v30_top_icon_size }}px;
+      --nil-v30-top-align: {{ section.settings.nil_v30_top_alignment }};
+    "
+  >
+    <button
+      class="nil-v30-top-atc__button"
+      type="submit"
+      form="{{ nil_form_id }}"
+      name="add"
+      aria-label="{{ section.settings.nil_v30_top_title | default: 'ADD TO CART' | escape }}"
+      {% unless nil_variant.available %}disabled{% endunless %}
+    >
+      <span class="nil-v30-top-atc__icon" aria-hidden="true">
+        {% if nil_top_icon != blank %}
+          {{ nil_top_icon | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', widths: '40, 80, 120' }}
+        {% else %}
+          <img src="{{ 'nil-v30-cart-bag-icon.png' | asset_url }}" alt="" loading="lazy" width="64" height="64">
+        {% endif %}
+      </span>
+      <span class="nil-v30-top-atc__copy">
+        <span class="nil-v30-top-atc__title">{{ section.settings.nil_v30_top_title | default: 'ADD TO CART' }}</span>
+        <span class="nil-v30-top-atc__subtitle">{{ section.settings.nil_v30_top_subtitle | default: 'Secure yours today. Limited availability.' }}</span>
+      </span>
+      {% if section.settings.nil_v30_top_show_arrow %}
+        <span class="nil-v30-top-atc__arrow" aria-hidden="true">›</span>
+      {% endif %}
+    </button>
+  </div>
+{% endif %}
