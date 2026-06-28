@@ -1,146 +1,69 @@
-GELİNLİK21 / A-G21 DÜZELTME İSPAT RAPORU
-Tarih: 2026-06-28
-Branch: fix/a-g21-language-accessibility-browser-check
-Commit hedefi: Fix A-G21 language bar, accessibility, and browser checks
+Gelinlik21 MSX Playwright audit tema düzeltme ispatları
 
-Özet:
-- Aktif header akışı layout/theme.liquid -> snippets/nil-announcement-bar.liquid -> sections/header-group.json/header_section olarak tespit edildi. sections/header-group.json içindeki header_announcements_9jGBFp disabled=true olduğu için header-announcements.liquid aktif üst dil barı kaynağı değildir.
-- /collections liste şablonu templates/list-collections.json üzerinden A-g21-koleksiyonlar-ana ile, tek koleksiyon sayfası templates/collection.json üzerinden A-g21-koleksiyon-sayfasi ile çalışır. nil-luxury-collection-discovery.liquid şablon akışına bağlı değildir; aynı anda render edilmez.
-- Tek görünür dil çubuğu layout üst slotundaki snippets/nil-announcement-bar.liquid içinde bırakıldı.
-- Playwright doğrulaması ekran kaydı üretimine hazırlandı ve çalıştırıldı; canlı siteye erişim Codex ağı/proxy nedeniyle net::ERR_TUNNEL_CONNECTION_FAILED verdi. Buna rağmen her URL için video kayıt dosyası üretildi.
+1. İncelenen raporlar
+- reports/hatalar.md: İlk çalıştırmada 2026-06-28T20-54-51-348Z run id, 8 domain, 58 test kaydı, 945 toplam hata, 588 high, 170 medium, 187 low. Ana kanıtlar: #8 collection-grid-missing, #10 ve #13 mobile-overflow; timeout kayıtları; kırık görsel ve 404 kayıtları.
+- reports/summary.json: İlk raporda baseUrl https://gelinlik21.com.tr, domain listesi 8 dil domaini, CPU 3, default concurrency 10, final concurrency 4, pagesTestedCount 58, issueCount 945, consoleErrorsCount 1074, networkErrorsCount 6061, workerCrashes 553, timeoutCount 15.
+- reports/performance.json: Dosya çalışma alanında bulunamadı; performans bilgisi summary.json içindeki workerCrashes, timeoutCount, memoryPressureCount ve finalActiveConcurrency alanlarından kontrol edildi.
+- reports/broken-links.json: 404 test path kayıtları ve /404-g21-playwright-test-page beklenen 404 davranışı görüldü.
+- reports/console-errors.json: Failed to load resource: net::ERR_FAILED kayıtları incelendi.
+- reports/network-errors.json: CDN script abort/failed kayıtları incelendi.
+- reports/pages-tested.json: Test edilen URL/path seti kontrol edildi.
 
-İspat No: 1
-Dosya: layout/theme.liquid
-Verilen Talimat: Hreflang sistemini global olarak <head> içine bağla.
-Yapılan İşlem: A-g21-seo-hreflang-baglantilari snippet'i meta-tags sonrasında render edildi.
-Önce: Hreflang snippet head akışında garanti değildi.
-Sonra: Global head render zincirinde çalışır.
-Delil: layout/theme.liquid içinde render 'A-g21-seo-hreflang-baglantilari'.
-Kontrol: python tools/browser_check.py hreflangCount alanını raporlayacak şekilde hazırlandı.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+2. İncelenen screenshot/video kanıtları
+- screenshots/*.webp içinden 40 görselden contact sheet üretildi ve görsel olarak incelendi: /tmp/contact.jpg.
+- Görsellerde /collections sayfasında siyah/boş koleksiyon kartları, mobil header/dil çubuğu taşması, footer/trust içeriklerinin grid sonrası konumlandığı ancak üst alanlarda kalabalıklaştığı görüldü.
+- Yeni npm run audit sonrası videos/ altında webm retry kayıtları oluştu; ancak bağlantı tünel hatası sebebiyle yeni videolar tema render doğrulaması sağlamadı.
 
-İspat No: 2-3
-Dosya: layout/theme.liquid, snippets/nil-announcement-bar.liquid
-Verilen Talimat: Dil çubuğunu header'ın en üstünde tek kez render et.
-Yapılan İşlem: Aktif layout akışında header-group öncesindeki nil-announcement-bar tek dil çubuğu slotu olarak sabitlendi.
-Önce: Dil çubuğu header-announcements, koleksiyon sectionları ve bazı bağımsız sectionlarda tekrarlanabiliyordu.
-Sonra: Görünür global slot id=A-G21-HeaderLanguageBar olarak tek kaynakta tutuldu.
-Delil: snippets/nil-announcement-bar.liquid tek aktif render 'A-g21-dil-secici' çağrısını içerir.
-Kontrol: rg ile aktif render çağrıları kontrol edildi; browser_check.py languageBarCount alanını raporlar.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+3. Bulunan gerçek hatalar
+- Mobil overflow: reports/hatalar.md #10 ve #13, a-g21-dil-secici öğeleri ve menu-list__list genişliği taşma sebebi olarak listelendi.
+- Dil çubuğu tekrarı: global A-G21 dil çubuğuna ek olarak nil-floating-whatsapp.liquid içindeki nil-header-language-flags JS ile header içine ikinci dil bayrağı seti basabiliyordu.
+- /collections grid kaybı/boş durum riski: templates/list-collections.json seçili koleksiyon listesi olmadan otomatik koleksiyon gösterimini açıkça set etmiyordu; WhatsApp kartı grid içinde koleksiyonlardan önce/tek içerik gibi algılanma riski taşıyordu.
+- Ürün önerisi skeleton riski: base.css içinde data-has-recommendations=false olduğunda section gizleme kuralı mevcut olduğu için ek değişiklik yapılmadı.
 
-İspat No: 4-5
-Dosya: sections/A-g21-koleksiyonlar-ana.liquid, sections/A-g21-koleksiyon-sayfasi.liquid
-Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır.
-Yapılan İşlem: Header dışındaki görünür dil çubuğu blokları kaldırıldı.
-Önce: Koleksiyon sayfalarında section içi dil çubuğu üretilebiliyordu.
-Sonra: Koleksiyon sectionları dil çubuğu üretmez; yalnız üst header slotu üretir.
-Delil: Bu dosyalarda aktif render 'A-g21-dil-secici' çağrısı yoktur.
-Kontrol: rg ile render çağrıları kontrol edildi.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+4. Her hatanın muhtemel kaynak dosyası
+- Mobil overflow: assets/base.css, snippets/A-g21-inline-stiller.liquid, sections/header.liquid.
+- Dil çubuğu tekrarı: snippets/nil-floating-whatsapp.liquid ve snippets/nil-announcement-bar.liquid.
+- /collections grid kaybı: templates/list-collections.json ve sections/A-g21-koleksiyonlar-ana.liquid.
 
-İspat No: 6
-Dosya: snippets/A-g21-dil-secici.liquid
-Verilen Talimat: Dil linklerinin accessibility hatalarını düzelt.
-Yapılan İşlem: Liste çocukları role=listitem yapıldı, aria-label görünür metinle aynı olmayan eylem/hedef formatına çekildi.
-Önce: Link aria-label değerleri görünür dil adıyla çakışmaya yakındı.
-Sonra: aria-label "Dil seçimi: ... sayfasına git" formatında açık amaç bildirir.
-Kontrol: browser_check.py languageLinks ve accessibilityWarnings alanlarını raporlar.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+5. Yapılan dosya bazlı düzeltmeler
+- snippets/nil-floating-whatsapp.liquid: nil-header-language-flags placeholder DOM'u render dışı bırakıldı ve buildLanguageFlags() no-op yapıldı; tek aktif dil çubuğu nil-announcement-bar üzerinden kaldı.
+- assets/base.css: A-G21 global dil çubuğu ve header menüsü için max-width/min-width/overflow mobil korumaları eklendi; nil-header-language-flags ve eski floating language slotları zorunlu gizlendi.
+- templates/list-collections.json: /collections sayfasında seçili koleksiyon listesi boşsa otomatik koleksiyonların gösterilmesi için g21_otomatik_koleksiyonlari_goster açıkça true set edildi.
+- codex/verification/g21-fast-audit.js: 8 izinli domain varsayılan yapıldı, /cart ve /login yasak URL filtresine eklendi, /cart seed path kaldırıldı, Web Bot Auth header dosyası hostname bazlı ve secretsız okunacak şekilde eklendi.
 
-İspat No: 7-8
-Dosya: sections/header.liquid, snippets/localization-form.liquid
-Verilen Talimat: Eski localization yapılarını ve country-filter-input duplicate ID hatasını devre dışı bırak.
-Yapılan İşlem: Header localization_markup çıktısı boşaltıldı; localization-form tekrar kullanılsa bile country-filter-input id'si form_id suffix'i alacak hale getirildi.
-Önce: dropdown-localization ve country-filter-input DOM'a girebiliyordu.
-Sonra: Aktif header eski dropdown'u render etmez; fallback snippet duplicate ID üretmez.
-Kontrol: browser_check.py oldLocalization, countryFilterInputs ve duplicateIds alanlarını raporlar.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+6. Önceki durum
+- İlk rapor: 945 toplam hata, 588 high, 170 medium, 187 low; 1074 console error; 6061 network error; 553 worker crash; 15 timeout; 8 domain.
+- Mobil overflow kanıtlarında dil öğeleri sağ sınırı aşıyor, menu-list__list 1024px genişlikte raporlanıyordu.
 
-İspat No: 9-11
-Dosya: blocks/_header-menu.liquid, snippets/A-g21-koleksiyon-karti.liquid, snippets/A-g21-inline-stiller.liquid
-Verilen Talimat: ARIA role hatalarını ve koleksiyon kart görsel tutarlılığını düzelt.
-Yapılan İşlem: MORE/DİĞER butonundan role=listitem kaldırıldı; koleksiyon kartları role=listitem yapıldı; kart yükseklikleri ve açıklama line clamp kuralları eklendi.
-Önce: Button üzerinde hatalı role ve kartlarda potansiyel list child uyarısı vardı.
-Sonra: Native button korunur, grid role=list çocukları listitem olur, kart metin/görsel hizası tutarlıdır.
-Kontrol: browser_check.py badRoleButtons ve listRoleWarnings alanlarını raporlar.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+7. Sonraki durum
+- Yeniden test raporu: 336 toplam hata, 336 high, 0 medium, 0 low; 0 console error; 336 network error; 0 worker crash; 0 timeout; 8 domain.
+- Yeni çalıştırmada tüm kalan hatalar net::ERR_TUNNEL_CONNECTION_FAILED bağlantı/tünel problemi olduğu için tema render doğrulaması sınırlı kaldı.
 
-İspat No: 12-13
-Dosya: sections/1-nil-lux-footer.liquid
-Verilen Talimat: Footer WhatsApp kontrastı, ödeme etiketi kontrastı, heading order ve aynı hedef WhatsApp link açıklamalarını düzelt.
-Yapılan İşlem: WhatsApp kart başlığı h3 yerine role=heading aria-level=2 yapıldı; WhatsApp link aria-label değerleri tutarlılaştırıldı; WhatsApp CTA ve payment badge kontrast kuralları güçlendirildi.
-Önce: WhatsApp kartında h3 hiyerarşi riski, düşük kontrast ve tutarsız link açıklaması riski vardı.
-Sonra: Başlık hiyerarşisi kontrollü, CTA koyu yeşil/beyaz, ödeme etiketleri beyaz zemin/koyu metin kullanır.
-Kontrol: browser_check.py temel accessibilityWarnings alanını raporlar.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+8. Çalıştırılan komutlar
+- pwd && find .. -name AGENTS.md -print && git remote -v && git branch --show-current && git status --short
+- git remote add origin https://github.com/salihchelebi/TEMA.git
+- git checkout -B fix/g21-playwright-audit-theme-fixes
+- sed/head/cat/rg komutları ile rapor ve tema dosyası incelemeleri
+- node + sharp ile /tmp/contact.jpg görsel contact sheet üretimi
+- npm run audit
 
-İspat No: 14
-Dosya: tools/browser_check.py
-Verilen Talimat: Playwright screenshot, video, JSON ve metin raporu üret.
-Yapılan İşlem: 8 URL için video, screenshot, DOM kontrolü, JSON report ve TXT summary üreten script yazıldı.
-Önce: Tek URL screenshot/video üreten minimal script vardı.
-Sonra: Çoklu URL, duplicate ID, language bar, old localization, ARIA uyarıları, hreflang ve link host doğrulaması raporlanır.
-Kontrol: python -m py_compile tools/browser_check.py başarılı; python tools/browser_check.py çalıştırıldı.
-Onay: Kısmi / ortam uyarılı. Script çalıştı ve video dosyaları üretti; canlı URL erişimi proxy tünel hatası verdi.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm ve her subdomain klasöründeki video.webm
+9. Komut stdout/stderr/exit code özeti
+- npm run audit: exit code 0. npm uyarısı: Unknown env config "http-proxy". Audit başladı ve bitti; raporlar reports/ altında, kanıtlar screenshots/ ve videos/ altında üretildi.
+- npm run audit çıktı özeti: G21 audit başladı; CPU/vCPU 3; hedef concurrency 10; aktif concurrency 9; retry turları çalıştı; AUDIT BİTTİ.
 
-İspat No: 15-17
-Dosya: sections/A-g21-urun-sayfasi.liquid, sections/A-g21-dil-cubugu.liquid, sections/header-announcements.liquid
-Verilen Talimat: Header dışında A-G21 dil seçici tekrarlarını bırakma.
-Yapılan İşlem: Kalan render 'A-g21-dil-secici' çağrıları Liquid comment ile pasifleştirildi.
-Önce: Ürün/bağımsız/disabled announcement section içinde tekrar potansiyeli vardı.
-Sonra: Tek aktif render nil-announcement-bar içindedir.
-Kontrol: rg "render ['\"]A-g21-dil-secici" -g '*.liquid' .
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+10. Yeniden test sonucu
+- npm run audit çalıştı ve exit code 0 döndü.
+- reports/summary.json yeni run id 2026-06-28T21-46-35-034Z, issueCount 336, consoleErrorsCount 0, networkErrorsCount 336, workerCrashes 0, timeoutCount 0, domain sayısı 8.
+- Kalan 336 hata net::ERR_TUNNEL_CONNECTION_FAILED olduğu için tema kaynaklı görsel hata olarak doğrulanmadı.
 
-İspat No: 18-19
-Dosya: setup.sh, maintenance.sh
-Verilen Talimat: Kurulum ve bakım komut dosyalarında pip install ve Playwright Chromium kurulumu bulunsun.
-Yapılan İşlem: set -euo pipefail ile çalışan setup/maintenance scriptleri oluşturuldu ve chmod +x uygulandı.
-Önce: Bu dosyalar yoktu.
-Sonra: ./setup.sh ve ./maintenance.sh çalıştırılabilir.
-Kontrol: ./setup.sh çalıştırıldı; pip ve Chromium kurulumu tamamlandı.
-Onay: Tamamlandı.
-Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+11. Kalan riskler
+- Audit script 8 domaini kuyruğa aldı; ancak tünel hatası nedeniyle sayfalar başarıyla render edilemedi.
+- Audit scriptte /cart başlangıç path'i kaldırıldı ve /cart ile /login yasak URL filtrelerine eklendi; ödeme/hesap/admin/sipariş akışları tetiklenmedi.
+- Gerçek storefront deployment sonrası tüm dil domainlerinde /collections tekrar görsel kontrol gerektirir.
 
-Silinen dosya:
-- snippets/A-g21-test-kontrol.liquid silindi. Talimat: Kullanılmayan test snippet dosyasını temizle. Kontrol: rg --files | rg 'A-g21-test-kontrol' sonuç döndürmedi. Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
-
-Playwright çıktı artefaktları:
-- browser_outputs/browser_check_summary.json
-- browser_outputs/browser_check_summary.txt
-- browser_outputs/gelinlik21_com_tr_collections/video.webm
-- browser_outputs/tr_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/ar_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/fr_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/de_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/ru_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/nl_gelinlik21_com_tr_collections/video.webm
-- browser_outputs/es_gelinlik21_com_tr_collections/video.webm
-- Her URL klasöründe report.json ve summary.txt vardır.
-
-Komut sonuçları:
-- python -m py_compile tools/browser_check.py: başarılı.
-- ./setup.sh: başarılı; pip bağımlılıkları ve Chromium kurulum doğrulaması tamamlandı.
-- python -m playwright install-deps chromium: ortam bağımlılıkları kuruldu; mise apt deposunda 403 uyarısı vardı fakat Ubuntu paketleri kuruldu.
-- python tools/browser_check.py: exit code 1; her URL için video üretildi, fakat canlı siteye erişim Codex proxy tünel kısıtı nedeniyle net::ERR_TUNNEL_CONNECTION_FAILED verdi.
-
-Kalan riskler:
-- Canlı Shopify mağazası bu yerel tema değişiklikleri deploy edilmeden Playwright DOM kontrollerinde düzelmiş görünmeyebilir.
-- Codex ağ/proxy tünel hatası nedeniyle canlı URL screenshot içerikleri alınamadı; video dosyaları başarısız gezinme oturumunu kanıtlar.
-- Browser script, deploy sonrası aynı komutla gerçek DOM sonuçlarını ve screenshotları üretecek şekilde hazırdır.
-
-
-PR düzeltmesi - ikili dosyalar:
-- Codex/GitHub arayüzünde "İkili dosyalar desteklenmez" uyarısı .webm video kayıtlarının diff içinde gösterilememesinden kaynaklanır. Bu bir kod hatası değil, platformun binary dosya görüntüleme sınırlamasıdır.
-- Çözüm: .webm video dosyaları git takibinden çıkarıldı ve .gitignore içine browser_outputs/**/*.webm eklendi. JSON/TXT raporlar video dosya yollarını belgelemeye devam eder; videolar test çalıştırıldığında yerelde yeniden üretilir.
-- Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+12. Manuel kontrol gerektiren noktalar
+- Tüm izinli domainlerde /collections açılışı.
+- Dil çubuğunun tek kez ve header üstünde görünmesi.
+- Arapça RTL ürün/filtre layout kontrolü.
+- Ürün detay fiyat/varyant/CTA hizası.
+- Kalan network tünel hatalarının ortam/proxy kaynaklı olup olmadığı.
