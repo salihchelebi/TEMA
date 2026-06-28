@@ -1,0 +1,13 @@
+{
+  "name": "g21-fast-playwright-audit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "audit": "node codex/verification/g21-fast-audit.js"
+  },
+  "dependencies": {
+    "playwright": "^1.54.0",
+    "sharp": "^0.33.5"
+  }
+}
