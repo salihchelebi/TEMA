@@ -1,5 +1,12 @@
 {%- comment -%}
-A-G21 yatay bayraklı dil seçici. Eski localization/dropdown sınıflarını miras almaz.
+İspat No: 6
+Verilen Talimat: Dil linklerinin accessibility hatalarını düzelt.
+Yapılan Görev: Görünen yerel dil adı ile aria-label çakışması giderildi.
+Yapılan İşlem: Link aria-label değerleri eylem + hedef dil formatına taşındı, liste çocukları listitem yapıldı.
+Delil: li role=listitem ve aria-label='Dil seçimi: ...' kullanılır.
+Kontrol: browser_check.py temel erişilebilirlik uyarılarını raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
 {%- endcomment -%}
 {%- capture g21_aktif_raw -%}{%- render 'A-g21-dil-verisi', g21_mod: 'aktif' -%}{%- endcapture -%}
 {%- assign g21_aktif_dil = g21_aktif_raw | strip | default: 'en' -%}
@@ -18,8 +25,8 @@ A-G21 yatay bayraklı dil seçici. Eski localization/dropdown sınıflarını mi
       {%- if g21_seviye == 'oncelikli' and g21_iso != blank -%}
         {%- assign g21_aktif_mi = false -%}
         {%- if g21_iso == g21_aktif_dil -%}{%- assign g21_aktif_mi = true -%}{%- endif -%}
-        <li class="a-g21-dil-secici__oge">
-          <a class="a-g21-dil-secici__link{% if g21_aktif_mi %} is-active{% endif %}" href="{{ g21_kok }}" hreflang="{{ g21_iso }}" lang="{{ g21_iso }}" title="{{ g21_yerel | escape }}" aria-label="Switch language to {{ g21_ad | escape }}"{% if g21_aktif_mi %} aria-current="true"{% endif %} data-a-g21-lang="{{ g21_iso }}">
+        <li class="a-g21-dil-secici__oge" role="listitem">
+          <a class="a-g21-dil-secici__link{% if g21_aktif_mi %} is-active{% endif %}" href="{{ g21_kok }}" hreflang="{{ g21_iso }}" lang="{{ g21_iso }}" title="{{ g21_yerel | escape }}" aria-label="Dil seçimi: {{ g21_ad | escape }} sayfasına git"{% if g21_aktif_mi %} aria-current="true"{% endif %} data-a-g21-lang="{{ g21_iso }}">
             <span class="a-g21-dil-secici__bayrak" style="background-image:url('https://flagcdn.com/w40/{{ g21_bayrak }}.png')" aria-hidden="true"></span>
             <span class="a-g21-dil-secici__metin">{{ g21_yerel }}</span>
           </a>

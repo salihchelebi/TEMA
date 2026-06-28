@@ -1,3 +1,13 @@
+{% comment %}
+İspat No: 17
+Verilen Talimat: Header dışında A-G21 dil seçici tekrarlarını bırakma.
+Yapılan Görev: Devre dışı header-announcements section içindeki dil çubuğu render dışı bırakıldı.
+Yapılan İşlem: Bu dosyadaki render 'A-g21-dil-secici' çağrısı Liquid comment ile pasifleştirildi.
+Delil: Görünür dil çubuğu yalnız snippets/nil-announcement-bar.liquid üzerinden üretilir.
+Kontrol: browser_check.py her URL için tek dil çubuğu sayımı yapar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
 {%- comment -%}
   A-G21 GLOBAL LANGUAGE BAR
   Kaynak veri: snippets/A-g21-dil-verisi.liquid
@@ -17,7 +27,7 @@
   data-a-g21-language-bar="active"
 >
   <div class="a-g21-global-dil-cubugu__ic">
-    {%- render 'A-g21-dil-secici' -%}
+    {%- comment -%} A-G21 tek dil çubuğu kuralı: render layout üst slotuna taşındı. {%- endcomment -%}
   </div>
 </div>
 

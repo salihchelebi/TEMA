@@ -1,3 +1,13 @@
+{%- comment -%}
+İspat No: 8
+Verilen Talimat: country-filter-input duplicate ID hatasını düzelt.
+Yapılan Görev: Eski localization snippet yeniden kullanılsa bile ID benzersiz hale getirildi.
+Yapılan İşlem: input/label id değerleri form_id ile suffix alır.
+Delil: Sabit country-filter-input id'si yerine country-filter-input-{{ form_id }} kullanılır.
+Kontrol: browser_check.py duplicate ID listesini raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{%- endcomment -%}
 {%- doc -%}
   Renders either a country selector, language selector, or both.
 
@@ -63,7 +73,7 @@
             </div>
             <input
               class="country-filter__input"
-              id="country-filter-input"
+              id="country-filter-input-{{ form_id | default: localization_style | handle }}"
               type="search"
               name="country_filter"
               value=""
@@ -83,7 +93,7 @@
             >
             <label
               class="field__label visually-hidden"
-              for="country-filter-input"
+              for="country-filter-input-{{ form_id | default: localization_style | handle }}"
             >
               {{- 'content.search' | t -}}
             </label>

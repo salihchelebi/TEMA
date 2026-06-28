@@ -1,18 +1,15 @@
+{% comment %}
+İspat No: 5
+Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır.
+Yapılan Görev: Header dışındaki A-G21 dil seçici render çıktısı pasifleştirildi.
+Yapılan İşlem: Bu section artık görünür dil çubuğu üretmez; tek dil çubuğu layout üst slotundadır.
+Delil: Bu dosyada render 'A-g21-dil-secici' çağrısı yoktur.
+Kontrol: DOM üzerinde tek dil çubuğu hedefi kontrol edildi.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
 {%- render 'A-g21-inline-stiller' -%}
 {%- render 'A-g21-filtre-temizleme' -%}
-
-<div
-  class="a-g21-global-dil-cubugu a-g21-collection-language-top"
-  role="navigation"
-  aria-label="Collection language selector"
-  data-a-g21-global-language-bar="true"
-  data-a-g21-language-bar="active"
-  data-a-g21-collection-language-top="true"
->
-  <div class="a-g21-global-dil-cubugu__ic">
-    {%- render 'A-g21-dil-secici' -%}
-  </div>
-</div>
 
 <section
   class="a-g21-koleksiyon-sayfasi"

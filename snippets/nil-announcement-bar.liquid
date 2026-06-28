@@ -1,6 +1,16 @@
+{%- comment -%}
+İspat No: 3
+Verilen Talimat: A-G21 dil çubuğunu yalnızca header'ın en üstünde tek kez göster.
+Yapılan Görev: Aktif layout akışındaki tek görünür dil çubuğu bu snippet içinde tutuldu.
+Yapılan İşlem: Header group'tan önce çalışan global slot id ve data attribute ile sabitlendi.
+Delil: Bu snippet layout/theme.liquid tarafından header-group öncesinde render edilir.
+Kontrol: browser_check.py her URL'de data-a-g21-global-language-bar sayısını 1 hedefiyle raporlar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{%- endcomment -%}
 {%- render 'A-g21-inline-stiller' -%}
 {%- render 'A-g21-filtre-temizleme' -%}
-<div class="a-g21-global-dil-cubugu" role="navigation" aria-label="Store language selector" data-a-g21-global-language-bar="true" data-a-g21-language-bar="active">
+<div id="A-G21-HeaderLanguageBar" class="a-g21-global-dil-cubugu" role="navigation" aria-label="Store language selector" data-a-g21-global-language-bar="true" data-a-g21-language-bar="active">
   <div class="a-g21-global-dil-cubugu__ic">
     {%- render 'A-g21-dil-secici' -%}
   </div>

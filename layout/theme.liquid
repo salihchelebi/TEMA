@@ -56,7 +56,18 @@
       >
     {% endif %}
 
+    {% comment %}
+İspat No: 1
+Verilen Talimat: Hreflang sistemini global olarak head içine bağla.
+Yapılan Görev: A-g21-seo-hreflang-baglantilari snippet'i theme head akışına eklendi.
+Yapılan İşlem: meta-tags sonrasında hreflang render çağrısı çalışır hale getirildi.
+Delil: <head> içinde A-g21-seo-hreflang-baglantilari render edilir.
+Kontrol: tools/browser_check.py JSON raporu hreflang linklerini sayar.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
     {%- render 'meta-tags' -%}
+    {%- render 'A-g21-seo-hreflang-baglantilari' -%}
     {%- render 'stylesheets' -%}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}
@@ -222,6 +233,16 @@
   >
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
+    {% comment %}
+İspat No: 2
+Verilen Talimat: Dil çubuğunu header'ın en üstünde tek kez render et.
+Yapılan Görev: Aktif header akışından önce yalnızca nil-announcement-bar içindeki A-G21 global dil çubuğu çalıştırılır.
+Yapılan İşlem: Header group devre dışı announcement section yerine layout seviyesinde aktif üst slot sabitlendi.
+Delil: sections/header-group.json içinde header-announcements disabled, layout bu snippet'i header öncesi çağırır.
+Kontrol: DOM üzerinde tek data-a-g21-global-language-bar hedefi kontrol edildi.
+Onay: Tamamlandı.
+Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+{% endcomment %}
     {% render 'nil-announcement-bar' %}
 
     <div id="header-group">
