@@ -154,3 +154,10 @@ PR düzeltmesi - ikili dosyalar:
 - `snippets/A-g21-inline-stiller.liquid`: Mavi/siyah ham placeholder yerine lüks altın/siyah fallback eklendi; koleksiyon grid min-height ve kart ritmi güçlendirildi; eski localization/boş wrapper temizliği genişletildi.
 - `selam.txt`: GANGPT/TEMA bağlantı testi için kullanıcı talebiyle eklendi.
 Kalan risk: Canlı Shopify Markets/template atamaları ve GitHub push işlemi, ortamda GitHub kimlik bilgisi olmadığı sürece uzaktan doğrulanamaz.
+
+## 3 saniyelik hızlı video testi - 2026-06-28
+- `tools/browser_check.py`: `--quick-video`, `--url` ve `--duration` seçenekleri eklendi; tek URL için 3 saniyelik Playwright kayıt denemesi ve environment / explicit-proxy / proxy-bypass-target ağ stratejileri raporlanır.
+- Komut: `python tools/browser_check.py --quick-video --duration 3 --url https://gelinlik21.com.tr/collections`
+- Sonuç: Kod video kaydını başlattı ve yerel `.webm` denemeleri oluşturdu; canlı siteye bu Codex ortamından erişim `net::ERR_TUNNEL_CONNECTION_FAILED` ve `net::ERR_ADDRESS_UNREACHABLE` hatalarıyla engellendi.
+- Ulaşılabilir kaynak URL: `https://gelinlik21.com.tr/collections`; dışarıdan erişilebilir video URL'si üretilemedi çünkü ortamda GitHub/storage kimlik bilgisi ve dosya yayınlama servisine izin yok.
+- Yerel rapor: `browser_outputs/quick_3s_gelinlik21_com_tr_collections/quick_report.json`.

@@ -1,0 +1,31 @@
+{
+  "url": "https://gelinlik21.com.tr/collections",
+  "slug": "quick_3s_gelinlik21_com_tr_collections",
+  "ok": false,
+  "duration_seconds": 3.0,
+  "generated_at": "2026-06-28T17:41:30.950202+00:00",
+  "attempts": [
+    {
+      "strategy": "environment",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/quick_3s_gelinlik21_com_tr_collections/environment/video.webm"
+    },
+    {
+      "strategy": "explicit-proxy",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/quick_3s_gelinlik21_com_tr_collections/explicit-proxy/video.webm"
+    },
+    {
+      "strategy": "proxy-bypass-target",
+      "ok": false,
+      "error": "Error: Page.goto: net::ERR_ADDRESS_UNREACHABLE at https://gelinlik21.com.tr/collections\nCall log:\n  - navigating to \"https://gelinlik21.com.tr/collections\", waiting until \"domcontentloaded\"\n",
+      "video": "browser_outputs/quick_3s_gelinlik21_com_tr_collections/proxy-bypass-target/video.webm"
+    }
+  ],
+  "source_url": "https://gelinlik21.com.tr/collections",
+  "public_url": null,
+  "public_url_note": "This Codex environment cannot publish files to an external public URL without GitHub/storage credentials.",
+  "video": "browser_outputs/quick_3s_gelinlik21_com_tr_collections/environment/video.webm"
+}

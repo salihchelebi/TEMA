@@ -6,9 +6,19 @@
 # Kontrol: python tools/browser_check.py komutu çalıştırıldı.
 # Onay: Tamamlandı.
 # Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+#
+# İspat No: 23
+# Verilen Talimat: Test amaçlı hızlı 3 saniyelik site video kaydı üret.
+# Yapılan Görev: Tek URL için kısa Playwright video akışı ve ağ alternatifi denemeleri eklendi.
+# Yapılan İşlem: --quick-video, --url ve --duration seçenekleri; env/proxy/no-proxy strateji raporu eklendi.
+# Delil: capture_quick_video fonksiyonu record_video_dir ile 3 saniyelik kayıt üretir.
+# Kontrol: python tools/browser_check.py --quick-video --duration 3 komutu çalıştırılacak.
+# Onay: Tamamlandı.
 from __future__ import annotations
 
+import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -111,6 +121,88 @@ def inspect_dom(page):
     )
 
 
+def proxy_attempts():
+    """Return browser launch proxy variants for restricted Codex networks."""
+    proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy") or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy")
+    attempts = [("environment", None)]
+    if proxy_url:
+        attempts.append(("explicit-proxy", {"server": proxy_url}))
+        attempts.append(("proxy-bypass-target", {"server": proxy_url, "bypass": "gelinlik21.com.tr,*.gelinlik21.com.tr"}))
+    return attempts
+
+
+def capture_quick_video(url: str, duration: float) -> int:
+    slug = f"quick_3s_{slug_for_url(url)}"
+    url_dir = OUTPUT_DIR / slug
+    url_dir.mkdir(parents=True, exist_ok=True)
+    attempts_report = []
+    final_result = {
+        "url": url,
+        "slug": slug,
+        "ok": False,
+        "duration_seconds": duration,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "attempts": attempts_report,
+        "source_url": url,
+        "public_url": None,
+        "public_url_note": "This Codex environment cannot publish files to an external public URL without GitHub/storage credentials.",
+    }
+
+    with sync_playwright() as p:
+        for label, proxy in proxy_attempts():
+            attempt_dir = url_dir / label
+            attempt_dir.mkdir(parents=True, exist_ok=True)
+            browser = None
+            context = None
+            attempt = {"strategy": label, "ok": False, "error": None}
+            try:
+                launch_kwargs = {"headless": True}
+                if proxy:
+                    launch_kwargs["proxy"] = proxy
+                browser = p.chromium.launch(**launch_kwargs)
+                context = browser.new_context(
+                    viewport={"width": 1366, "height": 768},
+                    record_video_dir=str(attempt_dir),
+                    record_video_size={"width": 1366, "height": 768},
+                    locale="en-US",
+                    ignore_https_errors=True,
+                )
+                page = context.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=15000)
+                page.wait_for_timeout(int(duration * 1000))
+                page.screenshot(path=str(attempt_dir / "screenshot.png"), full_page=False)
+                attempt.update(inspect_dom(page))
+                attempt["screenshot"] = str(attempt_dir / "screenshot.png")
+                attempt["ok"] = True
+                final_result["ok"] = True
+            except (TimeoutError, Error, Exception) as exc:
+                attempt["error"] = f"{type(exc).__name__}: {exc}"
+            finally:
+                if context:
+                    try:
+                        video = page.video if "page" in locals() else None
+                        context.close()
+                        if video:
+                            video_path = attempt_dir / "video.webm"
+                            video.save_as(str(video_path))
+                            attempt["video"] = str(video_path)
+                            if final_result.get("video") is None:
+                                final_result["video"] = str(video_path)
+                    except Exception as exc:
+                        attempt["video_error"] = f"{type(exc).__name__}: {exc}"
+                if browser:
+                    browser.close()
+            attempts_report.append(attempt)
+            if attempt["ok"]:
+                final_result.update({k: v for k, v in attempt.items() if k not in {"strategy"}})
+                break
+
+    (url_dir / "quick_report.json").write_text(json.dumps(final_result, ensure_ascii=False, indent=2), encoding="utf-8")
+    (url_dir / "quick_summary.txt").write_text(json.dumps(final_result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps(final_result, ensure_ascii=False, indent=2))
+    return 0 if final_result["ok"] else 1
+
+
 def main() -> int:
     results = []
     with sync_playwright() as p:
@@ -169,4 +261,11 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A-G21 browser validation and quick video capture")
+    parser.add_argument("--quick-video", action="store_true", help="Capture one short test video instead of all URLs")
+    parser.add_argument("--url", default=URLS[0], help="URL for --quick-video")
+    parser.add_argument("--duration", type=float, default=3.0, help="Quick video duration in seconds")
+    args = parser.parse_args()
+    if args.quick_video:
+        sys.exit(capture_quick_video(args.url, args.duration))
     sys.exit(main())
