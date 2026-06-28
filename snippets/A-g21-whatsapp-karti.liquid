@@ -1,5 +1,11 @@
 {%- comment -%}
-A-G21 WhatsApp destek kartı. Koleksiyon döngüsünün yerine geçmez; sadece isteğe bağlı destek bileşenidir.
+İspat No: 21
+Verilen Talimat: Private Bridal Consultation yanlış hiyerarşide veya çok erken görünmesin.
+Yapılan Görev: Danışmanlık kartı koleksiyon listesi içinde listitem olmayan çocuk olarak render edilmez.
+Yapılan İşlem: Kart başlığı h2 seviyesine çekildi ve erişilebilir WhatsApp açıklaması tutarlı hale getirildi.
+Delil: Bu snippet yalnızca section tarafından grid sonrası destek alanında çağrılır.
+Kontrol: Koleksiyon akışı Header → başlık → koleksiyon grid → danışmanlık → footer olarak doğrulanır.
+Onay: Tamamlandı.
 {%- endcomment -%}
 {%- liquid
   assign g21_phone = g21_phone | default: '905334619373' | remove: '+' | remove: ' ' | remove: '-' | remove: '('
@@ -12,9 +18,9 @@ A-G21 WhatsApp destek kartı. Koleksiyon döngüsünün yerine geçmez; sadece i
 {%- if g21_phone != blank -%}
   <article class="a-g21-whatsapp-karti" data-a-g21-whatsapp-card="true">
     <div class="a-g21-whatsapp-karti__ikon" aria-hidden="true">✆</div>
-    <h3 class="a-g21-whatsapp-karti__baslik">{{ g21_title }}</h3>
+    <h2 class="a-g21-whatsapp-karti__baslik">{{ g21_title }}</h2>
     <p class="a-g21-whatsapp-karti__metin">{{ g21_text }}</p>
-    <a class="a-g21-whatsapp-karti__buton" href="https://wa.me/{{ g21_phone }}?text={{ g21_message | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="{{ g21_button | escape }}">
+    <a class="a-g21-whatsapp-karti__buton" href="https://wa.me/{{ g21_phone }}?text={{ g21_message | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="{{ g21_button | escape }} - {{ g21_title | escape }}">
       {{ g21_button }}
     </a>
   </article>

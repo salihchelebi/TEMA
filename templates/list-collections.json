@@ -3,7 +3,7 @@
     "a_g21_koleksiyonlar_ana": {
       "type": "A-g21-koleksiyonlar-ana",
       "settings": {
-        "g21_dil_cubugu_goster": true,
+        "g21_dil_cubugu_goster": false,
         "g21_baslik": "Wedding Dress Collections",
         "g21_aciklama": "Explore bridal collections by silhouette, lace, modesty and luxury details.",
         "g21_cta": "View Collection",

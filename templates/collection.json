@@ -3,7 +3,7 @@
     "a_g21_koleksiyon_sayfasi": {
       "type": "A-g21-koleksiyon-sayfasi",
       "settings": {
-        "g21_dil_cubugu_goster": true,
+        "g21_dil_cubugu_goster": false,
         "g21_urun_sayisi": 24,
         "g21_desktop_kolon": 4,
         "g21_tablet_kolon": 3,

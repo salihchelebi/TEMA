@@ -145,3 +145,12 @@ PR düzeltmesi - ikili dosyalar:
 - Codex/GitHub arayüzünde "İkili dosyalar desteklenmez" uyarısı .webm video kayıtlarının diff içinde gösterilememesinden kaynaklanır. Bu bir kod hatası değil, platformun binary dosya görüntüleme sınırlamasıdır.
 - Çözüm: .webm video dosyaları git takibinden çıkarıldı ve .gitignore içine browser_outputs/**/*.webm eklendi. JSON/TXT raporlar video dosya yollarını belgelemeye devam eder; videolar test çalıştırıldığında yerelde yeniden üretilir.
 - Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
+
+## Ek Görsel Analiz Düzeltmeleri - 2026-06-28
+- `templates/list-collections.json`: Dil çubuğu ayarı JSON yorum eklenmeden false yapıldı; gerçek dil çubuğu yalnızca global header slotunda kalır.
+- `templates/collection.json`: Tekil koleksiyon dil çubuğu ayarı false yapıldı; subdomain geçişlerinde ikinci dil barı engellenir.
+- `sections/A-g21-koleksiyonlar-ana.liquid`: WhatsApp danışmanlık kartı role=list grid dışına, koleksiyon kartlarından sonra taşındı; grid kaybolduğunda footer/danışmanlık alanının koleksiyon listesi yerine geçmesi engellendi.
+- `snippets/A-g21-whatsapp-karti.liquid`: Heading hiyerarşisi h2 olarak düzeltildi ve WhatsApp link aria-label değeri bağlamlı/tutarlı yapıldı.
+- `snippets/A-g21-inline-stiller.liquid`: Mavi/siyah ham placeholder yerine lüks altın/siyah fallback eklendi; koleksiyon grid min-height ve kart ritmi güçlendirildi; eski localization/boş wrapper temizliği genişletildi.
+- `selam.txt`: GANGPT/TEMA bağlantı testi için kullanıcı talebiyle eklendi.
+Kalan risk: Canlı Shopify Markets/template atamaları ve GitHub push işlemi, ortamda GitHub kimlik bilgisi olmadığı sürece uzaktan doğrulanamaz.

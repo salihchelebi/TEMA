@@ -1,8 +1,8 @@
 {% comment %}
 İspat No: 4
-Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır.
-Yapılan Görev: Header dışındaki A-G21 dil seçici render çıktısı pasifleştirildi.
-Yapılan İşlem: Bu section artık görünür dil çubuğu üretmez; tek dil çubuğu layout üst slotundadır.
+Verilen Talimat: Koleksiyon sayfası içindeki fazla dil satırlarını kaldır; grid kaybolmasını ve erken danışmanlık bloğunu düzelt.
+Yapılan Görev: Header dışındaki A-G21 dil seçici render çıktısı pasifleştirildi; danışmanlık kartı koleksiyon listesinin dışına alındı.
+Yapılan İşlem: Bu section artık görünür dil çubuğu üretmez; koleksiyon role=list sadece koleksiyon kartlarını içerir, WhatsApp destek bloğu grid sonrasındadır.
 Delil: Bu dosyada render 'A-g21-dil-secici' çağrısı yoktur.
 Kontrol: DOM üzerinde tek dil çubuğu hedefi kontrol edildi.
 Onay: Tamamlandı.
@@ -97,7 +97,10 @@ Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
         {%- endfor -%}
       {%- endif -%}
 
-      {%- if section.settings.g21_whatsapp_goster -%}
+    </div>
+
+    {%- if section.settings.g21_whatsapp_goster and g21_collection_count > 0 -%}
+      <div class="a-g21-koleksiyonlar-ana__destek" data-a-g21-consultation-after-grid="true">
         {%- render 'A-g21-whatsapp-karti',
           g21_phone: g21_whatsapp_phone,
           g21_title: section.settings.g21_whatsapp_baslik,
@@ -105,8 +108,8 @@ Ekran Kaydı: browser_outputs/gelinlik21_com_tr_collections/video.webm
           g21_button: section.settings.g21_whatsapp_buton,
           g21_message: section.settings.g21_whatsapp_mesaj
         -%}
-      {%- endif -%}
-    </div>
+      </div>
+    {%- endif -%}
 
     {%- if g21_collection_count == 0 -%}
       <div class="a-g21-bos-durum" data-a-g21-empty-state="true">
